@@ -1,0 +1,70 @@
+
+/* ==================================================
+  Mapplic Map Plugin
+==================================================== */
+
+// Map Container
+.mapplic-container {
+	overflow: hidden;
+	position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 74%;
+    height: 100%;
+    height: ~"calc(100vh + 64px)";
+	border-left: 1px #ccc solid;
+}
+
+// Sidebar Container
+.mapplic-sidebar {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 26%;
+    height: 100%;
+    padding: 30px;
+}
+
+// Sidebar Search Form
+.mapplic-search-form {
+    position: relative;
+    padding: 14px 12px;
+    width: 100%;
+    margin: 0;
+    border: 1px solid #d5d5d5;
+    border-bottom: 0;
+    background-color: #f2f2f2;
+}
+
+// Sidebar List Items
+.mapplic-list-container {
+    overflow-y: hidden;
+    padding: 20px;
+    height: auto;
+    border: 1px solid #d5d5d5;
+    border-top: 1px solid #dcdcdc;
+    background: #f2f2f2;
+}
+.mapplic-list-thumbnail {
+    float: left;
+    width: auto;
+    margin-right: 10px;
+}
+
+// mapplic elements are 0px by default so any custom added text
+// inside a sidebar will need to be manually sized
+.mapplic-element address {
+	font-size: 14px;
+}
+
+
+
+@media (max-width: 991px) {
+    .mapplic-sidebar {
+        display: none
+    }
+    .mapplic-container {
+        width: 100%;
+    }
+}
+

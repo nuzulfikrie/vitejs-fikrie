@@ -1,0 +1,268 @@
+/* ==============================================
+   Content Trays
+     A. Trays
+     B. Tray Sizes
+     C. Tray Bin
+     D. Misc Tray Helpers
+     E. Tray Navigation
+     F. Tray Hover Settings
+=================================================
+   A. Content Trays
+================================================= */
+
+// Tray layout wrapper - applied to #content
+#content.tray-layout {
+    padding-top: 30px;
+    .clearfix;
+}
+
+// Generic Tray class
+.tray {
+    width: 100%;
+}
+
+// Left and Right Trays
+.tray-left,
+.tray-right {
+    display: block;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+// Tray Left
+.tray-left { float: left; }
+
+// Tray Right
+.tray-right { float: right; }
+
+/*===============================================
+  Tray Sizing - Default 
+  325px left/right column + center
+================================================= */
+@tray-width: 325px;
+@tray-spacing: 30px;
+.tray-left,
+.tray-right {
+    width: @tray-width;
+}
+.tray-center {
+    float: left;
+    width: calc(100% ~"-" @tray-width);
+}
+.tray-left + .tray-center {
+    width: calc(100% ~"-" @tray-width);
+}
+
+// Attached to #content to create 3 tray column layout
+.three-trays .tray-center {
+    width: calc(100% ~"-" @tray-width * 2);
+}
+.tray + .tray {
+    padding-left: @tray-spacing;
+}
+
+/*===============================================
+  Tray Sizing - SM 
+  275px left/right column + center
+================================================= */ 
+@tray-sm-width: 275px;
+@tray-sm-spacing: 30px;
+.tray-sm {
+    
+    .tray-left,
+    .tray-right {
+        width: @tray-sm-width;
+    }
+    .tray-center {
+        width: calc(100% ~"-" @tray-sm-width);
+    }
+    &.three-trays .tray-center {
+        width: calc(100% ~"-" @tray-sm-width * 2);
+    }
+    .tray + .tray {
+        padding-left: @tray-sm-spacing;
+    }
+}
+
+
+/*===============================================
+  Tray Sizing - LG
+  375px left/right column + center
+================================================= */ 
+@tray-lg-width: 375px;
+@tray-lg-spacing: 35px;
+.tray-lg {
+    
+    .tray-left,
+    .tray-right {
+        width: @tray-lg-width;
+    }
+    .tray-center {
+        width: calc(100% ~"-" @tray-lg-width);
+    }
+    &.three-trays .tray-center {
+        width: calc(100% ~"-" @tray-lg-width * 2);
+    }
+    .tray + .tray {
+        padding-left: @tray-lg-spacing;
+    }
+}
+
+/*===============================================
+  Tray Sizing - XL
+  425px left/right column + center
+================================================= */
+@tray-xl-width: 425px;
+@tray-xl-spacing: 40px;
+.tray-xl {
+
+    .tray-left,
+    .tray-right {
+        width: @tray-xl-width;
+    }
+    .tray-center {
+        width: calc(100% ~"-" @tray-xl-width);
+    }
+    &.three-trays .tray-center {
+        width: calc(100% ~"-" @tray-xl-width * 2);
+    }
+    .tray + .tray {
+        padding-left: @tray-xl-spacing;
+    }
+}
+
+
+/*===============================================
+   C. Tray Scroller
+================================================= */
+
+// full window scroller settings
+.tray-scroller,
+.scroller.tray-scroller {
+    height: calc(100vh ~"-" @navbar-height);
+}
+.tray-scroller .scroller-handle {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.tray-scroller:hover .scroller-handle {
+    opacity: 1;
+}
+
+
+/*===============================================
+   C. Content Bin
+================================================= */
+// Newer content bin merge these styles classes and uses
+.tray-bin {
+    padding: 20px 25px;
+    background: #e7e7e7;
+    border: 1px dashed #d1d1d1;
+}
+
+
+/* Content bin - great for organizing buttons and links
+ * negative margin added to counter parent padding
+ */
+.content-bin {
+    min-height: 65px;
+    padding: 12px 30px;
+    // margin: 0 -15px 15px;
+    border: 1px dashed #CCC;
+    background-color: #eee;
+
+    &.stretch {
+        border-left: 0;
+        border-right: 0
+    }
+
+    /* If bin is used on a column div modify paddings */
+    div[class*='col-'] {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    /* Content in divider text. Used primarily in li navs */
+
+}
+.nav-label {
+    // text-align: center;
+    font-size: 16px;
+    color: @text-muted;
+    padding-left: 5px;
+    margin-top: 20px;
+    margin-bottom: 13px;
+}
+
+/*===============================================
+   C. Panel Specific styling when used inside a tray
+================================================= */
+/*settings for arrows when used on a right aligned tray (.tray-right)*/
+/* active item bottom border */
+
+.tray-right .panel-nav-arrow {
+    .panel-nav-arrow-left;
+}
+
+/*modifcation for right side trays (.tray-right)*/
+.tray-right .panel-nav-border li:after {
+    left: 0;
+    right: auto;
+}
+
+
+// Panel Nav inner widths when used with scrollspy
+// scrollspy converts nav to a fixed pos and requires
+// us to manually set the width of its container. Which
+// in this case will likely be a tray
+.panel-nav.affix {
+    width: @tray-width;
+}
+.tray-sm .panel-nav.affix {
+    width: @tray-sm-width;
+}
+.tray-lg .panel-nav.affix {
+    width: @tray-lg-width;
+}
+.tray-xl .panel-nav.affix {
+    width: @tray-xl-width;
+}
+
+// Account for tray spacing if it has sibling trays
+.tray-layout .tray + .tray .panel-nav.affix {
+    width: @tray-width - @tray-spacing;
+}
+.tray-lg .tray + .tray .panel-nav.affix {
+    width: @tray-lg-width - @tray-lg-spacing;
+}
+.tray-xl .tray + .tray .panel-nav.affix {
+    width: @tray-xl-width - @tray-xl-spacing;
+}
+
+
+
+
+
+// Tray Responsive Styles
+@media (max-width: @tray-mobile-width) {
+
+    .tray-layout .tray-center {
+        width: 100%;
+        padding: 0;
+    }
+
+    .tray-layout .tray-left,
+    .tray-layout .tray-right {
+        display: none;
+        padding: 0;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+    .tray-layout .tray-left:hover,
+    .tray-layout .tray-right:hover {
+        height: auto;
+        overflow: auto;
+    }
+
+}

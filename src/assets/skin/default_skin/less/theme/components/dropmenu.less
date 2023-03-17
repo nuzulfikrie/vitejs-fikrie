@@ -1,0 +1,286 @@
+/* ==============================================
+   Dropmenu
+     A. Dropmenu
+     B. Topbar Dropdown Menu
+=================================================
+  A. Dropmenu
+================================================= */
+
+#dropmenu {
+    // z-index: 1025;
+    // display: none;
+    // overflow: hidden;
+    // position: relative;
+    // top: 1px;
+    // width: 100%;
+    // height: auto;
+    // padding: 17px 20px 10px;
+    // background: #DDD;
+    // border-bottom: 1px solid #CCC;
+    // -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset;
+    // box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset;
+    
+    // z-index: 9997;
+    // // visibility: hidden;
+    // position: fixed;
+    // display: block;
+    // left: 0;
+    // right: 0;
+    // width: 100%;
+    // height: auto;
+    // padding: 17px 20px 10px;
+    // border-bottom: 3px solid #AAA;
+    // background-color: #FFF;
+    // transform: translateY(-150%);
+    // transition: all 0.3s ease;
+
+	// Psuedo BG - disabled
+    // &:before {
+    // 	display: none;
+    //     content: "";
+    //     position: absolute;
+    //     top: 0;
+    //     bottom: 0;
+    //     right: 0;
+    //     left: 0;
+    //     background: rgba(0, 0, 0, 0.4);
+    // }
+
+	// Inner Menu Wrapper
+    .topbar-menu {
+		
+		> div {
+			opacity: 0.85;
+		}
+
+		// Individual Item/Tiles
+    	.metro-tile {
+    		opacity: 1;
+    		display: block;
+    		color: #FFF;
+    		height: 95px;
+    		position: relative;
+    		padding: 15px 5px 0;
+    		margin-bottom: 8px;
+    		border-radius: 4px;
+    		text-align: center;
+    		border: 1px solid rgba(0,0,0, 0.15);
+    		background: rgba(255, 255, 255, 0.25);
+    		transition: background 0.3s ease;
+
+    		&:hover,
+    		&:focus,
+    		&:active {
+    			color: #fff;
+    			background: rgba(255, 255, 255, 0.4);
+    		}
+    		&:hover span,
+    		&:focus span,
+    		&:active span {
+    			color: #fff;
+    		}
+
+    		span:first-child {
+    		    font-size: 44px;
+    		}
+    	}
+    	.metro-tile .metro-title {
+    		position: absolute;
+    		left: 10px;
+    		bottom: 7px;
+    		font-size: 12px;
+    		font-weight: 600;
+    	}
+
+    } // end topbar-menu
+
+}
+
+
+/*===============================================
+   E. Dropdown Menu Modal
+================================================= */
+.dropmenu-modal {
+    opacity: 0;
+    z-index: -1;
+    cursor: pointer;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: #000;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 0.25s ease;
+}
+
+/*===============================================
+   E. Dropdown Menu - Open Styles
+================================================= */
+body.dropmenu-open {
+
+	// Fade modal in
+	.dropmenu-modal {
+		z-index: 9985;
+		opacity: 0.5;
+	}
+	
+	// Slide/Translate menu in
+	#dropmenu {
+		// visibility: visible;
+		transform: translateY(0%);
+		transition-delay: 0.15s;
+	}
+
+}
+
+/*===============================================
+   E. Dropdown Menu - Tile Navigation
+================================================= */
+// #dropmenu {
+//     top: 10%;
+// 	width: 1100px;
+// 	height: auto;
+//     margin: 0 auto;
+//     padding: 35px 30px;
+//     border: 2px solid #999;
+//     border-top: 4px solid @brand-danger;
+//     background-color: #FFF;
+//     background-image: linear-gradient(-35deg, #FFFFFF 0%,#f3f3f3 49%,#ededed 51%,#ffffff 100%);
+// }
+// 
+#dropmenu {
+	display: none;
+}
+.dropmenu #dropmenu {
+	display: block;
+}
+.dropmenu .modal-dialog {
+	width: 100%;
+	margin: 0;
+}
+.dropmenu .modal-content {
+	box-shadow: none;
+}
+.dropmenu .modal-body {
+	margin-right: -17px; // bad solution. 100% is getting the scrollbar before its disappears
+    padding: 15px 20px 22px;
+    border: 2px solid #999;
+    border-bottom: 4px solid @brand-danger;
+    background-color: #FFF;
+    background-image: linear-gradient(-35deg, #FFFFFF 0%,#f3f3f3 50%,#ededed 50%,#ffffff 100%);
+}
+.dropmenu .bootbox-close-button {
+	display: none;
+}
+
+.bootbox.modal.fade .modal-dialog {
+	transition: transform 0.35s ease;
+}
+
+
+.dropmenu-tile {
+	// overflow: hidden;
+	position: relative;
+	display: block;
+	height: 100px;
+	border-radius: 3px;
+	border: 1px solid #DDD;
+    border-color: rgba(0, 0, 0, 0.08) rgba(0, 0, 0, 0.14) rgba(0, 0, 0, 0.18);
+	// .bg-gradient-light;
+	// border-top: 4px solid #AAA;
+	// background-color: #eaeaea;
+	// 
+    text-shadow: 0 -1px rgba(255, 255, 255, 0.4);
+    box-shadow: 0px 2px 0px rgba(0,0,0,0.05), 0px 2px 0px rgba(255,255,255, 0.3);
+    background-repeat: repeat-x;
+    background-color: #eaeaea;
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.3) 100%);
+
+	.tile-inner {
+		overflow: hidden;
+		position: relative;
+		width: 100%;
+		height: 100%;
+		margin-left: -1px;
+		margin-top: -1px;
+	}
+
+	.tile-inner:before {
+	    // content: "";
+	    // position: absolute;
+	    // top: -40px;
+	    // left: -50px;
+	    // width: 130px;
+	    // height: 80px;
+	    // border: 1px solid #da5e4b;
+	    // background-color: #e64a31;
+	    // box-shadow: 0px 1px 1px rgba(0,0,0, 0.25) inset;
+
+	    content: "";
+	    position: absolute;
+	    top: -25px;
+	    left: -35px;
+	    width: 95px;
+	    height: 65px;
+	    border: 1px solid transparent;
+	    border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.18);
+	    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+	    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+	    background-color: #f2f2f2;
+	    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.18) 1%, rgba(255, 255, 255, 0.08) 100%);
+	    transform: rotate(135deg);
+	}
+
+	.tile-icon {
+	    // color: #AAA;
+	    // font-size: 32px;
+	    // text-align: center;
+	    // padding-top: 10px;
+		
+		// alt style
+	    color: #FFF;
+	    font-size: 17px;
+	    text-align: left;
+	    padding-top: 8px;
+	    padding-left: 12px;
+
+	    > span {
+	    	vertical-align: top;
+	    	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+	    }
+	}
+
+	.tile-title {
+	    position: absolute;
+	    top: 33px;j
+	    left: 0;
+	    width: 100%;
+	    color: #333;
+	    font-size: 18px;
+	    font-weight: 600;
+	    text-align: center;
+	}
+
+}	
+
+.tile-variant(primary; @brand-primary);
+.tile-variant(info; @brand-info);
+.tile-variant(success; @brand-success);
+.tile-variant(warning; @brand-warning);
+.tile-variant(danger; @brand-danger);
+.tile-variant(alert; @brand-alert);
+.tile-variant(system; @brand-system);
+.tile-variant(dark; @brand-dark);
+
+// Tile State mixin
+.tile-variant(@state; @color) {
+	.tile-@{state} {
+		.tile-inner:before {
+			background-color: @color !important;
+		}
+		.tile-icon {
+			// color: @color;
+		}
+	}
+}

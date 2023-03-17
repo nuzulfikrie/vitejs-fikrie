@@ -1,0 +1,130 @@
+/*===============================================
+  Nano Scroller
+================================================= */
+@scroller:      sidebar;
+@paneClass:     sidebar-pane;
+@sliderClass:   sidebar-slider;
+@contentClass:  sidebar-content;
+@activeClass:   has-scroller;
+
+
+/** initial setup **/
+.@{scroller} {
+
+    overflow: hidden;
+}
+
+.@{scroller}.affix {}
+
+.@{scroller} > .@{contentClass} {
+    position: absolute;
+    overflow: scroll;
+    overflow-x: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.@{scroller}.has-scrollbar > .@{scroller} {}
+
+.@{scroller} > .@{contentClass}:focus {
+    outline: 0;
+}
+
+.@{scroller} > .@{contentClass}::-webkit-scrollbar {
+    display: none;
+}
+
+.has-scrollbar > .@{contentClass}::-webkit-scrollbar {
+    display: block;
+}
+
+.@{scroller} > .@{paneClass} {
+    z-index: 1025;
+    background: rgba(0, 0, 0, .18);
+    background: #f4f4f4;
+    position: absolute;
+
+    width: 5px;
+    right: 0px;
+    border-left: 1px solid #CCC;
+
+    top: 0;
+    bottom: 0;
+    visibility: hidden\9;
+    /* Target only IE7 and IE8 with this hack */
+    opacity: .01;
+    border-radius: 0px;
+    transition: .2s;
+}
+
+.@{scroller} > .@{paneClass} > .@{sliderClass} {
+    background: #ddd;
+    position: relative;
+    margin: 0;
+    border-radius: 0px;
+}
+
+.@{scroller}:hover > .@{paneClass},
+.@{paneClass}.active,
+.@{paneClass}.flashed {
+    visibility: visible\9;
+    /* Target only IE7 and IE8 with this hack */
+    opacity: 0.99;
+}
+
+.@{scroller}.nano-transparent > {
+
+	.@{paneClass} {
+	    background: rgba(0, 0, 0, .0);
+	    border-left: 1px solid #CCC;
+	    width: 8px;
+	}
+
+	.@{paneClass} > .@{sliderClass} {
+	    background: #AAA;
+	    background: rgba(0, 0, 0, 0.2);
+	}
+
+}
+
+
+/* Nano colors/contextuals - default color grey */
+
+.@{scroller}.@{scroller}-primary > .@{paneClass} > .@{sliderClass} {
+    background: @brand-primary;
+}
+.@{scroller}.@{scroller}-success > .@{paneClass} > .@{sliderClass} {
+    background: @brand-success;
+}
+.@{scroller}.@{scroller}-info > .@{paneClass} > .@{sliderClass} {
+    background: @brand-info;
+}
+.@{scroller}.@{scroller}-warning > .@{paneClass} > .@{sliderClass} {
+    background: @brand-warning;
+}
+.@{scroller}.@{scroller}-danger > .@{paneClass} > .@{sliderClass} {
+    background: @brand-danger;
+}
+.@{scroller}.@{scroller}-alert > .@{paneClass} > .@{sliderClass} {
+    background: @brand-alert;
+}
+.@{scroller}.@{scroller}-system > .@{paneClass} > .@{sliderClass} {
+    background: @brand-system;
+}
+.@{scroller}.@{scroller}-dark > .@{paneClass} > .@{sliderClass} {
+    background: @brand-dark;
+}
+
+.@{scroller}.@{scroller}-primary > .@{paneClass},
+.@{scroller}.@{scroller}-success > .@{paneClass},
+.@{scroller}.@{scroller}-info > .@{paneClass},
+.@{scroller}.@{scroller}-warning > .@{paneClass},
+.@{scroller}.@{scroller}-danger > .@{paneClass},
+.@{scroller}.@{scroller}-alert > .@{paneClass},
+.@{scroller}.@{scroller}-system > .@{paneClass},
+.@{scroller}.@{scroller}-dark > .@{paneClass} {
+    border-left: 1px solid rgba(0, 0, 0, .18);
+    background: rgba(0, 0, 0, .18);
+}

@@ -1,0 +1,54 @@
+
+// 3rd Party Plugin Elements & Activation Checks
+// Activated via theme_settings var
+// -------------------------------------------------
+
+// Animation Library
+& when (@animate-plugin-active) { @import "theme/plugins/animate"; } // core animation styles
+
+& when (@circlegraphs-plugin-active) { @import "circlegraphs"; }
+& when (@ckeditor-plugin-active) { @import "ckeditor"; }
+& when (@countdown-plugin-active) { @import "countdown"; }
+& when (@datatables-plugin-active) { @import "datatables"; }
+& when (@dropzone-plugin-active) { @import "dropzone"; }
+& when (@expose-plugin-active) { @import "expose"; }
+& when (@fileupload-plugin-active) { @import "fileupload"; }
+& when (@flot-plugin-active) { @import "flot"; }
+& when (@fullcalendar-plugin-active) { @import "fullcalendar"; }
+& when (@gmap-plugin-active) { @import "gmap"; }
+& when (@highcharts-plugin-active) { @import "highcharts"; } // required for many demo widgets
+& when (@jqueryspinner-plugin-active) { @import "jqueryspinner"; }
+& when (@jvectormap-plugin-active) { @import "jvectormap"; }
+& when (@magnific-plugin-active) { @import "magnific"; }
+& when (@mapplic-plugin-active) { @import "markitup"; }
+& when (@markitup-plugin-active) { @import "mapplic"; }
+& when (@nestable-plugin-active) { @import "nestable"; }
+& when (@pickers-plugin-active) { @import "pickers"; } 
+& when (@rangeslider-plugin-active) { @import "pnotify"; } 
+& when (@rangeslider-plugin-active) { @import "rangeslider"; }
+& when (@summernote-plugin-active) { @import "summernote"; }
+& when (@tagmanager-plugin-active) { @import "tagmanager"; }
+& when (@treeview-plugin-active) { @import "treeview"; }
+& when (@tagsinput-plugin-active) { @import "tagsinput"; }
+& when (@datepicker-plugin-active) { @import "datepicker"; }   
+& when (@typeahead-plugin-active) { @import "typeahead"; }    
+& when (@duallistbox-plugin-active) { @import "duallistbox"; }  
+& when (@cropper-plugin-active) { @import "cropper"; }      
+& when (@markdown-plugin-active) { @import "markdown"; }     
+& when (@nprogress-plugin-active) { @import "nprogress"; }    
+& when (@scroller-plugin-active) { @import "scroller"; } 
+& when (@select2-plugin-active) { @import "select2"; }      
+& when (@footable-plugin-active) { @import "footable"; } 
+
+& when (@nanoscroller-plugin-active) { @import "nanoscroller"; } // Core Plugin
+// & when (@simplebar-plugin-active) { @import "simplebar"; } // Core Plugin
+// & when (@perfectscroll-plugin-active) { @import "perfectscroll"; } // Core Plugin
+& when (@multiselect-plugin-active) { @import "multiselect"; } // Considered Core Plugin
+
+
+// Themme Plugins Elements & Activation Checks
+// Activated via theme_settings var
+// -------------------------------------------------
+& when (@admindock-plugin-active) { @import "admindock"; }    
+& when (@adminmodals-plugin-active) { @import "adminmodals"; }  
+& when (@adminpanels-plugin-active) { @import "adminpanels"; }  

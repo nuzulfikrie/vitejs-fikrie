@@ -1,0 +1,64 @@
+// Panels
+
+.panel-variant(@border; @heading-text-color; @heading-bg-color; @heading-border) {
+
+    // Panel Custom Styles
+    &.panel-border {
+        border-color: @border;
+        &.border-top > :first-child {
+            border-top-color: transparent;
+        }
+        &.border-bottom > :last-child {
+            border-bottom-color: transparent;
+        }
+    }
+
+    // Panel Header Custom Styles
+    > .panel-heading {
+
+        .panel-icon {
+            color: @border;
+        }
+
+        &.fill {
+            background-color: @heading-bg-color;
+            border-color: darken(@heading-border, 8.5%);
+
+            > .panel-title {
+                color: @heading-text-color;
+            }
+        }
+
+        + .panel-collapse > .panel-body {
+            border-top-color: @border;
+        }
+        .badge {
+            color: @heading-bg-color;
+            background-color: @heading-text-color;
+        }
+
+    }
+
+    // Panel Body Custom Styles
+    > .panel-body {
+        &.fill {
+            color: #FFF;
+            border-color: lighten(@heading-bg-color, 10%);
+            background-color: lighten(@heading-bg-color, 13%);
+            border-top-width: 2px;
+            border-top-color: darken(@heading-bg-color, 5%);
+        }
+        &.border {
+            border: 3px solid @border;
+        }
+    }
+
+    // Panel Footer Custom Styles
+    > .panel-footer {
+        + .panel-collapse > .panel-body {
+            border-bottom-color: @border;
+        }
+    }
+
+}
+

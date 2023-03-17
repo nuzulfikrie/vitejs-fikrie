@@ -1,0 +1,99 @@
+/*===============================================
+  CKEditor
+================================================= */
+
+.admin-skin.cke_chrome {
+    font-family: @theme-active-font; // Defined in theme_settings.less
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 2px;
+    background: #fafafa;
+    border-color: #e7e7e7;
+}
+// editor header/toolbar
+.admin-skin .cke_top {
+    background: #fafafa;
+    border: 1px solid @panel-border-color;
+    padding: 15px 16px 9px;
+}
+.admin-skin .cke_toolgroup {
+    border: 1px solid #ddd;
+}
+// editor toolbar button groups
+.admin-skin .cke_combo_button,
+.admin-skin .cke_toolgroup {
+    margin-right: 10px;
+    box-shadow: none;
+    background: #FFF;
+    border-radius: 1px;
+    border-color: #DDD;
+}
+.admin-skin a.cke_button_disabled:active,
+.admin-skin a.cke_button_disabled:focus,
+.admin-skin a.cke_button_disabled:hover {
+    border: 1px solid transparent;
+    padding: 4px 6px;
+}
+
+// editor toolbar buttons
+.admin-skin a.cke_button {
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    // padding: 4px 4px 3px;
+    &:active,
+    &:focus,
+    &:hover {
+        padding: 4px 6px;
+        background: #f2f2f2;
+        border: 1px solid transparent;
+    }
+}
+
+// Disable Buttons Divider
+.admin-skin .cke_toolgroup a.cke_button.cke_button_disabled:hover:last-child:after,
+.admin-skin .cke_toolgroup a.cke_button:last-child:after {
+    display: none;
+}
+
+// editor textarea
+.admin-skin .cke_contents {
+    border-radius: 0;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+.admin-skin .cke_contents + .cke_bottom,
+.admin-skin .cke_top + .cke_contents {
+    border-top: 0;
+}
+// editor footer
+.admin-skin .cke_bottom {
+    background: none;
+    padding: 6px 4px;
+    border: 1px solid #e7e7e7;
+}
+// footer resizer
+.admin-skin .cke_resizer {
+    margin-top: 6px;
+    margin-right: 4px;
+    border-right-color: #999;
+}
+// modify inline editing border
+.cke_editable_inline.cke_show_borders:focus {
+    outline-width: 2px;
+    outline-style: dashed;
+    outline-offset: 6px;
+    outline-color: @brand-warning;
+    background: #f2f2f2;
+}
+// option - remove bottom bar
+.cke-hide-bottom .cke_bottom {
+    display: none;
+}
+// option - remove button toolbreak
+.cke_toolbar_break {
+    clear: none !important;
+    display: block !important;
+}
+

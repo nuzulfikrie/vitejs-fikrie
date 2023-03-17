@@ -1,0 +1,59 @@
+/*===============================================
+  Tables - check
+================================================= */
+// Baseline styles
+.table {
+  margin-bottom: 0; // changed
+
+  // Cells
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        vertical-align: middle;
+      }
+    }
+  }
+
+  // Bottom align for column headings
+  > thead > tr > th {
+    font-weight: 600;
+    border-bottom: 1px solid @table-border-color;
+  }
+
+  tbody > tr:first-child > td { border-top: 0 }
+
+  // Nesting
+  .table {
+    margin-bottom: 0;
+  }
+
+}
+
+// Manual "default" table styling
+.table > thead > tr,
+.table > tbody > tr,
+.table > tfoot > tr {
+  > td.default,
+  > th.default,
+  &.default > td,
+  &.default > th {
+    color: #777;
+    border-color: #ddd; // added
+    background-color: #f0f0f0;
+  }
+}
+
+// Hover states for `.table-hover`
+// Note: this is not available for cells or rows within `thead` or `tfoot`.
+.table-hover > tbody > tr {
+  > td.default:hover,
+  > th.default:hover,
+  &.default:hover > td,
+  &:hover > .default,
+  &.default:hover > th {
+    background-color: #fcfcfc;
+  }
+}

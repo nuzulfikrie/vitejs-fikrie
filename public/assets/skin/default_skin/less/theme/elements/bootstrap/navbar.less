@@ -1,0 +1,22 @@
+/*==================================================
+  Navbars
+==================================================== */
+
+// Navbar form
+//
+// Extension of the `.form-inline` with some extra flavor for optimum display in
+// our navbars.
+.navbar-form {
+    // Outdent the form if last child to line up with content down the page
+    &.navbar-right:last-child {
+        margin-right: -@navbar-padding-horizontal;
+    }
+}
+
+// Buttons in navbars
+//
+// Vertically center a button within a navbar (when *not* in a form).
+.navbar-btn {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

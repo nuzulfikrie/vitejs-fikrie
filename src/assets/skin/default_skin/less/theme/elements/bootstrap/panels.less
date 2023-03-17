@@ -1,0 +1,644 @@
+/*==================================================
+Panels
+==================================================== */
+
+// Base class
+.panel {
+    position: relative;
+    margin-bottom: 20px;
+    border: 0;
+    border-radius: 2px; // @panel-border-radius;
+    border-top: 4px solid transparent;
+    box-shadow: 0 2px 2px rgba(0,0,0, 0.05);
+    background-color: @panel-bg;
+
+    // special use cases where the styling from body is best applied
+    // straight to the panel. However it requires the padding to be removed
+    &.panel-body {
+        padding: 0;
+        border-left: 1px solid @panel-body-border-color;
+        border-right: 1px solid @panel-body-border-color;
+        background-color: @panel-body-bg-color;
+    }
+
+    // Panel Style/Helper Class
+    &.panel-transparent {
+        background: none;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+
+        > div {
+            border-top: 0;
+            border-bottom: 0;
+        }
+    }
+
+    // Panels have a 4px transparent top border which is used
+    // for contextuals. This can create a space between stacked elements+panels
+    // helper class to remove space
+    &.panel-stack {
+        margin-top: -4px;
+    }
+
+}
+
+// Top Border Panel Style
+.panel-border {
+    border-width: 0;
+    border-style: solid;
+    border-color: transparent;
+
+    &.border-left {
+        border-left-width: 4px;
+    }
+    &.border-right {
+        border-right-width: 4px;
+    }
+    &.border-bottom {
+        border-bottom-width: 4px;
+    }
+    &.border-top {
+        border-top-width: 4px;
+    }
+    &.border-top > :first-child {
+        border-top-color: @panel-body-border-color;
+    }
+
+    // custom styling for panel default border
+    &.panel-default {
+        border-color: #AAA;
+
+        > :first-child {
+            border-top-color: transparent;
+        }
+    }
+
+    // Style border the same color as main container BG
+    // This will make it appear unstyled while maintaining 5px border width to stop frame from jumping
+    &.panel-unstyled {
+        border-color: @main-bg;
+    }
+
+}
+
+
+// Panel Menu
+.panel-menu {
+    background-color: #fafafa;
+    padding: 12px;
+    border-left: 1px solid @panel-body-border-color;
+    border-right: 1px solid @panel-body-border-color;
+
+    &.dark {
+        background-color: #f8f8f8;
+    }
+}
+
+// remove left and right border if inside a panel-body (already has border)
+.panel-body .panel-menu {
+    border-left: 0;
+    border-right: 0;
+}
+
+// Panel contents
+.panel-body {
+    position: relative;
+    border-left: 1px solid @panel-body-border-color;
+    border-right: 1px solid @panel-body-border-color;
+    background-color: @panel-body-bg-color;
+}
+
+
+// Optional heading
+.panel-heading {
+    position: relative;
+    background: @panel-heading-bg;
+    color: @panel-heading-font-color;
+    font-size: @panel-heading-font-size;
+    font-weight: @panel-heading-font-weight;
+
+    border-left: 1px solid @panel-body-border-color;
+    border-right: 1px solid @panel-body-border-color;
+    border-bottom: 0; // override for bs default 1px style
+
+    padding: @panel-heading-padding;
+    height: 56px;
+    line-height: 52px;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    border-radius: @panel-border-radius;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    .widget-menu {
+
+        // Button Groups
+        .btn-group {
+            margin-top: -3px;
+        }
+
+        // Field inputs
+        .form-control {
+            margin-top: 6px;
+            font-size: 11px;
+            height: 27px;
+            padding: 2px 10px;
+            border-radius: 1px;
+            &.input-sm {
+                margin-top: 9px;
+                height: 22px;
+            }
+        }
+
+        // Progress Bars
+        .progress {
+            margin-top: 11px;
+            margin-bottom: 0;
+        }
+        .progress-bar-lg {
+            margin-top: 10px;
+        }
+        .progress-bar-sm {
+            margin-top: 15px;
+        }
+        .progress-bar-xs {
+            margin-top: 17px;
+        }
+
+    }
+
+}
+
+// Panel heading Icon - Required for proper
+// adminpanels.js functionality (title edit)
+.panel-icon {
+    padding-left: 5px;
+}
+
+// Within heading, strip any `h*` tag of its default margins for spacing.
+.panel-title {
+    color: #555;
+    padding-left: 6px;
+    font-size: 15px;
+    font-weight: @font-weight-semibold;
+
+     > .glyphicon,
+     > .glyphicons,
+     > .imoon,
+    > .fa {
+        top: 2px;
+        min-width: 22px;
+        color: inherit;
+        font-size: 14px;
+    }
+
+}
+
+// Optional footer (stays gray in every modifier class)
+.panel-footer {
+    border-top: 0; // override for transparent default bs border
+    border-left: 1px solid @panel-body-border-color;
+    border-right: 1px solid @panel-body-border-color;
+}
+
+// List groups in panels
+//
+// By default, space out list group content from panel headings to account for
+// any kind of custom content between the two.
+.panel .list-group {
+    margin-top: -1px;
+    margin-bottom: 0;
+
+    .list-group-item {
+        border-width: 1px !important;
+    }
+
+    li {
+        border-radius: 0;
+    }
+
+    // Icons
+    li a span.fa {
+        font-size: 16px;
+        padding-right: 10px;
+        min-width: 25px;
+    }
+
+    // List Group Item on <LI>
+    li.list-group-item {
+        padding: 13px 15px;
+        border-width: 1px !important;
+        border-left-color: @panel-body-border-color;
+        border-right-color: @panel-body-border-color;
+    }
+    li.list-group-item > a {
+        padding: 0;
+    }
+
+    // List Group Item on <a>
+    li > a.list-group-item {
+        border-radius: 0;
+    }
+
+}
+
+// Tables nested inside panels
+.panel > .table {
+    border-left: 1px solid @panel-body-border-color;
+    border-right: 1px solid @panel-body-border-color;
+}
+
+
+
+// Panel border settings for child elements
+// #d7d7d7 used in header(atleast 1 outer panel border, top)
+// #bcbcbc in top/bottom footer when with panel-body
+// Top panel border
+.panel > :first-child {
+    border-top: 1px solid #d7d7d7;
+}
+
+// Panel Content border
+.panel > div + div,
+.panel > div + .table,
+.panel > .table + div,
+.panel > .table + .table {
+    border-top: 1px solid #d7d7d7;
+}
+
+// Bottom panel border
+.panel > :last-child {
+    border-bottom: 1px solid #bcbcbc;
+}
+
+// Disable top border if its sibling is a contextually filled header
+.panel > .panel-heading.fill + div,
+.panel > .panel-heading.fill + .table {
+    border-top: 0;
+}
+
+
+// Collapsable panels (aka, accordion)
+//
+// Wrap a series of panels in `.panel-group` to turn them into an accordion with
+// the help of our collapse JavaScript plugin.
+.panel-group {
+    margin-bottom: @line-height-computed;
+
+    // panel title
+    .panel-title {
+        padding-left: 0;
+    }
+
+    .panel-heading,
+    .panel-heading a {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+    // Accordion Option - LG Size
+    &.accordion-lg {
+        .panel + .panel {
+            margin-top: 12px;
+        }
+        .panel-heading {
+            font-size: 14px;
+            height: 54px;
+            line-height: 52px;
+        }
+    }
+
+    // Adds optional toggle icon to accordion title
+    .accordion-icon {
+        padding-left: 35px;
+        &:after {
+            position: absolute;
+            content: "\f068";
+            font-family: "FontAwesome";
+            font-size: 12px;
+            font-style: normal;
+            font-weight: normal;
+            -webkit-font-smoothing: antialiased;
+            color: #555;
+            left: 10px;
+            top: 0;
+        }
+        &.collapsed:after {
+            content: "\f067";
+        }
+
+        // Right side positioned icon
+        &.icon-right {
+            padding-left: 10px;
+            padding-right: 30px;
+            &:after {
+                left: auto;
+                right: 5px;
+            }
+        }
+
+    }
+
+}
+
+// Panel Trays
+//
+// A 2 column table layout useful for creating advanced content
+// areas that reside inside a single panel
+.panel-tray {
+    table-layout: fixed;
+    display: table;
+    width: 100%;
+    background-color: @panel-body-bg-color;
+    border-left: 1px solid @panel-body-border-color;
+    border-right: 1px solid @panel-body-border-color;
+
+    .panel-tray-left,
+    .panel-tray-right {
+        vertical-align: top;
+        display: table-cell;
+        position: relative;
+        padding: 15px 25px 25px;
+        // height: 240px;
+    }
+
+    .panel-tray-left {
+        width: 300px;
+        background-color: #f2f2f2;
+        border-right: 1px solid #DDD;
+    }
+    .panel-tray-right {
+        width: 100%;
+        padding: 18px 15px 20px 30px;
+    }
+    .panel-tray-left .panel-footer,
+    .panel-tray-right .panel-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: -1px;
+    }
+
+    // Sizing Helper Options
+    .panel-tray-left.panel-tray-sm {
+        width: 225px;
+    }
+    .panel-tray-left.panel-tray-lg {
+        width: 350px;
+    }
+    .panel-tray-left.panel-tray-xl {
+        width: 425px;
+    }
+
+}
+
+// left outside as to allow for helper to be placed
+ // on original .panel element and not just .panel-tray
+// Inverse color options
+.panel-inverse .panel-tray-left {
+    background-color: #fff;
+}
+.panel-inverse .panel-tray-right {
+    background-color: #f2f2f2;
+}
+
+// Panel Tray Responsive Styles
+@media (max-width: @panel-tray-mobile-width) {
+
+
+    .panel-tray .panel-tray-left,
+    .panel-tray .panel-tray-right {
+        display: none;
+    }
+}
+
+
+
+// Panel Bin
+//
+// Another panel child element with predefined styles for
+// displaying content has a dashed border and light gray BG
+.panel .panel-bin {
+    padding: 15px;
+    border: 1px dashed #CCC;
+    border-left: 1px solid darken(@panel-body-border-color, 6%);
+    border-right: 1px solid darken(@panel-body-border-color, 6%);
+    background-color: #f2f2f2;
+}
+
+
+// Panel Nav
+//
+// A navigation menu that can convert to a scrolling sticky nav
+// Can also nest a panel-heading so that it may travel with the sticky nav
+.panel-nav {
+    position: relative;
+    list-style: none;
+    border-left: 1px solid @panel-border-color;
+    border-right: 1px solid @panel-border-color;
+
+    // We allow nested panel elements also inside of .panel-nav
+    // But it requires us to negate the redundant borders
+    // Negative margin the left/right, disable top/bottom as
+    // .panel-nav will inherit those from .panel
+
+    // Panel Content border
+    > div + div {
+        border-top: 1px solid #d7d7d7;
+    }
+    .panel-heading,
+    .panel-menu,
+    .panel-body,
+    .panel-footer,
+    .panel-bin {
+        margin: 0 -1px;
+    }
+
+    // Modify nested panel heading elements
+    .panel-heading {
+        background-color: #eee;
+        .bg-gradient-light;
+    }
+
+    // Item wrapper
+    li {
+        position: relative;
+        background: #f2f2f2;
+        border-top: 1px solid #DDD;
+     }
+
+    // item link
+    li a {
+        width: 100%;
+        display: block;
+        color: #999;
+        font-size: 14px;
+        padding: 13px 15px 13px 20px;
+    }
+
+    /* item icon */
+    li a .fa {
+        text-align: center;
+        width: 45px;
+        padding-right: 20px;
+    }
+
+    /* active item  */
+    li.active a {
+        color: #666;
+        background: #fbfbfb;
+        transition: all 0.3s ease;
+    }
+
+    /* active item icon */
+    li.active a .fa {
+        color:@tray-nav-active-icon;
+    }
+
+ }
+
+ /*  fixed settings */
+ .panel-nav.affix {
+     position: fixed;
+     top: 55px;
+     top: 80px;
+ }
+ .content-topbar.affix + #content .panel-nav.affix  {
+     top: 115px;
+ }
+
+
+/*Tray nav style option - Arrow*/
+/* active item bottom border */
+@border-width: 23px;
+.panel-nav-arrow {
+
+    // :before gives arrow a contrasting border :after gives arrow the bg
+    li.active a:before,
+    li.active a:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 100%;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        vertical-align: middle;
+        border-left: (@border-width - 3) solid;
+        border-left-color: #fbfbfb;
+        border-top: @border-width solid transparent;
+        border-bottom: @border-width solid transparent;
+        transition: all 0.3s ease;
+    }
+    li.active a:before {
+        border-left-color: #888;
+    }
+    li:hover a:after {
+        border-left-color: #f8f8f8;
+    }
+
+}
+
+// Position arrow to left of navigation - helper class
+.panel-nav-arrow-left {
+
+    li.active:before {
+        width: 100%;
+        left: auto;
+        right: 0;
+    }
+    li.active a:before,
+    li.active a:after {
+        left: auto;
+        right: 100%;
+        border-right: @border-width solid;
+        border-left-color: transparent;
+        border-right-color: #fbfbfb;
+    }
+    li.active a:before {
+        border-left-color: transparent;
+        border-right-color: #888;
+    }
+    li:hover a:after {
+        border-left-color: transparent;
+        border-right-color: #f8f8f8;
+    }
+}
+
+// Panel nav border style
+.panel-nav-border {
+
+    li:after {
+        content: "";
+        position: absolute;
+        right: 100%;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: transparent;
+    }
+    li.active:after {
+        background: @tray-nav-active-border;
+    }
+    li:hover:after {
+        background: #999;
+    }
+
+}
+// Border right side of menu
+.panel-nav-border-right {
+    .panel-nav-border;
+
+    li:after {
+        left: auto;
+        right: 0;
+    }
+}
+
+
+/* tray-nav animation helper class */
+.panel-nav[data-nav-animate] li {
+    display: none;
+}
+.panel-nav[data-nav-animate] li.animated {
+    display: block;
+}
+
+
+/*border skin contextuals*/
+.panel-nav.panel-nav-border li.active.nav-primary:after {
+    background: @brand-primary;
+}
+.panel-nav.panel-nav-border li.active.nav-success:after {
+    background: @brand-success;
+}
+.panel-nav.panel-nav-border li.active.nav-info:after {
+    background: @brand-info;
+}
+.panel-nav.panel-nav-border li.active.nav-warning:after {
+    background: @brand-warning;
+}
+.panel-nav.panel-nav-border li.active.nav-danger:after {
+    background: @brand-danger;
+}
+.panel-nav.panel-nav-border li.active.nav-alert:after {
+    background: @brand-alert;
+}
+.panel-nav.panel-nav-border li.active.nav-system:after {
+    background: @brand-system;
+}
+.panel-nav.panel-nav-border li.active.nav-dark:after {
+    background: @brand-dark;
+}
+
+
+
+
+
+
+

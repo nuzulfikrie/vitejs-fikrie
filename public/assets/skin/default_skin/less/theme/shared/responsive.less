@@ -1,0 +1,52 @@
+/* ==============================================
+    RESPONSIVE STYLES
+      A. Content
+      B. Topbar
+          
+* These styles control various aspects of the
+* site which benefit from being responsive 
+================================================= 
+  A. Content
+================================================= */
+
+#content {
+    padding: @mobile-pad-top @mobile-pad-right @mobile-pad-bottom @mobile-pad-left;
+}
+
+/* content padding on large resolutions */
+@media (min-width: 1100px) {
+    #content {
+        // padding: 20px 30px 100px 35px; // orig - 25px 20px 50px 21px; 
+        padding: @content-pad-top @content-pad-right @content-pad-bottom @content-pad-left;
+    }
+}
+
+/* content padding on small resolutions */
+@media (max-width: 800px) {
+    #content {
+        padding: 15px 8px 40px 8px;
+    }
+}
+
+/* Adds top padding to md columns as a spacer
+ * when they are mobile stacked */
+@media (max-width: 991px) {
+    #content .col-md-2 + .col-md-2,
+    #content .col-md-2 + .col-md-4,
+    #content .col-md-2 + .col-md-6,
+    #content .col-md-4 + .col-md-2,
+    #content .col-md-4 + .col-md-4,
+    #content .col-md-4 + .col-md-6,
+    #content .col-md-6 + .col-md-2,
+    #content .col-md-6 + .col-md-4,
+    #content .col-md-6 + .col-md-6 {
+        padding-top: 10px;
+    }
+}
+@media (max-width: 815px) {
+    #content .panel .panel-body {
+        overflow: hidden !important;
+        min-width: 0 !important;
+    }
+}
+

@@ -1,0 +1,34 @@
+
+/*==================================================
+  Custom List formatting
+==================================================== */
+
+.inline-list-divided {
+    color: #999;
+    font-size: 18px;
+    list-style: none;
+    padding: 0;
+    .list-inline;
+
+    li {}
+
+    li span.fa {
+        font-size: 16px;
+        padding-top: 5px;
+        padding-right: 15px;
+        vertical-align: top;
+    }
+
+}
+
+// reduce padding on default BS inline list
+.list-inline {
+    margin-left: -4px;
+
+    > li {
+        display: inline-block;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+}
+

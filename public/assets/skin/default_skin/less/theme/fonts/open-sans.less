@@ -1,0 +1,78 @@
+/* ==============================================
+    Open Sans Weight Options - Google CDN
+    normal | bold | bolder | lighter
+   ----------------------------------------
+    thin       - 100 (roboto only)
+    light      - 300
+    regular    - 400
+    medium     - 500 (roboto only)
+    semi bold  - 600
+    bold       - 700
+    extra-bold - 800
+    black      - 900 (roboto only)
+=========================================== */
+
+// Current setup:
+// default body 400
+// nearly all links/bold text is 600
+// some use 500 which gets put down to 400 as it doesnt exist
+
+/* open-sans-regular - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans Regular'), local('OpenSans-Regular'),
+         url('@{fonts-path}/open-sans/open-sans-v15-latin-regular.woff2') format('woff2'),
+         url('@{fonts-path}/open-sans/open-sans-v15-latin-regular.woff') format('woff');
+}
+/* open-sans-600 - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'),
+         url('@{fonts-path}/open-sans/open-sans-v15-latin-600.woff2') format('woff2'),
+         url('@{fonts-path}/open-sans/open-sans-v15-latin-600.woff') format('woff');
+}
+/* open-sans-700 - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold'),
+         url('@{fonts-path}/open-sans/open-sans-v15-latin-700.woff2') format('woff2'),
+         url('@{fonts-path}/open-sans/open-sans-v15-latin-700.woff') format('woff');
+}
+
+
+ // @font-face {
+ //    font-family: 'Open Sans';
+ //    src: url('@{fonts-path}/open-sans/OpenSans-Light.ttf');
+ //    font-weight: 300;
+ //    font-style: normal;
+ //  }
+ // @font-face {
+ //    font-family: 'Open Sans';
+ //    src: url('@{fonts-path}/open-sans/OpenSans-Regular.ttf');
+ //    font-weight: 400;
+ //    font-style: normal;
+ // }
+ // @font-face {
+ //    font-family: 'Open Sans';
+ //    src: url('@{fonts-path}/open-sans/OpenSans-SemiBold.ttf');
+ //    font-weight: 600;
+ //    font-style: normal;
+ //  }
+ // @font-face {
+ //    font-family: 'Open Sans';
+ //    src: url('@{fonts-path}/open-sans/OpenSans-Bold.ttf');
+ //    font-weight: 700;
+ //    font-style: normal;
+ //  }
+ // @font-face {
+ //    font-family: 'Open Sans';
+ //    src: url('@{fonts-path}/open-sans/OpenSans-ExtraBold.ttf');
+ //    font-weight: 800;
+ //    font-style: normal;
+ //  }

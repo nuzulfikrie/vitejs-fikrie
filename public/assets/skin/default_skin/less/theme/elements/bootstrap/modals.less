@@ -1,0 +1,21 @@
+/*==================================================
+  Modal
+==================================================== */
+
+// Container that the modal scrolls within
+.modal {
+    &.in .modal-dialog { 
+        z-index: 1050;
+    }
+}
+
+// Modal background
+.modal-backdrop {
+    z-index: @zindex-modal-background;
+}
+
+// Footer (for actions)
+.modal-footer {
+    padding: 10px;
+    background: #f2f2f2;
+}

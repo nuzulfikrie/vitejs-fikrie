@@ -1,0 +1,73 @@
+/*===============================================
+  Summernote
+================================================= */
+
+// editor - .panel
+.panel .note-editor,
+.panel.note-editor {
+    border: 0;
+    box-shadow: none;
+}
+
+// Remobe duplicate border via negative margin
+// when an editor exists inside a panel body
+.panel-body .note-editor {
+    margin: -1px;
+}
+// toolbar - .panel-heading
+.note-editor .note-toolbar {
+    height: auto;
+    margin: 0;
+    padding: 0 10px 9px;
+    border: 1px solid @panel-border-color;
+    border-bottom: 0;
+    background-color: #fafafa;
+}
+// toolbar btn groups
+.note-editor .note-toolbar > .btn-group {
+    margin-top: 8px;
+    margin-right: 10px;
+}
+// toolbar buttons
+.note-editor .btn-group-sm > .btn,
+.note-editor .btn-sm {
+    padding: 7px 11px;
+}
+.note-editor .btn-default {
+    background-color: #FFF;
+    border-color: #DDD;
+    border-radius: 1px;
+}
+
+// textarea
+.note-editor .note-editable {
+    overflow: auto;
+    box-shadow: none;
+    border: 0;
+}
+// textarea - .panel-body
+.note-editor .note-editable.panel-body {
+    border-left: 1px solid @panel-border-color;
+    border-right: 1px solid @panel-border-color;
+}
+// status bar
+.note-editor.note-frame .note-statusbar {
+    position: relative;
+    margin-top: -12px;
+    z-index: 3;
+    border: 0;
+    background: transparent;
+}
+.note-editor.note-frame .note-statusbar .note-resizebar {
+    height: 12px;
+}
+//note modal
+.note-dialog .modal-dialog {
+    padding-top: 50px;
+}
+
+// helper class for stacking a panel and other summernote container
+.summernote-stack .note-editor {
+    margin-bottom: 0;
+}
+

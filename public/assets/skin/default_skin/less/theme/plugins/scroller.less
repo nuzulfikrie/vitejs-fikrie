@@ -1,0 +1,282 @@
+/*===============================================
+  Scroller
+================================================= */
+.scroller {
+    height: 100%;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
+}
+.scroller,
+.scroller * {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+.scroller,
+.scroller-bar,
+.scroller-content,
+.scroller-handle,
+.scroller-track {
+    box-sizing: border-box;
+}
+.scroller-content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+}
+.scroller-content * {
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+}
+.scroller-content::-webkit-resizer,
+.scroller-content::-webkit-scrollbar,
+.scroller-content::-webkit-scrollbar-button,
+.scroller-content::-webkit-scrollbar-corner,
+.scroller-content::-webkit-scrollbar-thumb,
+.scroller-content::-webkit-scrollbar-track,
+.scroller-content::-webkit-scrollbar-track-piece {
+    background: transparent;
+    opacity: 0;
+}
+.scroller-bar {
+    width: 6px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    display: none;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease;
+}
+.scroller-active .scroller-bar {
+    opacity: 1;
+}
+
+.scroller-track {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.scroller-handle {
+    z-index: 2;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 20px;
+    background: #cccccc;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-transition: height 0.3s ease;
+    transition: height 0.3s ease;
+}
+.scroller-horizontal .scroller-content {
+    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 0 16px;
+}
+.scroller-horizontal .scroller-bar {
+    width: 100%;
+    height: 5px;
+    top: auto;
+    bottom: 0;
+    border-width: 1px 0 0 0;
+}
+.scroller-horizontal .scroller-handle {
+    width: 20px;
+    height: 5px;
+    top: auto;
+    right: auto;
+    bottom: 3px;
+}
+.scroller-active .scroller-content,
+.scroller-setup .scroller-content {
+    padding: 0;
+}
+.scroller-active .scroller-bar,
+.scroller-setup .scroller-bar {
+    display: block;
+}
+
+/*===============================================
+  Scroller Helper Classes
+================================================= */
+
+// scroller nopad helper
+// if applied directly to scroller it prevents the padding
+// if applied to a child element it nulls padding by means of negative margin
+.scroller.scroller-pn .scroller-content {
+    padding: 0 !important;
+}
+.scroller .scroller-pn,
+.scroller-flush,
+.scroller-nm {
+    margin: -15px !important;
+}
+
+/*===============================================
+  Scroller - Panel Style
+================================================= */
+.panel-scroller {
+    height: 600px;
+    max-height: 600px;
+    overflow: hidden;
+    background-color: @panel-body-bg-color;
+
+    /* scroller content */
+    .scroller-content {}
+
+    /* scroller bar container */
+    .scroller-bar {
+        width: 16px;
+        background: #f7f7f7;
+        border-left: 1px solid #e7e7e7;
+    }
+
+    /* scroller bar container handle */
+    .scroller-handle {
+        right: 5px;
+        width: 5px;
+        height: 20px;
+        border-radius: 4px;
+    }
+}
+
+// Mimic panel body setup when scroller is a direct descendant
+.panel {
+
+    > .panel-scroller {
+        position: relative;
+
+        border-left: 1px solid #d0d0d0;
+        border-right: 1px solid #d0d0d0;
+    }
+
+     > .panel-scroller + .panel-footer,
+     > .panel-scroller + .panel-heading,
+     > .panel-scroller + .panel-scroller,
+    > .panel-scroller + .panel-menu {}
+
+    .panel-scroller + .panel-footer {
+        border-bottom-color: #CCC;
+    }
+
+}
+// Optional heading
+.panel-heading + .panel-scroller,
+.panel-menu + .panel-scroller {}
+
+/*===============================================
+  Scroller Bar - Height Options
+================================================= */
+.scroller-xs {
+    height: 125px;
+    max-height: 125px;
+}
+.scroller-sm {
+    height: 200px;
+    max-height: 200px;
+}
+.scroller-md {
+    height: 300px;
+    max-height: 300px;
+}
+.scroller-lg {
+    height: 400px;
+    max-height: 400px;
+}
+
+/*===============================================
+  Scroller Bar Style
+================================================= */
+.scroller-thick .scroller-bar {
+    width: 14px;
+
+    .scroller-handle {
+        width: 14px;
+        right: 0;
+        border-radius: 0;
+    }
+}
+
+/*===============================================
+  Scroller Bar - Overlay Style
+================================================= */
+/* scroller bar container overlay mode */
+.panel-scroller.scroller-overlay {
+
+    .scroller-content {
+        padding: 0;
+        margin-right: -15px;
+    }
+    .scroller-bar {
+        border: 0;
+        background: transparent;
+    }
+    .scroller-handle {
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+    &:hover .scroller-handle {
+        opacity: 1;
+    }
+
+}
+
+/*===============================================
+  Scroller Contextuals
+================================================= */
+.scroller-primary .scroller-handle {
+    background: @brand-primary;
+}
+.scroller-success .scroller-handle {
+    background: @brand-success;
+}
+.scroller-info .scroller-handle {
+    background: @brand-info;
+}
+.scroller-warning .scroller-handle {
+    background: @brand-warning;
+}
+.scroller-danger .scroller-handle {
+    background: @brand-danger;
+}
+.scroller-alert .scroller-handle {
+    background: @brand-alert;
+}
+.scroller-system .scroller-handle {
+    background: @brand-system;
+}
+.scroller-dark .scroller-handle {
+    background: @brand-dark;
+}
+
+/* inverse light contextuals */
+.scroller-light .scroller-handle,
+.scroller-white .scroller-handle {
+    background: @brand-light;
+}
+
+.scroller-light .scroller-bar,
+.scroller-white .scroller-bar {
+    border-left: 0;
+    background: transparent;
+}
+

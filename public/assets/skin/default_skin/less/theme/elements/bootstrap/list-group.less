@@ -1,0 +1,91 @@
+/*==================================================
+  List Groups
+==================================================== */
+
+// primarily styles used for list groups that have the subclass on the <a>
+// but also are wrapped in an <li> for javascript purposes
+.list-group {
+
+    li .list-group-item {
+        padding: 12px 15px;
+        background-color: #f4f4f4;
+        border-color: #DDD;
+    }
+
+    // Linked list items - Custom format
+    // Used on messages and calendar pages
+    li.active a.list-group-item {
+        z-index: 2; // Place active items above their siblings for proper border styling
+        color: @list-group-active-color;
+        background-color: @list-group-active-bg;
+        border-color: @list-group-active-border;
+        &:focus,
+        &:hover {
+            color: @list-group-active-color;
+            background-color: @list-group-active-bg;
+            border-color: @list-group-active-border;
+        }
+
+    }
+
+}
+
+// Linked list items - Custom format
+// Used on messages and calendar pages
+.list-group.list-group-links {
+
+    // list group item header
+    .list-group-header {
+        list-style: none;
+        font-size: 15px;
+        font-weight: 600;
+        padding-left: 7px;
+        margin-bottom: 5px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    // list group item
+    .list-group-item {
+        color: #888;
+        font-weight: 600;
+        padding: 8px 9px;
+        border: 0;
+        background: transparent;
+    }
+
+    // list group item - special label formatting
+    .list-group-item .label {
+        float: right;
+        line-height: inherit;
+        padding: 0.1em 0.6em 0.2em;
+    }
+
+    // list group item icons
+    .list-group-item i.fa {
+        padding-right: 5px;
+    }
+
+    // list group "circle" icon (via font awesome)
+    .list-group-item .fa-circle {
+        float: right;
+        font-size: 14px;
+    }
+
+    // List group styles - divider
+    .list-group-divider {
+        border-bottom: 1px dashed #DDD;
+        padding-bottom: 6px;
+        margin-bottom: 6px;
+    }
+
+    // List group styles - spacing
+    &.list-group-spacing-sm > a {
+        padding: 6px 9px;
+    }
+    &.list-group-spacing-xs > a {
+        padding: 4px 9px;
+    }
+
+}
+

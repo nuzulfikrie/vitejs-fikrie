@@ -1,0 +1,83 @@
+/* ==============================================
+   Right Sidebar
+     A. Default Closed State
+     B. Sidebar Right Panel Menu
+     C. Nano Sidebar Scroller Settings
+=================================================
+  A. Default Closed State
+================================================= */
+#sidebar_right {
+    // top: 0;
+    visibility: hidden;
+    position: absolute;
+    width: 300px;
+    height: 100%;
+    top: @navbar-height-lg;
+    right: -300px;
+    border-left: 1px solid #c7c7c7;
+    background-color: #f8f8f8;
+
+	// Right Content Header
+	.sidebar-right-header {
+	    width: 100%;
+	    height: 59px;
+	    padding: 4px 10px 4px 20px;
+	}
+	
+	// Right Content
+	.sidebar-right-content a:hover {
+	    text-decoration: none;
+	}
+	
+	// Affix Settings
+	&.affix {
+	    position: fixed;
+	}
+}
+
+/*===============================================
+   B. Sidebar Right Panel Menu
+================================================= */
+
+#sidebar_right {
+
+	.panel {
+	    box-shadow: none;
+	}
+	.panel-heading {
+	    height: 51px;
+	    min-height: 51px;
+	    overflow: hidden;
+	}
+	.panel-tabs li a {
+	    padding: 17px 18px;
+	    border-right: 1px solid transparent;
+	}
+	.panel-tabs li:first-child a {
+	    border-left: 1px solid transparent;
+	}
+
+	// Remove top border so its flush with navbar
+	.nav-tabs {
+		top: 0;
+	}
+}
+
+/*===============================================
+  C. Misc Sidebar Content Styles
+================================================= */
+.title-divider {
+    border-bottom: 1px solid #e8e8e8;
+    padding: 0 5px 9px 5px;
+}
+
+/*===============================================
+  C. Nano Sidebar Scroller Settings
+================================================= */
+#sidebar_right.nano > .nano-pane {
+    background: rgba(0, 0, 0, .07);
+}
+#sidebar_right.nano > .nano-pane > .nano-slider {
+    background: #444;
+    background: #CCC;
+}

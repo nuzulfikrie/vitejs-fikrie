@@ -1,0 +1,471 @@
+/* ==============================================
+   Topbar
+     A. Topbar
+     B. Topbar Dropdown Menu
+     C. Topbar Alternate Style
+     D. Topbar Alternate Display Style
+     E. Topbar Navigation - List
+     F. Topbar Responsive Settings
+=================================================
+  A. Topbar
+================================================= */
+@breadcrumb-styled-height: 30px;
+
+@topbar-height:      50px;
+@topbar-padding:     13px;
+@topbar-pad-calc:   (@topbar-height - @breadcrumb-styled-height) / 2;
+@topbar-pad-top:     @topbar-pad-calc + 5; // content has padding and so we offset 
+@topbar-pad-bottom:  @topbar-pad-calc - 5; // topbar padding a bit for asthetics
+@topbar-pad-hor:     35px;
+
+.content-topbar {
+    z-index: 2;
+    position: relative;
+    width: 100%;
+    height:@topbar-height;
+    margin: 15px 0 0;
+    padding: @topbar-pad-top 35px @topbar-pad-bottom 35px;
+    border: 0;
+    background-color: transparent;
+    box-shadow: none;
+    .clearfix;
+
+    .topbar-left {
+        float: left;
+    }
+    .topbar-right {
+        float: right;
+    }
+
+}
+
+
+/*===============================================
+   G. Breadcrumb
+================================================= */
+
+@text-one:        #999;
+@text-two:        #333;
+@color-one:       #e1e1e1;
+@color-two:       #e1e1e1;
+.breadcrumb-styled {
+	// display: inline-block;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	border-radius: 0;
+	background-color: transparent;
+
+	.fa {
+		font-size: 14px;
+	}
+
+	li {
+		float: left;
+	}
+	
+	// disable "/" character divider on breadcrumbs
+	li + li:before {
+		display: none;
+	}
+
+	li a {
+		display: block;
+        font-weight: 600;
+        color: @text-one;
+		background: @color-one;
+		text-decoration: none;
+		position: relative;
+		height: 30px;
+		line-height: 30px;
+		padding: 0 7px 0 5px;
+		text-align: center;
+		margin-right: 23px;
+	}
+
+	li:nth-child(even) a {
+		background-color: @color-two;
+	}
+	li:nth-child(even) a:before {
+		border-color: @color-two;
+		border-left-color: transparent;
+	}
+	li:nth-child(even) a:after {
+		border-left-color: @color-two;
+	}
+
+	li:first-child a {
+		padding-left: 15px;
+		border-radius: 4px 0 0 4px;
+	}
+	li:first-child a:before {
+		border: none;
+	}
+
+	li:last-child a {
+		// padding-left: 0;
+		padding-right: 15px;
+		// background: none;
+		border-radius: 0 4px 4px 0;
+	}
+	li:last-child a:after {
+	  // border: none;
+	}
+	// li:last-child a:before {
+	//   border: none;
+	// }
+
+	li a:before,
+	li a:after {
+		content: "";
+		position: absolute;
+		top: 0;
+		border: 0 solid @color-one;
+		border-width: 15px 10px;
+		width: 0;
+		height: 0;
+	}
+	li a:before {
+		left: -20px;
+		border-left-color: transparent;
+	}
+	li a:after {
+		left: 100%;
+		border-color: transparent;
+		border-left-color: @color-one;
+	}
+
+	li a:hover {
+		color: @text-two;
+	  // background-color: @color-three;
+	}
+	// li a:hover:before {
+	//   border-color: @color-three;
+	//   border-left-color: transparent;
+	// }
+	// li a:hover:after {
+	//   border-left-color: @color-three;
+	// }
+
+	li a:focus {
+		color: @text-two;
+	  // background-color: @color-three;
+	}
+	// li a:focus:before {
+	//   border-color: @color-three;
+	//   border-left-color: transparent;
+	// }
+	// li a:focus:after {
+	//   border-left-color: @color-three;
+	// }
+
+	li.active a {
+		color: @text-two;
+	  // background-color: @color-four;
+	}
+	// li.active a:before {
+	//   border-color: @color-four;
+	//   border-left-color: transparent;
+	// }
+	// li.active a:after {
+	//   border-left-color: @color-four;
+	// }
+
+	li a .fa {
+		padding-right: 7px;
+	}
+
+}
+
+@text-alt-one:    #999;
+@text-alt-two:    #333;
+@color-alt-one:   #ccc;
+@color-alt-two:   #ccc;
+
+// Darker breadcrumbs when placed in a bg filled topbar
+.fill .breadcrumb-styled {
+	background-color: transparent;
+	margin: 0;
+	// height: 25px;
+	// font-size: 
+
+	li a {
+		color: @text-alt-one;
+		background: @color-alt-one;
+	}
+	li:nth-child(even) a {
+		background-color: @color-alt-two;
+	}
+	li:nth-child(even) a:before {
+		border-color: @color-alt-two;
+		border-left-color: transparent;
+	}
+	li:nth-child(even) a:after {
+		border-left-color: @color-alt-two;
+	}
+	li:first-child a:before {
+		border: none;
+	}
+	li a:before,
+	li a:after {
+		border: 0 solid @color-alt-one;
+		border-width: 15px 10px;
+	}
+	li a:before {
+		border-left-color: transparent;
+	}
+	li a:after {
+		border-color: transparent;
+		border-left-color: @color-alt-one;
+	}
+	li a:hover,
+	li a:focus,
+	li.active a  {
+		color: @text-alt-two;
+	}
+}
+
+
+/* Topbar Breadcrumbs */
+@topbar-fill-height: 60px;
+@topbar-fill-padding: 15px;
+@topbar-fill-usable-height: 30px;
+
+@crumbtrail-font-size: 16px; // 16px * 1.49 = 23.84px, seems like 23px in browser
+
+@breacrumb-pad-calc:  floor((@topbar-fill-usable-height - 23) / 2);
+
+
+.breadcrumb-trail {
+	font-size: @crumbtrail-font-size;
+    float: left;
+    position: relative;
+    list-style: none;
+
+    // padding: @breadcrumb-padding-vertical @breadcrumb-padding-horizontal;
+    // padding: 1px 20px 2px 0;
+    padding: @breacrumb-pad-calc 20px @breacrumb-pad-calc 0;
+    margin-bottom: 0;
+    background-color: @breadcrumb-bg;
+	background-color: transparent;
+
+	> li {
+		color: #999;
+		display: inline-block;
+
+		+ li:before {
+		  content: "@{breadcrumb-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
+		  padding: 0 5px;
+		  color: @breadcrumb-color;
+		}
+		a {
+			color: #999;
+		}
+	}
+
+	> li.active,
+	> li.active a {
+		color: @breadcrumb-active-color;
+	}
+
+	> li.crumb-active,
+	> li.crumb-active > a {
+		font-size: 18px;
+		color: @breadcrumb-active-color;
+	}
+}
+
+.topbar-fill .breadcrumb-trail {
+	font-size: 15px;
+}
+
+
+/*===============================================
+   B. Topbar - Alternate Style
+      Requires ".alt" class on .content-topbar
+================================================= */
+@topbar-fill-height: 60px;
+@topbar-fill-padding: 15px;
+.content-topbar.alt,
+.content-topbar.fill {
+    height: @topbar-fill-height;
+    margin: 0 0 10px;
+    padding: @topbar-fill-padding 35px;
+    background-color: #e3e3e3;
+    border-bottom: 1px solid #d2d2d2;
+    
+    // make breadcrumbs smaller inside of a filled topbar
+    @crumb-height: 26px;
+    .breadcrumb {
+        height: @crumb-height;
+    }
+    .breadcrumb li a {
+        height: @crumb-height;
+        line-height: @crumb-height;
+        
+        &:before,
+        &:after {
+            border-width: (@crumb-height / 2) 10px;
+        }
+    }
+
+}
+
+/*===============================================
+   B. Topbar - Alternate Style
+      Requires ".transparent" class on .content-topbar
+================================================= */
+
+// transparent alt style
+.content-topbar.transparent,
+.content-topbar.topbar-transparent {
+    // min-height: 51px;
+    padding: 10px 21px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #fafafa;
+
+    .topbar-left {}
+
+    // .breadcrumb {
+    //     font-size: 16px;
+    //     line-height: 28px;
+    // }
+}
+
+/*===============================================
+   F. Topbar List Navigations
+   Currently all 3 navigation and breadcrumb-trail
+   are used with topbar-fill style and equate to 
+   exactly 54px in height.Height must be
+   maintained or tabs wont align
+================================================= */
+
+// topbar is 60px with a top padding of 14px, leaving 46px of usable
+// space to be filled. 1.49 * 14px font = 21px nav tabs. leaving 24px
+// to be filled by padding, 12 top 12 bottom
+@navtabs-usable-height: @topbar-fill-height - @topbar-fill-padding;
+@navtabs-padding-calc: floor((@navtabs-usable-height - 21) / 2);
+
+// Tab Navigation
+.content-topbar .topbar-nav-tabs {
+	.nav;
+	.nav-tabs;
+	// margin: 0px 3px -@topbar-padding;
+    margin: 0;
+	border-bottom: 0;
+
+	> li > a {
+		color: #AAA;
+		// padding: 9px 16px;
+        padding: @navtabs-padding-calc 16px;
+	}
+	> li:hover > a,
+	> li:focus > a {
+		border-color: #ddd;
+	}
+	> li.active > a,
+	> li.active > a:hover,
+	> li.active > a:focus {
+		color: #666;
+		font-weight: 600;
+		background-color: @main-bg;
+		border-color: #ccc;
+		border-bottom-color: transparent;
+	}
+
+}
+
+
+
+// These should occupy the fill height of the topbar fill.
+// Account for 15px topbar padding with neg margin
+@navlist-font-size: 15px; // 16 * 1.49 = 24px navlist height
+@navlist-lh-calc: @navlist-font-size * 1.49;
+@navlist-pad-calc: floor((@topbar-fill-height - @navlist-lh-calc) / 2); // 18px top/bot padding
+
+// List Navigation
+.content-topbar .topbar-nav-list {
+    .nav;
+    .nav-list;
+    margin: -@topbar-fill-padding 3px;
+
+    li a {
+        font-size: @navlist-font-size;
+        font-weight: 400;
+        border: 0;
+        padding-left: 11px;
+        padding-right: 11px; 
+        padding-top: @navlist-pad-calc + 1;
+        padding-bottom: @navlist-pad-calc - 1;
+    }
+    li.active a {
+        font-weight: 600;
+        border-bottom: 0;
+    }
+    li.active a:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        height: 3px;
+        background: #4a89dc;
+    }
+
+}
+
+// These should occupy the fill height of the topbar fill.
+// Account for 15px topbar padding with neg margin
+@navbtns-font-size:      12px; // 12 * 1.49 = 18px + 16px top/bot pad + 2px border = 36px btn height
+@navbtns-usable-height:  @topbar-fill-height - ( @topbar-fill-padding * 2);
+@navbtns-spacing-calc:   floor((@navbtns-usable-height - 36) / 2); 
+
+// Button Navigation
+.content-topbar .topbar-nav-btns {
+	margin: @navbtns-spacing-calc 0px @navbtns-spacing-calc;
+
+    .btn-sm {
+        font-size: @navbtns-font-size;   
+    }
+}
+
+
+
+
+/*===============================================
+   G. Topbar Settings - Responsive
+================================================= */
+
+@media (max-width: 815px) {
+  .content-topbar {
+    padding: 10px 6px 10px 14px;
+  }
+  // Topbar Alt
+  .content-topbar.alt {
+    min-height: 40px;
+    padding: 10px 6px 10px 14px;
+  }
+  // when fixed
+  .content-topbar.topbar-fixed.alt + #content
+  .content-topbar.affix.alt + #content {
+    margin-top: 40px;
+  }
+
+}
+
+@media (max-width: 700px) {
+    .content-topbar .breadcrumb {
+        font-size: 14px;
+        padding-top: 5px;
+        padding-left: 2px;
+    }
+     .content-topbar .breadcrumb .crumb-active {
+        display: none;
+    }
+    .content-topbar .breadcrumb > li.crumb-active + li:before {
+        display: none;
+    }
+
+}
+

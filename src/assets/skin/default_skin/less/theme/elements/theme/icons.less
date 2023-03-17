@@ -1,0 +1,524 @@
+/*==================================================
+  Icons
+==================================================== */
+.wf-loading .fa,
+.wf-loading .glyphicon,
+.wf-loading .glyphicons,
+.wf-loading .iconsweets,
+.wf-loading .imoon {
+    opacity: 0 !important;
+}
+
+/* Font Awesome Fixed Width Helpers */
+.fs15.fa-fw {
+    width: 35px;
+}
+.fs16.fa-fw {
+    width: 40px;
+}
+.fs17.fa-fw {
+    width: 43px;
+}
+.fs18.fa-fw {
+    width: 46px;
+}
+
+// Modify Glyphicon Icons
+// Not sure why glyphicons have manually added a 1px top position to its icons. Inline text
+// elements shouldn't be modifying anything that alters its elements base height calculation
+.glyphicon,
+.glyphicons {
+    top: 0;
+}
+
+// Modify material design icons
+.mdi,
+.mdi:before {
+    line-height: 1;
+}
+
+/* Icon Transitions */
+.fa,
+.glyphicon,
+.glyphicons,
+.iconsweets,
+.imoon {
+    opacity: 1;
+    transition: opacity 0.1s ease-in;
+    -moz-transition: opacity 0.1s ease-in;
+    -webkit-transition: opacity 0.1s ease-in;
+}
+/* Glyphicon Pro and Halfling */
+.glyphicon-2x,
+.glyphicons-2x {
+    font-size: 2em;
+}
+.glyphicon-3x,
+.glyphicons-3x {
+    font-size: 3em;
+}
+.glyphicon-4x,
+.glyphicons-4x {
+    font-size: 4em;
+}
+.glyphicon-5x,
+.glyphicons-5x {
+    font-size: 5em;
+}
+/* Icomoon Font Icons */
+.imoon-2x {
+    font-size: 2em;
+}
+.imoon-3x {
+    font-size: 3em;
+}
+.imoon-4x {
+    font-size: 4em;
+}
+.imoon-5x {
+    font-size: 5em;
+}
+/* IconSweets2 Font Icons */
+.iconsweets-2x {
+    font-size: 2em;
+}
+.iconsweets-3x {
+    font-size: 3em;
+}
+.iconsweets-4x {
+    font-size: 4em;
+}
+.iconsweets-5x {
+    font-size: 5em;
+}
+
+/* Buttons with Icons
+* Cross browser problems were creating problems when
+* an icon was given a larger font size than its sibling
+* text. To fix Line height, vertical align, and top
+* positioning have been redefined */
+.btn .glyphicon,
+.btn .glyphicons {
+    top: -1px;
+    vertical-align: middle;
+    line-height: 0;
+    font-size: 1.1em;
+}
+/* A Helper Class to Align Icons Right in Control-forms */
+i.field-icon-right,
+span.field-icon-right {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}
+
+/* Icon Background and Borders
+* properly align icons that have been placed inside of titles
+* Useful for matching icon size to adjacent text
+* Icon Background Shapes */
+.icon-circle {
+    top: 0;
+    padding: 9px;
+    position: relative;
+    overflow: visible;
+    border-radius: 64px;
+}
+
+.icon-square {
+    top: 0;
+    padding: 9px;
+    border-radius: 4px;
+}
+
+/* Icon Background Sizes */
+.icon-circle.glyphicon-2x,
+.icon-circle.glyphicons-2x {
+    padding: 12px;
+}
+
+.icon-circle.glyphicon-3x,
+.icon-circle.glyphicons-3x {
+    padding: 20px;
+}
+
+.icon-circle.glyphicon-4x,
+.icon-circle.glyphicons-4x {
+    padding: 35px;
+}
+
+.icon-square.glyphicon-2x,
+.icon-square.glyphicons-2x {
+    padding: 12px;
+}
+
+.icon-square.glyphicon-3x,
+.icon-square.glyphicons-3x {
+    padding: 20px;
+}
+
+.icon-square.glyphicon-4x,
+.icon-square.glyphicons-4x {
+    padding: 35px;
+}
+
+/* WIDGET SPECIFIC ICON STYLING
+* ALL elements which use icons have been
+* moved from their respective positions
+* and placed here for easy icon styling */
+
+/* Header Button Icons */
+.navbar-menus > div > button > i,
+.navbar-menus > div > button > span {
+    font-size: 15px;
+    vertical-align: middle;
+}
+/* Special on-hover styles for user dropdown menu */
+.user-menu ul.dropdown-items > li:hover .glyphicon {
+    color: #d9534f;
+}
+.user-menu ul.dropdown-items > li:last-child:hover .glyphicon {
+    color: #888;
+}
+.user-menu ul.dropdown-items > li:last-child > div:hover .glyphicon {
+    color: #d9534f;
+}
+
+/* Breadcrumb "Home" Icon */
+.breadcrumb .glyphicon,
+.breadcrumb .glyphicons {
+    color: #777;
+    font-size: 12px;
+    margin-left: 1px;
+    top: 0;
+}
+/* Panel Sidemenu Icons */
+.panel-sidemenu ul.nav li.active .fa {
+    color: @brand-primary;
+}
+.panel-sidemenu ul.nav li a:hover {
+    background: none;
+}
+.panel-sidemenu ul.nav li .fa {
+    width: 28px;
+    color: #BBB;
+    font-size: 18px;
+}
+
+/* Panel Tabs Icons */
+.panel-tabs li .fa,
+.panel-tabs li .glyphicon,
+.panel-tabs li .glyphicons {
+    font-size: 14px;
+}
+.panel-tabs .iconsweets,
+.panel-tabs .imoon {
+    font-size: 14px;
+    vertical-align: middle;
+}
+/* Mildly styles a font awesome based icon group
+ * used in occasionaly in panel heading. Look at
+ * message widget on index.html for example */
+.mini-action-icons .fa {
+    position: relative;
+    top: 2px;
+    padding-right: 10px;
+    color: #777;
+    font-size: 16px;
+    cursor: pointer;
+}
+/* Pricing Table Icons */
+.pricing-tables .pricing-icons li .fa-times {
+    color: #e74a4a;
+}
+.pricing-tables .pricing-icons li .fa-ellipsis-h {
+    color: #555;
+}
+/* Tab Navigation Icons */
+.nav-tabs li .fa {
+    font-size: 14px;
+}
+.nav-tabs li .fa.fa-caret-down {
+    font-size: 12px;
+}
+
+/* Timeline Widget Icons */
+.timeline-widget span.glyphicons {
+    z-index: 11;
+    position: relative;
+    top: 2px;
+    width: auto;
+    padding: 6px;
+    font-size: 18px;
+    border-radius: 50%;
+    -webkit-box-shadow: 1px 1px 2px #AAA;
+    box-shadow: 1px 1px 2px #AAA;
+}
+
+//
+// Sprites
+// --------------------------------------------------
+
+/* Favicon sprite */
+.favicons {
+    background: url('@{img-path}/sprites/favicons.png') no-repeat;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    display: inline-block;
+}
+.google {
+    background-position: 0 0;
+}
+.yahoo {
+    background-position: 0 -15px;
+}
+.bing {
+    background-position: 0 -30px;
+}
+.chrome {
+    background-position: 0 -45px;
+}
+.firefox {
+    background-position: 0 -61px;
+}
+.ie {
+    background-position: 0 -78px;
+}
+.safari {
+    background-position: 0 -96px;
+}
+
+/* News Sprite - Demo purposes */
+.news-sprite {
+    width: 25px;
+    height: 26px;
+    vertical-align: middle;
+    display: inline-block;
+    background: url("@{img-path}/sprites/news-logo_sprite.png") no-repeat;
+    background-position: 0 0;
+}
+.news-sprite.cnn {
+    background-position: 0 0;
+}
+.news-sprite.yahoo {
+    background-position: 0 -26px;
+}
+.news-sprite.google {
+    background-position: 0 -50px;
+}
+.news-sprite.fb {
+    background-position: 0 -75px;
+}
+
+/* Flag Icons */
+.flag,
+.flag-lg,
+.flag-md,
+.flag-sm,
+.flag-xl,
+.flag-xs {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.flag-xs {
+    width: 16px;
+    height: 16px;
+    background: url('@{img-path}/sprites/flag-xs.png') no-repeat top left;
+
+    &.flag-canada {
+        background-position: -0px -0px;
+    }
+    &.flag-china {
+        background-position: -16px -0px;
+    }
+    &.flag-france {
+        background-position: -32px -0px;
+    }
+    &.flag-germany {
+        background-position: -0px -16px;
+    }
+    &.flag-india {
+        background-position: -16px -16px;
+    }
+    &.flag-italy {
+        background-position: -32px -16px;
+    }
+    &.flag-russia {
+        background-position: -0px -32px;
+    }
+    &.flag-spain {
+        background-position: -16px -32px;
+    }
+    &.flag-turkey {
+        background-position: -32px -32px;
+    }
+    &.flag-united-kingdom {
+        background-position: -0px -48px;
+    }
+    &.flag-united-states {
+        background-position: -16px -48px;
+    }
+}
+
+.flag-sm {
+    width: 20px;
+    height: 20px;
+    background: url('@{img-path}/sprites/flag-sm.png') no-repeat top left;
+
+    &.flag-canada {
+        background-position: -0px -0px;
+    }
+    &.flag-china {
+        background-position: -20px -0px;
+    }
+    &.flag-france {
+        background-position: -40px -0px;
+    }
+    &.flag-germany {
+        background-position: -0px -20px;
+    }
+    &.flag-india {
+        background-position: -20px -20px;
+    }
+    &.flag-italy {
+        background-position: -40px -20px;
+    }
+    &.flag-russia {
+        background-position: -0px -40px;
+    }
+    &.flag-spain {
+        background-position: -20px -40px;
+    }
+    &.flag-turkey {
+        background-position: -40px -40px;
+    }
+    &.flag-united-kingdom {
+        background-position: -0px -60px;
+    }
+    &.flag-united-states {
+        background-position: -20px -60px;
+    }
+}
+
+.flag-md {
+    width: 24px;
+    height: 24px;
+    background: url('@{img-path}/sprites/flag-md.png') no-repeat top left;
+
+    &.flag-canada {
+        background-position: -0px -0px;
+    }
+    &.flag-china {
+        background-position: -24px -0px;
+    }
+    &.flag-france {
+        background-position: -48px -0px;
+    }
+    &.flag-germany {
+        background-position: -0px -24px;
+    }
+    &.flag-india {
+        background-position: -24px -24px;
+    }
+    &.flag-italy {
+        background-position: -48px -24px;
+    }
+    &.flag-russia {
+        background-position: -0px -48px;
+    }
+    &.flag-spain {
+        background-position: -24px -48px;
+    }
+    &.flag-turkey {
+        background-position: -48px -48px;
+    }
+    &.flag-united-kingdom {
+        background-position: -0px -72px;
+    }
+    &.flag-united-states {
+        background-position: -24px -72px;
+    }
+}
+
+.flag-lg {
+    width: 32px;
+    height: 32px;
+    background: url('@{img-path}/sprites/flag-lg.png') no-repeat top left;
+
+    &.flag-canada {
+        background-position: -0px -0px;
+    }
+    &.flag-china {
+        background-position: -32px -0px;
+    }
+    &.flag-france {
+        background-position: -64px -0px;
+    }
+    &.flag-germany {
+        background-position: -0px -32px;
+    }
+    &.flag-india {
+        background-position: -32px -32px;
+    }
+    &.flag-italy {
+        background-position: -64px -32px;
+    }
+    &.flag-russia {
+        background-position: -0px -64px;
+    }
+    &.flag-spain {
+        background-position: -32px -64px;
+    }
+    &.flag-turkey {
+        background-position: -64px -64px;
+    }
+    &.flag-united-kingdom {
+        background-position: -0px -96px;
+    }
+    &.flag-united-states {
+        background-position: -32px -96px;
+    }
+}
+
+.flag-xl {
+    width: 48px;
+    height: 48px;
+    background: url('@{img-path}/sprites/flag-xl.png') no-repeat top left;
+
+    &.flag-canada {
+        background-position: -0px -0px;
+    }
+    &.flag-china {
+        background-position: -48px -0px;
+    }
+    &.flag-france {
+        background-position: -96px -0px;
+    }
+    &.flag-germany {
+        background-position: -0px -48px;
+    }
+    &.flag-india {
+        background-position: -48px -48px;
+    }
+    &.flag-italy {
+        background-position: -96px -48px;
+    }
+    &.flag-russia {
+        background-position: -0px -96px;
+    }
+    &.flag-spain {
+        background-position: -48px -96px;
+    }
+    &.flag-turkey {
+        background-position: -96px -96px;
+    }
+    &.flag-united-kingdom {
+        background-position: -0px -144px;
+    }
+    &.flag-united-states {
+        background-position: -48px -144px;
+    }
+}
+

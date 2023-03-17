@@ -1,0 +1,52 @@
+/*==================================================
+  Labels
+==================================================== */
+
+.label {
+    border-radius: 0.2em;
+    padding: 0.20em 0.7em 0.4em;
+    font-size: 85%;
+    font-weight: 600;
+    line-height: 24px;
+
+    // Label sizes
+    &.label-sm {
+        padding: 0.15em 0.5em 0.2em;
+        font-size: 80%;
+    }
+    &.label-lg {
+        padding: 0.5em 0.9em;
+        font-size: 100%;
+    }
+    &.label-xl {
+        padding: 0.65em 1.05em;
+        font-size: 115%;
+    }
+    // Rounded option
+    &.label-rounded {
+        padding: 0.2em 0.85em 0.3em;
+        border-radius: 1em;
+        &.label-xs {
+            padding: 0 0.35em 0.1em;
+        }
+        &.label-sm {
+            padding: 0.1em 0.65em 0.2em;
+        }
+        &.label-lg {
+            padding: 0.4em 0.9em 0.5em;
+        }
+    }
+
+}
+
+// Base class
+.badge {
+    padding: @badge-padding; // 3px 7px
+    // color: @badge-color;
+    font-size: @badge-font-size;
+    font-weight: @badge-font-weight;
+    // line-height: @badge-line-height;
+    // background-color: @badge-bg;
+    // border-radius: @badge-border-radius;
+}
+

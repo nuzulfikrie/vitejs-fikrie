@@ -1,0 +1,42 @@
+// Tabs Contextuals
+
+.tabs-variant(@state; @color) {
+
+    /* tabs top */
+    .tab-block .tabs-border.nav-tabs.tabs-@{state} > li.active > a {
+        border-top-color: @color;
+    }
+    /* tabs left */
+    .tab-block .tabs-border.tabs-left.tabs-@{state} > li.active > a {
+        border-left-color: @color;
+    }
+    /* tabs right */
+    .tab-block .tabs-border.tabs-right.tabs-@{state} > li.active > a {
+        border-right-color: @color;
+    }
+
+    /* tabs justified */
+    .tab-block .tab-content + .tabs-border.nav-justified.tabs-@{state} > li.active > a {
+        border-top-color: #FFF;
+        border-bottom-color: @color;
+    }
+
+    /* panel tabs */
+    .panel-tabs.panel-tabs-border.tabs-@{state} > li.active > a {
+        border-top-color: @color;
+    }
+
+}
+
+// Nav Pill Contextuals
+.pills-variant(@state; @color) {
+    .nav-pills.nav-pills-@{state} > li.active > a {
+        &,
+        &:focus,
+        &:hover {
+            background-color: @color;
+        }
+    }
+
+}
+

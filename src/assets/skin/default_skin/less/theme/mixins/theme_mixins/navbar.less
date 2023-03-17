@@ -1,0 +1,60 @@
+// Contextual backgrounds
+.navbar-variant(@color) {
+    background: darken(@color, 1%) !important;
+
+    // Active Navigation items
+     > .nav > li > a:focus,
+     > .nav > li > a:hover,
+     > .nav > li.active > a,
+     > .nav > li:focus > a,
+     > .nav > li:hover > a,
+    > .nav > li.open > a {
+        color: #FFF;
+        background-color: darken(@color, 6%) !important;
+    }
+
+    // The above also hits nested navigations as well
+    .nav > li.active > a,
+    .nav > li.open > a {
+        color: #FFF;
+        background-color: @color;
+    }
+
+    // Top border and arrow color on dropdown menus
+    .navbar-nav .open .dropdown-menu:before {
+        background: @color;
+    }
+    .navbar-nav .open .dropdown-menu:after {
+        border-bottom-color: @color;
+    }
+
+    // Navbar user menu multiselect dropdown - active item bg
+    .nav > li .dropdown-toggle {
+        .dropdown-variant(@color);
+    }
+
+}
+
+.navbar-variant-light(@color) {
+    background-color: #FFF;
+
+    .navbar-btn > .btn {
+        border-color: #d5d5d5 !important;
+        background-color: #f2f2f2;
+        background-color: rgba(0, 0, 0, 0.05) !important;
+    }
+
+    // Normally the btn states are inherited from the base class
+    // however navbar btns dont have a contextual class applied
+    // so we have to manually tweak them based on their parent background color
+     &.open > .dropdown-toggle.btn,
+    .navbar-btn > .btn.active,
+    .navbar-btn > .btn:active,
+    .navbar-btn > .btn:focus,
+    .navbar-btn > .btn:hover {
+        border-color: #CCC !important;
+        background-color: rgba(0, 0, 0, 0.08) !important;
+    }
+
+}
+

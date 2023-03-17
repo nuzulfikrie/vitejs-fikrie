@@ -1,0 +1,46 @@
+/*==================================================
+  Dropdown menus
+==================================================== */
+
+// The dropdown menu (ul)
+.dropdown-menu {
+
+    // Links within the dropdown menu
+    > li > a {
+        padding: 5px 15px;
+    }
+}
+
+// Dropdown Menu Sizes
+// Small
+.dropdown-menu.dropdown-sm {
+    min-width: 120px;
+}
+.dropdown-menu.dropdown-sm li {
+    margin-bottom: 0;
+}
+.dropdown-menu.dropdown-sm li a {
+    font-size: 13px;
+    padding: 2px 12px;
+}
+
+// Dropdown arrow/caret
+.caret {
+
+    // transparent caret style
+    &.caret-tp {
+        border-top-color: rgba(0,0,0,0.2);
+    }
+
+    // Caret Sizes
+    &.caret-xs {
+        border-width: 2px;
+    }
+    &.caret-sm {
+        border-width: 3px;
+    }
+    &.caret-lg {
+        border-width: 5px;
+    }
+}
+

@@ -1,0 +1,116 @@
+// Button variants - Check
+//
+// Easily pump out default styles, as well as :hover, :focus, :active,
+// and disabled options for all buttons
+
+.button-variant(@color; @background; @border) {
+    color: @color;
+    background-color: @background;
+    &.active,
+    &:active,
+    &:focus,
+    &:hover,
+    .open > .dropdown-toggle& {
+        color: @color;
+        background-color: darken(@background, 8.5%);
+    }
+
+    .badge {
+        color: @background;
+        background-color: @color;
+    }
+
+    // Create Shade Variations
+    &.light {
+        background-color: lighten(@background, 6%);
+        &.active,
+        &:active,
+        &:focus,
+        &:hover,
+        .open > .dropdown-toggle& {
+            background-color: darken(@background, 6%);
+        }
+    }
+    &.dark {
+        background-color: darken(@background, 6%);
+        &.active,
+        &:active,
+        &:focus,
+        &:hover,
+        .open > .dropdown-toggle& {
+            background-color: darken(@background, 12%);
+        }
+    }
+
+}
+
+// Same mixin as above but specifically calibrated for lights and neutrals
+//
+.button-variant-light(@color; @background; @border) {
+    color: @color;
+    background-color: @background;
+
+    &.active,
+    &:active,
+    &:focus,
+    &:hover,
+    .open > .dropdown-toggle& {
+        color: @color;
+        background-color: darken(@background, 2.5%);
+        background-image: none;
+    }
+
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] & {
+        &.active,
+        &:active,
+        &:focus,
+        &:hover {
+            background-color: @background;
+            border-color: @border;
+        }
+    }
+    .badge {
+        color: @background;
+        background-color: @color;
+    }
+
+    // Create Shade Variations
+    &.light {
+        background-color: #FAFAFA;
+        &.active,
+        &:active,
+        &:focus,
+        &:hover,
+        .open > .dropdown-toggle& {
+            background-color: darken(@background, 1.5%);
+        }
+    }
+    &.dark {
+        background-color: darken(@background, 3%);
+        &.active,
+        &:active,
+        &:focus,
+        &:hover,
+        .open > .dropdown-toggle& {
+            background-color: darken(@background, 6%);
+        }
+    }
+
+}
+
+// Button sizes
+.button-size(@padding-vertical; @padding-horizontal; @font-size; @line-height; @border-radius) {
+    padding: @padding-vertical @padding-horizontal;
+    font-size: @font-size;
+    line-height: @line-height;
+    border-radius: @border-radius;
+}
+
+// // Button sizes
+// .button-alt-variant(@color) {
+//     background-color: #FFF;
+//     border-left-color: @color;
+// }
+

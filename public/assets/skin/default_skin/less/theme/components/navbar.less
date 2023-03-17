@@ -1,0 +1,1646 @@
+/* ==============================================
+   Navbar
+================================================= */
+.navbar {
+    z-index: 1030;
+    margin-bottom: 0;
+    height: @navbar-height;
+
+    color: #666;
+    background-color: #FFF;
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    box-shadow: 0 1px 0 0 #d0d0d0; // #eoeoeo
+    box-shadow: 0 1px 0 0 rgba(0,0,0,0.15); // #eoeoeo
+
+    /* Navbar shadow option - Only allowed on default white navbar use bg-gradient for all other contextuals */
+    &.navbar-shadow {
+      -webkit-box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.08), 0px 2px 0px 0px rgba(0, 0, 0, 0.03);
+      box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.08), 0px 2px 0px 0px rgba(0, 0, 0, 0.03);
+    }
+}
+
+/*==========================================================
+  Navbar Branding - Logo/Text
+=========================================================== */
+
+.navbar-branding {
+    position: relative;
+    overflow: hidden;
+    float: left;
+    width: @sidebar-open-width;
+    height: @navbar-height;
+    margin-right: 10px;
+    background-color: transparent;
+
+    /* Logo */
+    .navbar-brand {
+        color: #666;
+        height: @navbar-height;
+        line-height: 58px;
+        padding: 0;
+        padding-left: 18px;
+        font-size: 17px;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+    }
+    .navbar-brand b { font-weight: bold; }
+}
+
+
+/*==========================================================
+  Navbar Nav Item Containers
+=========================================================== */
+// Target button size is 38px with 8px top/bot padding:
+// calculate margins required to center content based on that height
+@navbar-link-content: 20px;
+@navbar-link-padding: @navbar-height - @navbar-link-content;
+
+.navbar-nav {
+    margin: 0;
+
+    /* Nav Items */
+    > li { float: left; }
+
+    /* Nav Links */
+    .navbar-btn > a,
+    .navbar-link > a {
+        color: #666;
+        font-size: 15px;
+        font-weight: 600;
+        height: @navbar-height;
+        max-height: @navbar-height;
+        line-height: @navbar-link-content;
+        padding-top: @navbar-link-padding / 2;
+        padding-bottom: @navbar-link-padding / 2;
+    }
+
+    // btn icons
+   .navbar-link span.ad,
+   .navbar-btn span.ad,
+   .navbar-link span.fa,
+   .navbar-btn span.fa {
+  	    // top: -1px;
+        position: relative;
+        font-size: 15px;
+        min-width: 16px;
+        vertical-align: middle;
+    }
+
+    /* Nav Item/Link States */
+    .navbar-link.open > a,
+    .navbar-link:hover > a,
+    .navbar-link:focus > a,
+    .navbar-link.active > a,
+    .navbar-link > a:hover,
+    .navbar-link > a:focus {
+        // color: #222;
+        // background-color: darken(#fafafa, 1%);
+    }
+
+    .navbar-nav > li > a .ad,
+    .navbar-nav > li > a .fa,
+    .navbar-nav > li > a .glyphicon {
+    	vertical-align: middle;
+    }
+
+	// Dropdown
+    .dropdown-menu {
+    	color: #666;
+        // border: 1px solid #cbcbcb;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);
+    }
+
+	/* Dropdown Header */
+	.dropdown-menu > li.dropdown-header {
+	    padding: 12px;
+	    border-bottom: 1px solid #e2e2e2;
+	    background-color: #f7f7f7;
+
+	    /* Header Item - Title */
+	    .dropdown-title {
+	        color: #666;
+	        font-size: 13px;
+	        font-weight: 600;
+	        padding-left: 5px;
+	        line-height: 30px;
+	    }
+	    /* Header Item - Label */
+	    .label {
+	        float: right;
+	        font-size: 75%;
+	        height: 20px;
+	        line-height: 20px;
+	        margin-top: 5px;
+	        margin-right: 5px;
+	        padding: .1em .6em .2em;
+	    }
+	}
+
+	/* Dropdown Footer */
+	.dropdown-menu > li.dropdown-footer a {
+		text-align: center;
+		padding: 8px 10px 9px;
+		border-top: 1px solid #e2e2e2;
+		background-color: #f7f7f7;
+		transition: background-color 0.4s ease;
+
+		&:hover {
+			background-color: #FFFEF0;
+		}
+	}
+
+    /* Dropdown - Open */
+    .open .dropdown-menu {
+        padding: 0;
+        margin-top: 0px;
+
+        /* Dropdown Links */
+        > a {
+          font-weight: 600;
+        }
+
+		// Psuedo Top Menu Border
+        &:before {
+		    z-index: 1025;
+		    content: "";
+		    position: absolute;
+		    left: 0;
+		    right: 0;
+		    top: 0;
+		    width: 100%;
+		    height: 3px;
+		    background: #AAA;
+        }
+        // Psuedo Dropdown Top Arrow
+		&:after {
+			z-index: 1030;
+		    content: "";
+		    position: absolute;
+		    width: 0;
+		    height: 0;
+		    border-color: transparent;
+		    border-style: solid;
+		    right: 11px;
+		    bottom: 100%;
+		    border-width: 0 9px 9px;
+		    border-bottom-color: #AAA;
+		}
+
+    } // end open dropdown menu
+
+    // Top Border color on dropdown menus
+    > .open .dropdown-menu:before {
+       	// border-top-color: transparent;
+        background-color: @navbar-dropdown-active-border;
+    }
+    // Top Arrow color on dropdown menus
+    > .open .dropdown-menu:after {
+    	// border-bottom-color: transparent;
+        border-bottom-color: @navbar-dropdown-active-border;
+    }
+
+    // Dropdown - User menu
+  //   .dropdown .user-menu {
+  //   	margin-right: 5px;
+
+  //   	// Menu Gear Icon
+  //   	span {
+  //   		position: absolute;
+  //   		top: 5px;
+  //   		right: 5px;
+  //   		color: #999;
+  //   		font-size: 16px;
+
+  //   		&:hover,
+  //   		&:focus,
+  //   		&:active {
+		// 		color: #444;
+  //   		}
+  //   	}
+
+		// // Menu Caret
+  //   	.caret {
+  //   		margin-right: 7px;
+  //   	}
+
+  //   	// Avatar
+  //   	img {
+  //   		max-width: 30px;
+  //   		border: 2px solid transparent;
+	 //    	+ .caret {
+	 //    		margin-right: 0;
+	 //    		margin-left: 7px;
+	 //    	}
+  //   	}
+
+  //   }
+
+    /* Menu Item Divider - Small Circle */
+    @navbar-divider-height: 8px;
+    .menu-divider,
+    .navbar-divider {
+    	font-size: @navbar-divider-height;
+        color: rgba(0, 0, 0, 0.18);
+        padding: ((@navbar-height - @navbar-divider-height) / 2) 10px;
+    }
+
+} // end .navbar-nav
+
+
+
+/*==========================================================
+  Navbar Gradient Helper
+=========================================================== */
+
+// Navbar Gradient Helper Style Class
+.navbar.navbar-gradient {
+    z-index: 1030;
+    margin-bottom: 0;
+
+    color: #666;
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid #FFF;
+    box-shadow: 0 1px 0 0 #c5c5c5;
+
+    background-color: #ffffff;
+    background-image: -moz-linear-gradient(top, #ffffff 1%, #efefef 100%);
+    background-image: -webkit-linear-gradient(top, #ffffff 1%,#efefef 100%);
+    background-image: linear-gradient(to bottom, #ffffff 1%,#efefef 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#efefef',GradientType=0 );
+
+    // Navbar Form Group
+    .navbar-form {
+        input {
+            border-color: #DDD;
+        }
+    }
+
+}
+
+
+/*==========================================================
+  Navbar Advanced Dropdown - Button Dropdowns
+  .navbar - .nav.navbar-nav.navbar-left -> li.navbar-link/btn -> a.toggle + ul.dropdown-menu
+=========================================================== */
+
+// Target button size is 38px with 8px top/bot padding:
+// calculate margins required to center content based on that height
+@navbar-btn-padding: 8px;
+@navbar-btn-border:  2px;
+@navbar-btn-content: 20px;
+@navbar-btn-margin: @navbar-height - (@navbar-btn-padding * 2) - @navbar-btn-content - @navbar-btn-border;
+
+.navbar-btn {
+  padding: 0 6px;
+  margin-top: @navbar-btn-margin / 2;
+  margin-bottom: @navbar-btn-margin / 2;
+  min-width: 40px;
+
+    > .btn {
+	    border-color: transparent;
+	    background-color: rgba(255, 255, 255, 0.2);
+
+		// split button mod
+		+ .dropdown-toggle {
+		    border-left: 0;
+		}
+
+        // center content via table cell so it always equals 20px but actual icon can be smaller or larger
+        .fa,
+        .ad,
+        .glyphicon,
+        .glyphicons,
+        .imoon {
+            // vertical-align: middle;
+            // display: table-cell;
+            height: @navbar-btn-content; // target content size
+            line-height: @navbar-btn-content;
+        }
+
+        // disable table cell for elements with siblings
+        span + span,
+        span + i {
+            // display: inline-block !important;
+        }
+
+    }
+
+    // Normally the btn states are inherited from the base class
+    // however navbar btns dont have a contextual class applied
+    // so we have to manually tweak the background color
+	> .btn:hover,
+	> .btn:focus,
+	> .btn:active,
+	> .btn.active,
+    &.open > .dropdown-toggle.btn {
+    	border-color: transparent !important;
+    	background-color: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    /* btn badges */
+	.badge {
+		position: absolute;
+		top: -7px;
+		right: -5px;
+		padding: 3px 6px;
+		opacity: 0.95;
+	}
+
+}
+
+
+// Converts all navbar dropdown btns into gradient btns
+.navbar.navbar-gradient-btns {
+
+	.navbar-btn {
+		> .btn {
+			background-repeat: repeat-x;
+			text-shadow: 0 -1px 0 rgba(255, 255, 255, 0.4);
+			border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.11) rgba(0, 0, 0, 0.14);
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+			background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.3) 100%);
+			background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.3) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#00ffffff', GradientType=0);
+		}
+		> .btn:hover,
+		> .btn:focus,
+		> .btn:active,
+		> .btn.active,
+	    &.open > .dropdown-toggle.btn {
+	    	border-color: rgba(0, 0, 0, 0.12) rgba(0, 0, 0, 0.14) rgba(0, 0, 0, 0.18) !important;
+	    	background-image: none !important;
+	    }
+	}
+
+	&.bg-primary .navbar-btn > .btn {
+		background-color: darken(@brand-primary, 8%) !important;
+	}
+	&.bg-info .navbar-btn > .btn {
+		background-color: darken(@brand-info, 6%) !important;
+	}
+	&.bg-success .navbar-btn > .btn {
+		background-color: darken(@brand-success, 7%) !important;
+	}
+	&.bg-warning .navbar-btn > .btn {
+		background-color: darken(@brand-warning, 6%) !important;
+	}
+	&.bg-danger .navbar-btn > .btn {
+		background-color: darken(@brand-danger, 8%) !important;
+	}
+	&.bg-alert .navbar-btn > .btn {
+		background-color: darken(@brand-alert, 7%) !important;
+	}
+	&.bg-system .navbar-btn > .btn {
+		background-color: darken(@brand-system, 8%) !important;
+	}
+	&.bg-dark .navbar-btn > .btn {
+		background-color: darken(@brand-dark, 6%) !important;
+	}
+
+}
+
+// this is the bit redundant part i mentioned in the mixin
+// should this be moved there to keep all the skin logic contained?
+.navbar.bg-primary,
+.navbar.bg-info,
+.navbar.bg-success,
+.navbar.bg-warning,
+.navbar.bg-danger,
+.navbar.bg-alert,
+.navbar.bg-system,
+.navbar.bg-dark {
+	border-bottom: 1px solid transparent;
+	box-shadow: none;
+
+	// Btn and Links
+	.navbar-nav .navbar-btn > a,
+	.navbar-nav .navbar-link > a {
+		color: #FFF;
+	}
+
+	// Just buttons
+	.navbar-btn {
+	  	> .btn {
+		    color: #FFF;
+		    border-color: transparent;
+		    background-color: rgba(255, 255, 255, 0.2);
+	 	}
+	}
+
+	// Buttons w/gradient
+    &.navbar-gradient-btns .navbar-btn > .btn {
+        background-repeat: repeat-x;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+        border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.18);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.18) 1%, rgba(255, 255, 255, 0.08) 100%);
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.18) 1%, rgba(255, 255, 255, 0.08) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#00ffffff', GradientType=0);
+	}
+
+
+	.navbar-nav > .dropdown-flush .dropdown-menu:before {
+		margin-top: -3px;
+	}
+	.navbar-nav > .dropdown-flush .dropdown-menu:after {
+		border-bottom-color: #FFF !important;
+	}
+
+	// Dropdown Caret
+	.dropdown .caret.caret-tp { border-top-color: rgba(255, 255, 255, 0.3); }
+
+    // Change several text elements to white
+	.navbar-branding .navbar-brand,
+	.navbar-branding .navbar-brand b {
+		color: #FFF;
+	}
+	// Data Toggle Sidebar Btns in a navbar region
+	.menu-toggle-btn {
+	  color: #FFF !important;
+	}
+
+	// search bar
+	.navbar-search input,
+	.navbar-search input:focus {
+	  border-color: transparent;
+	}
+
+	// search bar - alt style
+	.navbar-search.alt input {
+	  color: #BBB;
+	  color: rgba(255, 255, 255, 0.8);
+	  background-color: #BBB;
+	  background-color: rgba(255,255,255, 0.2);
+	  border-color: transparent;
+	  &:focus {
+	    border-color: transparent;
+	  }
+	}
+
+	/* Disable navbar shadow option for navbar bgs */
+	&.navbar-shadow {
+	  border-bottom: 1px solid transparent;
+	  box-shadow: none;
+	}
+
+}
+
+/* Modify contextuals navbars (bg-primary, etc) */
+.navbar[class*='bg-'] {}
+
+
+/*==========================================================
+  Navbar Dropdown Menu Helpers
+=========================================================== */
+
+// Dropdown top margin alignment settings
+.navbar-nav .navbar-link .dropdown-menu {
+    margin-top: 10px;
+    border-top: 0;
+}
+.navbar-nav .navbar-btn .dropdown-menu {
+    margin-top: 25px;
+    border-top: 0;
+}
+.navbar-nav > .dropdown-flush,
+.navbar-nav > .disable-arrow {
+
+  .navbar-link > .dropdown-menu,
+  &.navbar-link > .dropdown-menu {
+      margin-top: 0;
+      border-top: 0;
+  }
+
+  .navbar-btn > .dropdown-menu {
+      margin-top: 16px;
+      border-top: 0;
+  }
+
+}
+
+/* Disable Arrow Setting */
+.navbar > li.disable-arrow {
+  .open > .dropdown-menu:after,
+  .navbar-btn.open > .dropdown-menu:after {
+    display: none;
+  }
+}
+
+/* Modify for style when in contextual navbars (bg-primary, etc) */
+.navbar[class*='bg-'] li.disable-arrow {
+
+   .dropdown-menu {
+    border-top: 0;
+  }
+}
+
+
+
+/*==========================================================
+  Navbar Dropdown Content - Media Lists
+=========================================================== */
+
+.navbar .media-list > li.media {
+    margin: 0;
+    padding: 10px;
+
+    /* Media Item - Top Border */
+    + li.media { border-top: 1px solid #EEE; }
+
+    /* Media Item - Image */
+    > a {
+        padding: 0;
+        padding-right: 10px;
+        display: table-cell;
+    }
+
+    /* Media Item - Heading, small */
+    .media-heading small {
+        color: #AAA;
+    }
+}
+
+
+/*==========================================================
+  Navbar Dropdown Content - List Group
+=========================================================== */
+
+.navbar .dropdown-menu.list-group {
+
+	> li.list-group-item {
+	   	padding: 0;
+	   	border-left: 0;
+	   	border-right: 0;
+	}
+
+    /* List-Group Link */
+    > li.list-group-item > a {
+    	font-weight: @font-weight-semibold;
+    	padding: 13px;
+    }
+
+    /* List-Group Label */
+    > li.list-group-item > a .label {
+        float: right;
+        height: 20px;
+        font-size: 75%;
+        line-height: 20px;
+        padding: .1em .65em .2em;
+    }
+
+    /* List-Group Icon */
+    > li.list-group-item > a .fa,
+    > li.list-group-item > a .glyphicon,
+    > li.list-group-item > a .glyphicons {
+        width: 22px;
+    }
+
+	/* Dropdown Header - Remove top border */
+	> li.dropdown-header + li.list-group-item {
+	    border-top: 0;
+	}
+
+}
+
+
+/*==========================================================
+  Navbar Dropdown Content - Panels
+=========================================================== */
+
+/* Panel menu - modify spacing and remove top border */
+.navbar .dropdown-menu {
+
+    > .panel {
+        border-top: 0;
+        margin: 0 -1px;
+
+        > div {
+            border-left-color: #c8c8c8;
+            border-right-color: #c8c8c8;
+        }
+        > :first-child {
+            border-top: 0;
+        }
+        > :last-child {
+            border-bottom: 0;
+        }
+    }
+
+    // Make Dropdown menu text a bit smaller
+	.panel {
+	    // font-size: @navbar-dropdown-widget-font-size;
+	    margin-bottom: 0;
+		box-shadow: none;
+
+	    .media-heading { font-size: @navbar-dropdown-widget-font-size; }
+	}
+
+	// Panel Component - Body
+	.panel-body,
+	.panel-scroller {
+		// border-left: 0;
+		// border-right: 0
+	}
+
+    // Panel Component - Heading
+	.panel-heading {
+	    // border-top: 0;
+    }
+
+    // Panel Component - Menu
+    .panel-menu {
+        color: #666;
+        font-size: @navbar-dropdown-widget-title-font-size;
+        padding: 12px 13px 12px;
+        // border-top: 0;
+        // border-left: 0;
+        // border-right: 0;
+
+        .panel-title { font-size: @navbar-dropdown-widget-title-font-size;}
+    }
+
+    // Panel Component - Footer
+    .panel-footer {
+    	// border: 0;
+    }
+
+    // Panel Component - Tray
+    .panel-tray {
+
+    	.panel-footer {
+    		border: 1px solid #d0d0d0;
+    		border-color: #d0d0d0;
+    		border-top-color: #DDD;
+    	}
+
+    }
+
+	// Creates a panel with white header/footer and a graytone body
+    .panel-inverse {
+
+    	.panel-menu,
+    	.panel-footer {
+    		background-color: #FFF;
+    	}
+
+		.panel-body {
+			background-color: #f4f4f4;
+		}
+
+    }
+
+}
+
+/*==========================================================
+  Navbar Data Toggle Buttons - Collapses Sidebars
+=========================================================== */
+// Navbar Regions which could contain a data-toggle
+// Navbar Branding, Navbar Left, Navbar Right
+//
+// Styling Option 1: Target Buttons based on their selector
+// Styling Option 2: Target Button based on what navbar region they are in
+
+// Sidebar Left+Right(1) - Styling Data Toggle based on target sidebar
+[data-menu-toggle="sidebar_left"],
+[data-menu-toggle="sidebar_right"] {
+    float: right;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: @navbar-height;
+    max-height: @navbar-height;
+    width: @sidebar-minified-width;
+    text-align: center;
+
+    .link-unstyled;
+}
+
+// Sidebar Left(1) - Styling Data Toggle based on target sidebar
+[data-menu-toggle="sidebar_left"] {
+}
+
+// Sidebar Right(1) - Styling Data Toggle based on target sidebar
+[data-menu-toggle="sidebar_right"] {
+}
+
+// Sidebar Top(1) - Styling Data Toggle based on target sidebar
+[data-menu-toggle="sidebar_top"] {
+    display: none;
+    width: 31px;
+    height: @navbar-height;
+    line-height: @navbar-height;
+    margin-left: 10px;
+    background-color: rgba(0,0,0,0.06);
+    border-left: 1px solid rgba(0,0,0,0.08);
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(0,0,0,0.09);
+        border-left: 1px solid rgba(0,0,0,0.1);
+    }
+	.fa-caret-up {
+	    position: relative;
+	    font-size: 13px;
+	    border: 1px solid;
+	    border-top: 3px solid;
+	    padding: 0px 3px 1px 3px;
+	    margin-bottom: 2px;
+	    transform: rotate(0deg);
+	}
+
+	body.sb-top & {
+		display: block;
+	}
+
+}
+// body.sb-top [data-menu-toggle="sidebar_top"] {
+//   display: block;
+// }
+
+// Sidebar Left(1) - Styling Data Toggle based on target sidebar
+[data-menu-toggle="sidebar_left_mini"] {
+	display: block;
+	position: absolute;
+	right: 0;
+    width: 35px;
+    height: 32px;
+    font-size: 16px;
+    text-align: center;
+    padding: 6px 6px 5px;
+
+	.link-unstyled;
+	.bg-light;
+	.dark;
+}
+body.sb-l-m [data-menu-toggle="sidebar_left_mini"] {
+	right: auto;
+}
+// Navbar Branding(2) - Data Toggle
+.navbar-branding .menu-toggle-btn {
+}
+// Navbar Left(2) - Data Toggle
+.navbar-left .menu-toggle-btn {
+}
+// Navbar Right(2) - Data Toggle
+.navbar-right .menu-toggle-btn {
+}
+
+
+// #toggle_sidemenu_l,
+// #toggle_sidemenu_t {
+//     color: #555;
+//     float: right;
+//     cursor: pointer;
+//     font-size: 18px;
+//     line-height: @navbar-height;
+//     max-height: @navbar-height;
+//     width: @sidebar-minified-width;
+//     text-align: center;
+//     &:hover {
+//     	color: #222;
+//     }
+// }
+// #toggle_sidemenu_t {
+//     display: none;
+//     width: 31px;
+//     height: @navbar-height;
+//     line-height: @navbar-height;
+//     margin-left: 10px;
+//     background-color: rgba(0,0,0,0.06);
+//     border-left: 1px solid rgba(0,0,0,0.08);
+//     -webkit-transition: background-color 0.2s ease;
+//     transition: background-color 0.2s ease;
+//     &:hover {
+//       background-color: rgba(0,0,0,0.09);
+//       border-left: 1px solid rgba(0,0,0,0.1);
+//     }
+// }
+// #toggle_sidemenu_t .fa-caret-up {
+//     position: relative;
+//     font-size: 13px;
+//     border: 1px solid;
+//     border-top: 3px solid;
+//     padding: 0px 3px 1px 3px;
+//     margin-bottom: 2px;
+
+//     -webkit-transform: rotate(0deg);
+//     transform: rotate(0deg);
+// }
+
+
+
+/*==========================================================
+  Navbar Left/Right Containers
+=========================================================== */
+
+/* Navbar Left */
+.navbar-nav.navbar-left {
+    float: left;
+    position: relative;
+    padding-left: 12px;
+    max-height: @navbar-height;
+
+    // menu items
+    > li > a {
+        padding-right: 13px;
+        padding-left: 13px;
+    }
+
+    // align dropdown top arrow to left side
+    > .dropdown .dropdown-menu:after {
+      left: 10px;
+      right: auto;
+    }
+
+}
+
+/* Navbar Right */
+.navbar-nav.navbar-right,
+.navbar-nav.navbar-right:last-child {
+    float: right;
+    margin: 0 15px 0 0;
+}
+
+
+/*==========================================================
+  Navbar Content - Forms, Specifically Search Form
+=========================================================== */
+@navbar-search-height: 26px;
+.navbar-form {
+    margin-top: (@navbar-height - @navbar-search-height) / 2; //17px
+    margin-bottom: (@navbar-height - @navbar-search-height) / 2;
+
+    // search bar
+    &.navbar-search input {
+        height: @navbar-search-height;
+        padding: 0 12px;
+        border-radius: 20px;
+        border-color: #EEE;
+        box-shadow: none;
+        transition: all 0.2s ease;
+	    &:focus {
+          border-color: #f0f0f0;
+	      background-color: #f8f8f8;
+	    }
+    }
+
+    // search bar - square style
+    &.navbar-search.square input {
+        height: 30px;
+        border-radius: 3px;
+        margin-top: -2px;
+        margin-bottom: -2px;
+    }
+
+}
+
+/*==========================================================
+  Navbar LG Helper Style Class
+=========================================================== */
+
+.navbar.navbar-lg {
+    height: @navbar-height-lg;
+
+    // Branding
+    .navbar-branding{
+        height: @navbar-height-lg;
+
+        // Branding Logo
+        .navbar-brand {
+            height: @navbar-height-lg;
+            line-height: @navbar-height-lg;
+            font-size: 20px;
+            letter-spacing: 0.5px;
+            padding: 0;
+            padding-left: 11px;
+
+            @brand-img-width: 32px;
+            img {
+			    float: left;
+			    display: block;
+			    max-width: @brand-img-width;
+			    margin-top: (@navbar-height - @brand-img-width) / 2;
+			    margin-right: 7px;
+            }
+
+	        b {
+	            font-size: 20px;
+	            letter-spacing: 0.5px;
+	        }
+        }
+    }
+
+    // Navbar Menu Items - li > a
+    .navbar-nav.nav > li > a {
+        // line-height: inherit;
+        // height: @navbar-height-lg;
+        // max-height: @navbar-height-lg;
+    }
+
+    // Navbar Menu Buttons - like navbar links btn typically with a square btn
+    .navbar-nav.nav > li.navbar-btn {
+        // margin-top: 18px;
+        // margin-bottom: 18px;
+    }
+
+    // Navbar Menu Divider
+    .navbar-nav.nav .menu-divider,
+    .navbar-nav.nav .navbar-divider {
+        padding: 27px 10px @navbar-height;
+    }
+
+    // Navbar Form Group
+    .navbar-form {
+        margin: 0;
+        margin-top: 19px;
+        margin-bottom: 19px;
+    }
+
+    // Navbar Media/Author Dropdown
+    .navbar-media {
+        line-height: 22px;
+        > a {
+            padding: 22px 15px;
+        }
+        > a > img {
+            margin-top: 2px;
+        }
+        > a > span {
+            vertical-align: middle;
+        }
+    }
+
+    // Navbar fixed settings - adjusts primary content for increased header size
+    &.navbar-fixed-top + #sidebar_left + #content_wrapper {
+        padding-top: @navbar-height-lg;
+    }
+
+} // end navbar-lg
+
+
+/*==========================================================
+  Navbar Contextual/Skin Settings
+  - Skins applied by adding a bg class to ".navbar"
+  - For example: <div class="navbar bg-primary">
+=========================================================== */
+.navbar.bg-primary when (@skin-primary) {
+  .navbar-variant(@brand-primary);
+}
+.navbar.bg-success when (@skin-success) {
+  .navbar-variant(@brand-success);
+}
+.navbar.bg-info when (@skin-info) {
+  .navbar-variant(@brand-info);
+}
+.navbar.bg-warning when (@skin-warning) {
+  .navbar-variant(@brand-warning);
+}
+.navbar.bg-danger when (@skin-danger) {
+  .navbar-variant(@brand-danger);
+}
+.navbar.bg-alert when (@skin-alert) {
+  .navbar-variant(@brand-alert);
+}
+.navbar.bg-system when (@skin-system) {
+  .navbar-variant(@brand-system);
+}
+.navbar.bg-dark when (@skin-dark) {
+  .navbar-variant(@brand-dark);
+}
+.navbar.bg-light when (@skin-light) {
+  .navbar-variant-light(@brand-light);
+}
+.navbar.navbar-gradient when (@skin-light) {
+  .navbar-variant-light(@brand-light);
+}
+
+/* If Navbar has a contextual class we need to modify
+ * several elements so there are not color conflictions
+ */
+.navbar[class*='bg-'] {}
+
+
+/*==========================================================
+  Navbar Misc Utility Styles
+=========================================================== */
+
+/* define height for panels with scrollers */
+.navbar {
+	.panel-scroller {
+	  min-width: (@navbar-dropdown-panel-width - 5px);
+	  max-height: @navbar-dropdown-panel-height;
+	}
+}
+
+
+/*==========================================================
+  Navbar Dropdown Carets
+=========================================================== */
+
+.navbar .caret {
+  position: relative;
+  top: -1px;
+  margin-left: 5px;
+}
+
+/* Alt Caret Style */
+.navbar .caret.alt {
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  color: inherit;
+  margin: 0;
+  border: 0;
+}
+.navbar li.dropdown .caret.alt:after {
+  opacity: 0.75;
+  font-size: 14px;
+  display: inline-block;
+  content: "\f107";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.navbar li.dropdown.open .caret.alt:after {
+  opacity: 1;
+}
+
+
+/*==========================================================
+  Navbar Bug Fixes - Added via Update v1.2.
+=========================================================== */
+
+/* Modify whitespace for user menu dropdown - Firefox alignment bug fix */
+.navbar .navbar-right > li:last-child > .dropdown-menu > li > a {
+    white-space: inherit;
+}
+
+
+
+/*==========================================================
+  Navbar Responsive Settings - Added via Update v1.2.
+=========================================================== */
+@media (max-width: 900px) {
+
+    // user menu dropdown modifications (hide name only display avatar)
+    .navbar .navbar-right:last-child { margin-right: 5px; }
+    .navbar .navbar-right > li:last-child > a > img { margin-right: 5px !important; }
+    .navbar .navbar-right > li:last-child > a > span { display: none; }
+    .navbar .navbar-right > li:last-child > a > span.caret { display: inline-block; }
+
+     // navbar Search Mobile Mode
+     .navbar-form.navbar-search {
+        padding: 18px 8px;
+        font-size: 16px;
+        margin: 0;
+        cursor: pointer;
+        width: auto;
+        float: left;
+     }
+
+     .navbar-form.navbar-search .form-group { margin: 0 !important;}
+
+     // convert search bar to single icon
+     .navbar-form.navbar-search:after {
+        content: "\f002";
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        position: relative;
+        line-height: 1;
+        display: inline-block;
+        text-decoration: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        text-rendering: auto;
+        transform: translate(0,0);
+     }
+
+     // transform searchbar input to menu slider
+     .navbar-form.navbar-search input {
+        opacity: 0;
+        z-index: -1;
+        visibility: hidden;
+        position: absolute;
+        top: -60px;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        margin: 0;
+        font-size: 24px;
+        color: #AAA;
+        border-radius: 0;
+        border: 0;
+        text-align: center;
+        -webkit-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+     }
+
+     // modify search input height for ".square" style
+     .navbar-form.navbar-search.square input { height: 62px; }
+
+     .navbar-form.navbar-search input:focus,
+     .navbar.bg-light .navbar-form.navbar-search input:focus {
+        background-color: #FFF;
+     }
+     // slide menu down when set to open(search icon clicked)
+     .navbar-form.navbar-search.search-open input {
+        z-index: 1040;
+        opacity: 1 !important;
+        visibility: visible;
+        top: 0;
+        color: #666 !important;
+        border-bottom: 0;
+        background-color: #FFF !important;
+        -webkit-box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.08), 0px 2px 0px 0px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.08), 0px 2px 0px 0px rgba(0, 0, 0, 0.02) !important;
+     }
+     .navbar-form.navbar-search.search-open input:focus {
+       border-bottom-color: #DDD;
+     }
+
+     // close search bar icon
+     .navbar-form.navbar-search .search-remove {
+        display: none;
+        z-index: 1040;
+        position: absolute;
+        color: #AAA;
+        top: 0;
+        right: 0;
+        height: 60px;
+        line-height: 59px;
+        padding-left: 15px;
+        padding-right: 25px;
+     }
+     .navbar-form.navbar-search .search-remove:after {
+        position: relative;
+        content: "\e014";
+        font-family: 'Glyphicons Halflings';
+        text-align: center;
+        font-size: 20px;
+     }
+     .navbar-form.navbar-search.search-open .search-remove:hover {
+        color: lighten(@brand-danger, 10%);
+     }
+
+}
+
+/* Force Navbar Dropdowns to float and
+ * to occupy 100% width at low resolutions
+ */
+@media (max-width: 599px) {
+
+     // set parent to static
+     .sb-l-m .navbar > .navbar-right,
+     .navbar .navbar-nav > li.dropdown,
+     .navbar .navbar-nav > li.dropdown .navbar-btn {
+        position: static !important;
+     }
+     .navbar .navbar-right:last-child {
+        margin-right: 0;
+     }
+
+     // hide open dropdown top arrows
+     .navbar .nav > li.dropdown.open .dropdown-menu:after,
+     .navbar .nav > li.dropdown > .open .dropdown-menu:after {
+      display: none;
+     }
+
+     // recreate dropdown menus
+     .navbar-left .dropdown-menu,
+     .navbar-right .dropdown-menu,
+     .navbar-left .open .dropdown-menu,
+     .navbar-right .open .dropdown-menu {
+        z-index: 1000;
+        margin-top: 0 !important;
+        float: left;
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        min-width: 101%;
+        list-style: none;
+
+        background-color: #FFF;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        background-clip: padding-box;
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+     }
+
+     // revert usermenu dropdowns to absolute position
+     #user-status + .btn-group .multiselect-container.dropdown-menu,
+     #user-role + .btn-group .multiselect-container.dropdown-menu {
+        top: 34px !important;
+        position: absolute !important;
+        right: 0;
+        left: auto;
+     }
+
+}
+
+
+/*==========================================================
+  Widget Modifications for Navbar Dropdown Use
+=========================================================== */
+
+/* Timeline Widget */
+.navbar .nav > li.dropdown .timeline-list  {
+    font-size: 14px;
+
+    li.timeline-item {
+    	padding: 16px 70px 16px 52px;
+
+		// New Timeline Item helper class
+	    &.new-item {
+	    	background-color: #fffdee;
+	    }
+
+	    // Timeline "spine" - psuedo border that runs down the middle
+	    &:after {
+	    	display: none;
+	        top: 0;
+	        left: 21px;
+	    }
+
+        .timeline-icon {
+    	    top: 12px;
+    	    left: 9px;
+    	    width: 32px;
+    	    height: 32px;
+    	    line-height: 22px;
+    	    border-radius: 3px;
+        }
+        .timeline-desc {
+        	letter-spacing: 0;
+        }
+        .timeline-date {
+    	    font-size: 12px;
+    	    top: 17px;
+    	    right: 8px;
+        }
+    }
+}
+
+
+/*
+ * Chat Widget
+ */
+.navbar .nav > li.dropdown .chat-widget  {
+
+    // Author Avatar
+    .media-left { padding-right: 10px; }
+    .media-right { padding-left: 10px; }
+    .media-left img,
+    .media-right img {
+	    max-width: 35px;
+	    border-radius: 2px;
+	    border: 0;
+    }
+
+    // Media content
+    .media-body {
+	    padding: 5px;
+	    background-color: #fafafa;
+    }
+
+    // Author Status
+    .media-status {
+    	position: relative;
+		&:after {
+		    font-family: "FontAwesome";
+		    content: "\f111";
+			position: absolute;
+		    top: 0px;
+		    left: 3px;
+		    color: #AAA;
+		    font-size: 9px;
+		}
+		&.online:after {
+		    color: #70ca63;
+		}
+    }
+}
+
+
+/*
+ * Chat Widget - Alt
+*/
+.navbar .nav > li.dropdown .chat-widget-alt  {
+
+	// Media wrapper
+	.media {
+		padding: 13px 8px 13px 11px;
+		+ .media {
+			margin-top: 1px;
+			border-top: 1px solid #DDD;
+		}
+	}
+
+    // Media Left/Right
+    .media-left {
+    	padding-top: 3px;
+  	    padding-right: 15px;
+  	    vertical-align: top;
+    }
+    .media-right {
+    	padding-top: 2px;
+  	    padding-left: 15px;
+  	}
+
+  	// Avatar
+    .media-left img,
+    .media-right img {
+        max-width: 38px;
+        border-radius: 64px;
+        border: 1px solid #fff;
+    }
+
+    // Media content
+    .media-body {
+        padding: 0;
+        color: #7d7d7d;
+        font-size: 14px;
+        font-weight: normal;
+        background-color: transparent;
+
+		// Primary body content
+        p { margin: 0; }
+    }
+
+	// Media Timestamp
+    .media-timestamp {
+    	color: #9d9d9d;
+    	font-size: 13px;
+    	padding-top: 6px;
+    	.fa {
+    		// color: @gray-light;
+    		font-size: 13px;
+			font-weight: 300;
+    		padding-right: 5px;
+    	}
+    }
+
+    // Media Heading
+    .media-heading {
+    	color: @gray-darker;
+    	font-size: 14px;
+    	margin-top: 3px;
+    	margin-bottom: 10px;
+
+		// media heading as a link
+		a { color: @gray-darker; }
+
+    	// Media SubHeading, Used typically for metadata
+    	small {}
+
+    	// Media timestamps can also be placed inside of headers
+		.media-timestamp {
+			position: absolute;
+			right: 10px;
+			padding-top: 0;
+		}
+    }
+
+    // Media elements can have a status indicator(online, offline, away, dnd, etc)
+    // The indicator can be displayed automatically on the media avatar or header
+    //
+    // Helper class for status on media avatar/object
+    .media.media-status-avatar {
+    	.media-left {
+    		position: relative;
+    		&:before {
+    			content: "";
+    		    display: inline-block;
+    			position: absolute;
+    		    // top: 0px;
+    		    right: 15px;
+    		    width: 13px;
+    		    height: 13px;
+    		    border-radius: 50%;
+    		    border: 2px solid #FFF;
+    		    background-color: #AAA;
+    		}
+    	}
+    }
+    // Helper class for status next to media heading
+    .media.media-status-header {
+    	.media-heading {
+    		position: relative;
+    		padding-left: 17px;
+    		&:before {
+    			content: "";
+    			display: inline-block;
+    			position: absolute;
+    			top: 2px;
+    			left: -1px;
+    			width: 11px;
+    			height: 11px;
+    			border-radius: 50%;
+    			border: 1px solid #FFF;
+    			background-color: #AAA;
+    		}
+    	}
+    }
+
+	// Media elements can have a status indicator applied to the wrapper
+	// The helper classes below add/determine the indicators contextual status
+    .media-online {
+    	&.media-status-avatar .media-left:before {
+			background-color: darken(@brand-success, 4%);
+    	}
+    	&.media-status-header .media-heading:before {
+			background-color: darken(@brand-success, 4%);
+    	}
+    }
+    // Away Status
+    .media-away {
+    	&.media-status-avatar .media-left:before {
+			background-color: darken(@brand-warning, 3%);
+    	}
+    	&.media-status-header .media-heading:before {
+			background-color: darken(@brand-warning, 3%);
+    	}
+    }
+    // Media Do-Not-Disturb Status
+    .media-dnd {
+    	&.media-status-avatar .media-left:before {
+			background-color: lighten(@brand-danger, 5%);
+    	}
+    	&.media-status-header .media-heading:before {
+			background-color: lighten(@brand-danger, 5%);
+    	}
+    }
+}
+/* Helper that reverses padding inherit from parent .scroller-content */
+// .scroller-content .chat-widget-alt { margin: -12px; }
+
+
+/*
+ * Alerts Widget
+*/
+.navbar .nav > li.dropdown .alerts-widget  {
+
+    .media { position: relative; }
+
+    // Alert Left Col
+    .media-left {
+	    vertical-align: middle;
+    }
+
+    // Alert Icon
+    a.media-left {
+	    position: relative;
+	    vertical-align: top;
+	    padding: 1px 15px 0 0;
+
+		.fa,
+		.glyphicon {
+			color: #FFF;
+			font-size: 15px;
+			text-align: center;
+			width: 32px;
+			height: 32px;
+			line-height: 32px;
+			border-radius: 4px;
+			background-color: #AAA;
+		}
+    }
+
+    // Media Body
+    .media-body {
+    	color: lighten(@text-color, 4%);
+	    font-weight: 400;
+
+	    p {
+	    	margin-bottom: 3px;
+	    }
+	    b {
+	    	padding-right: 2px;
+	    	color: darken(@text-color, 10%);
+	    }
+    }
+
+    // Media Heading
+    .media-heading {
+    	margin-bottom: 5px;
+    }
+
+	// Media Timestamp
+    .media-timestamp {
+    	color: @text-muted;
+    	font-size: 13px;
+    }
+
+    // Media Right
+    .media-right {
+	    text-align: right;
+	    position: absolute;
+	    right: 0;
+	    top: -3px;
+
+        .btn.btn-xs {
+    	    font-size: 11px;
+    	    padding: 0px 5px;
+        }
+
+        .media-response {
+    	    font-size: 10px;
+    	    font-weight: 400;
+    	    margin-bottom: 2px;
+
+    	    &.single {
+    	      font-size: 11px;
+    	      padding-top: 10px;
+    	    }
+        }
+    }
+
+}
+
+
+/*
+ * User menu Widget
+*/
+.navbar-nav .user-menu .dropdown-menu {
+	width: 265px;
+	margin-right: 5px;
+
+	// Menu Caret
+	span.caret {
+		margin-right: 7px;
+	}
+
+	// Avatar
+	img {
+		max-width: 30px;
+		border: 2px solid transparent;
+    	+ .caret {
+    		margin-right: 0;
+    		margin-left: 7px;
+    	}
+	}
+
+	// Dropdown Content - Header
+	.dropdown-header {
+		color: #777;
+	    padding: 13px 15px 11px;
+
+		// User Name
+		h4 {
+		    color: #666;
+		    font-size: 15px;
+		    margin-top: 5px;
+		    margin-bottom: 5px;
+		}
+
+		// User Profile link
+		a.user-menu-link {
+		    color: #7e7e7e;
+		    font-size: 13px;
+			padding: 1px;
+		}
+
+		// Menu Gear Icon
+		a.user-menu-icon {
+		    color: #AAA;
+		    font-size: 21px;
+		    position: absolute;
+		    top: 7px;
+		    right: 10px;
+		    padding: 0;
+
+			&:hover,
+			&:focus,
+			&:active {
+				color: #555;
+			}
+		}
+	}
+
+	// Dropdown Footer
+	.dropdown-footer {
+
+		// Logout Link - Inner footer wrapper
+		a {
+			font-size: 14px;
+			padding: 7px 10px 9px;
+		}
+		// Logout link icon
+		span {
+			font-size: 13px;
+			padding-right: 3px;
+		}
+	}
+
+	// Dropdown Content - List group
+	&.list-group > li.list-group-item > a {
+		padding: 12px 13px;
+	}
+
+}

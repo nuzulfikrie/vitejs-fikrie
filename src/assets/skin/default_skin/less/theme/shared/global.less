@@ -1,0 +1,67 @@
+/*==================================================
+  Shared/Global Styles
+==================================================== */
+
+html {
+    background: #fff;
+}
+body {
+    font-family: @theme-active-font; // Defined in theme_settings.less
+    font-weight: @font-weight-base;
+
+    /* Fix for webkit rendering */
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    font-size-adjust: 100%;
+}
+#main {
+    visibility: visible;
+    overflow: hidden;
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    background: @main-bg;
+}
+
+/* psuedo background */
+#main:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: @main-bg;
+}
+#content_wrapper {
+    position: relative;
+    left: 0px;
+    margin-left: @sidebar-open-width;
+}
+
+/* Transitions */
+body.onload-check .navbar,
+body.onload-check .navbar-branding,
+body.onload-check #sidebar_left,
+body.onload-check #sidebar_right,
+body.onload-check #content_wrapper,
+body.onload-check .content-topbar {
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+
+// extend the overflow helper to the #main wrapper as its
+// responsible for handling this layouts overflow
+
+// Main overflow reassignment
+// #main is responsible for overflow handling. Swap it if
+// the body has a helper class forcing overflow
+body.of-y-h,
+body.of-y-h #main {
+    overflow-y: hidden;
+}
+body.hide-overflow,
+body.hide-overflow #main {
+    overflow-y: hidden;
+}

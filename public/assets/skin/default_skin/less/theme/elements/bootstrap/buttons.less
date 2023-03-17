@@ -1,0 +1,199 @@
+/*==================================================
+  Buttons
+==================================================== */
+
+// Base style modifications
+// --------------------------------------------------
+.btn {
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.12) rgba(0, 0, 0, 0.15);
+
+	// Two classes of btn states - active/open(including dropdown) and hover/focus
+	// these classes blanket and as desired override any color or gradient settings.
+	// The goal is to use the same state effects across all colors and effects so that
+	// unique overrides arent needed for every color and every gradient
+	// The .open .dropdown toggle is needed because bootstrap applies a seperate redundant shadow
+	// that will override our catch all if not applied to as well.
+	&:hover,
+	&:focus {
+		outline: 0 !important;
+	}
+    &:active,
+    &.active,
+    .open > .dropdown-toggle& {
+    	outline: 0 !important;
+        border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.18) !important;
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+    }
+
+    // Custom Btn Style/Helper Class
+    &.btn-rounded {
+        border-radius: 20px;
+    }
+
+}
+
+// Custom Gradient Style/Helper Class
+.btn-gradient {
+
+    .bg-gradient;
+
+	// Custom Gradient Style/Helper Class - Targeted Default Btn Styles
+	&.btn-default {
+	    .bg-gradient-light;
+	}  
+
+}
+
+                                
+@active-contextual: lighten(@brand-danger, 4%);
+@active-contextual-color:   #fff;
+@active-contextual-bg:      @active-contextual;
+@active-contextual-border:  @active-contextual;
+
+.active-contextual {
+
+    .btn.active {
+        .button-variant(@active-contextual-color; @active-contextual-bg; @active-contextual-border);
+        box-shadow: none !important;
+        background-image: none !important;
+    }
+
+    .btn-alt.active {
+        .button-variant(@active-contextual-color; @active-contextual-bg; @active-contextual-border);
+        box-shadow: none !important;
+        background-image: none !important;
+    }
+
+}
+
+// Link buttons
+// -------------------------
+.btn-link {
+    cursor: pointer;
+}
+
+
+// Custom Button Style "Alt"- white btns with thick left border
+// -----------------------------------------------------------------
+
+// default alt btns
+.btn.btn-alt {
+    position: relative;
+    margin: 8px 2px;
+    padding: 7px 12px;
+    color: #999;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    background-color: #fbfbfb;
+    border-radius: 1px;
+    border: 1px solid #EEE;
+    border-left: 4px solid #EEE;
+    transition: opacity 0.1s ease;
+    text-align: left;
+    
+    // Button States
+    &:focus,
+    &:hover,
+    &.active,
+    &.item-active {
+        color: #666;
+        background-color: #fefefe;
+    }
+
+    &.btn-alt-lg {
+        color: #555;
+        font-weight: 600;
+        text-align: center;
+        padding: 9px 12px;
+        font-size: 15px;
+        line-height: 1.49;
+        border-left-width: 5px;
+    }
+
+    // alt btns with gradient (set via .btn-gradient)
+    &.btn-gradient {
+        border-left: 4px solid #DDD;
+        background-color: #f0f0f0;
+        text-shadow: 0 -1px rgba(255, 255, 255, 0.4);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.08) rgba(0, 0, 0, 0.14);
+        background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.3) 100%);
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 10%, rgba(255, 255, 255, 0.3) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#00ffffff', GradientType=0);
+        &:hover,
+        &:focus {
+            background-color: #eee;
+        }
+    }
+
+    // Button custom state - "Checked"
+    &.item-checked {
+        opacity: 1;
+        color: #666;
+        border-left-color: @brand-success !important;
+        transition: all 0.2s ease;
+    }
+
+}
+
+
+
+// Custom Button Style "Holder" - applies a placeholder like style to the element
+// ---------------------------------------------------------------------------------------
+
+.holder-style {
+    display: block;
+    padding: 9px 16px;
+    color: #AAA;
+    border: 0;
+    background-color: #f1f1f1;
+    outline: 2px solid #d9d9d9;
+    transition: all 0.2s ease;
+
+    // holder states
+    &:hover,
+    &:focus {
+        cursor: pointer;
+        color: #777;
+        outline: 2px solid #aaa;
+        border: 0;
+        text-decoration: none;
+    }
+    // active holder item
+    &.holder-active {
+        background-color: #FFF;
+        outline-color: @brand-success;
+    }
+
+    // holder icon
+    .holder-icon {
+        color: #AAA;
+        font-size: 30px;
+        padding-bottom: 10px;
+    }
+
+    // holder icon states
+    &:hover .holder-icon,
+    &:focus .holder-icon,
+    &.holder-active .holder-icon {
+        color: @brand-success;
+    }
+
+}
+
+
+// Button Hover Effects 
+// ------------------------------------------------
+
+// '.btn-dimmer' - Dims all child btn except active & :hover btns
+.btn-dimmer.btn,
+.btn-dimmer .btn {
+    opacity: 0.65;
+}
+.btn-dimmer.btn:hover,
+.btn-dimmer .btn:hover,
+.btn-dimmer.btn.item-active,
+.btn-dimmer .btn.item-active {
+    opacity: 1;
+}

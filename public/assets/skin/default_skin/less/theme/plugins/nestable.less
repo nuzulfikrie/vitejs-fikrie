@@ -1,0 +1,82 @@
+/*===============================================
+  Nestable
+================================================= */
+.nestable-lists {
+    .clearfix
+}
+.dd-content,
+.dd-dragel,
+.dd-handle {}
+
+/*nestable*/
+.dd {
+    max-width: 100%;
+}
+
+/* Item heading */
+.dd-handle {
+    display: block;
+    height: auto;
+    cursor: pointer;
+    margin: 7px 0;
+    padding: 10px 14px;
+    color: #777;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 2px;
+    border: 1px solid #ddd;
+
+    background-color: #f2f2f2;
+}
+
+/* heading hover */
+.dd-handle:hover {
+    color: #333;
+    background: #ededed;
+}
+.dd-handle:hover + .dd-content {
+    border-color: lighten(@brand-warning, 15%);
+}
+.dd-item > button {
+    margin: 7px 0;
+}
+
+/* item content */
+.dd-content {
+    margin-top: -5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-top: 0;
+    background: #fafafa;
+}
+.dd-list .dd-list {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/* heading/content - dragged */
+.dd-dragel .dd-content,
+.dd-dragel .dd-handle {}
+
+// empty dd dragging port
+.dd-empty {
+    background: #f8f8f8;
+}
+
+// dd handle contextuals
+.dd-item.dd-info > button,
+.dd-item.dd-primary > button {
+    color: #FFF;
+}
+.dd-item.dd-primary .dd-handle {
+    color: #FFF;
+    background-color: #4a89dc !important;
+    border-color: #4a89dc !important;
+}
+.dd-item.dd-info .dd-handle {
+    color: #FFF;
+    background-color: #3bafda !important;
+    border-color: #3bafda !important;
+}
+

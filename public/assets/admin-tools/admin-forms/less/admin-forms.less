@@ -1,0 +1,187 @@
+// Form Mixins & Vars
+@import "_variables.less";
+@import "skins/mixins/admin-skins.less";
+
+// Form Core
+@import "_elements.less";
+@import "_plugins.less";
+
+
+// Include Form Skins
+// ---------------------------------------------------------------------------
+// All form skins are included in individual files in "admin-forms/css/skins"
+// To use a skin simply include the skins stylesheet along with the primary 
+// admin-forms.css on the page. Alternatively you can uncomment the skins below
+// that you wish to use. This will result in the skin being injected directly into
+// admin-forms.css, which will no longer require you to link a seperate skin stylesheet
+
+// @import "skins/theme-primary.less";  // Primary Skin
+// @import "skins/theme-success.less";  // Success Skin
+// @import "skins/theme-info.less";     // Info Skin
+// @import "skins/theme-warning.less";  // Warning Skin
+// @import "skins/theme-danger.less";   // Danger Skin
+// @import "skins/theme-alert.less";    // Alert Skin
+// @import "skins/theme-system.less";   // System Skin
+// @import "skins/theme-dark.less";     // Dark Skin
+
+@import "skins/all-themes.less";     // All skins. This results in a large file and is not recommended
+			
+
+/*==================================================================
+  Bootstrap Compatibility Fixes
+===================================================================
+  Panel
+===================================================================*/
+.admin-form .panel {
+    // margin-bottom: 30px;
+    // background-color: #ffffff;
+    // border: 1px solid #DDD;
+
+    // // Panel Border settings
+    // > :first-child {
+    //     border-top: 1px solid #d7d7d7;
+    // }
+    // // Panel Content border
+    // > div + div {
+    //     border-top: 1px solid #d7d7d7;
+    // }
+    // // Bottom panel border
+    // > :last-child {
+    //     border-bottom: 1px solid #bcbcbc;
+    // }
+}
+
+
+/*==================================================================
+  Panel Header
+===================================================================*/
+.admin-form .panel-heading { 
+    height: 65px;
+    line-height: 62px;
+    // overflow:hidden;
+    // position:relative;
+    // height: auto;
+    // padding: 19px 22px 18px;  
+    // color: #999;
+    // border-radius: 0;
+    // // border-top: 1px solid transparent;
+    // // border-left: 0;
+    // // border-right: 0;
+    // // border-bottom: 1px solid #DDD;
+    // background-color: #FAFAFA;
+
+
+    // border-left: 1px solid @panel-body-border-color;
+    // border-right: 1px solid @panel-body-border-color;
+
+}
+
+.admin-form .panel.border-top {
+    border-top-width: 8px;
+    border-top-color: #AAA;
+}
+
+// .admin-form .heading-border:before { 
+//   content:"";
+//   background-color:#9999A3;  
+//   position:absolute;
+//   height:10px;  
+//   z-index:1; 
+//   top: 0;
+//   right: 0;  
+//   left:0;
+// }
+// .admin-form .heading-border .panel-heading { 
+//   padding: 30px 22px 17px;  
+// }
+// .admin-form .heading-border .panel-title { 
+//   color: #999;
+// }
+.admin-form .panel-title { 
+  font-size: 19px; 
+  padding-left: rasre;
+  // text-align:left;
+  // font-weight:300; 
+  // padding:0;
+  // margin:0; 
+  // background: transparent; 
+}
+.admin-form .panel-title i { 
+  font-size: 22px;
+  position:relative; 
+  margin-right:15px;
+  min-width: 25px;
+  top: 0; 
+}
+
+/*==================================================================
+  Panel Body
+===================================================================*/
+// .admin-form .panel-body {
+//   padding: 25px;
+//   // border: 0;
+
+//     border-left: 1px solid @panel-body-border-color;
+//     border-right: 1px solid @panel-body-border-color;
+// }
+
+/*==================================================================
+  Panel Footer
+===================================================================*/
+// .admin-form .panel-footer { 
+//     padding: 12px 13px; 
+//     // border: 0;
+//     // border-top: 1px solid #DDD;
+//     background-color: #f2f2f2;
+
+//     border-left: 1px solid @panel-body-border-color;
+//     border-right: 1px solid @panel-body-border-color;    
+// }
+
+
+/*==================================================================
+  Progress Bars 
+===================================================================*/
+.admin-form .progress-section { display:none; } 
+
+.progress-striped .progress-bar, .progress-bar-striped {
+    background-size: 18px 18px;  
+    background-image: -webkit-linear-gradient(top left,  
+            transparent, transparent 25%, rgba(255, 255, 255, 0.3) 25%, rgba(255, 255, 255, 0.3) 50%, 
+            transparent 50%, transparent 75%, rgba(255, 255, 255, 0.3) 75%, rgba(255, 255, 255, 0.3));
+            
+    background-image: -moz-linear-gradient(top left,  
+            transparent, transparent 25%, rgba(255, 255, 255, 0.3) 25%, rgba(255, 255, 255, 0.3) 50%, 
+            transparent 50%, transparent 75%, rgba(255, 255, 255, 0.3) 75%, rgba(255, 255, 255, 0.3));
+            
+    background-image: -o-linear-gradient(top left,  
+            transparent, transparent 25%, rgba(255, 255, 255, 0.3) 25%, rgba(255, 255, 255, 0.3) 50%, 
+            transparent 50%, transparent 75%, rgba(255, 255, 255, 0.3) 75%, rgba(255, 255, 255, 0.3));
+            
+    background-image: linear-gradient(to bottom right,  
+            transparent, transparent 25%, rgba(255, 255, 255, 0.3) 25%, rgba(255, 255, 255, 0.3) 50%, 
+            transparent 50%, transparent 75%, rgba(255, 255, 255, 0.3) 75%, rgba(255, 255, 255, 0.3));
+}
+
+/*==================================================================
+  Checkbox/Radio Confliction fixes
+===================================================================*/
+.admin-form .radio,
+.admin-form .checkbox {
+  margin-top:0;
+  margin-bottom:0;
+  padding-left:0;
+  top:1px;
+  vertical-align: bottom;
+}
+ 
+.admin-form .checkbox:after,
+.admin-form .checkbox:before{
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -o-box-sizing: content-box;
+  box-sizing: content-box;
+}
+

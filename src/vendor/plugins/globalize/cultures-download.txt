@@ -1,0 +1,2 @@
+Refer to git branch https://github.com/globalizejs/globalize
+for downloading any globalize language cultures

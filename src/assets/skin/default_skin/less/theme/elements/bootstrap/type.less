@@ -1,0 +1,191 @@
+/*==================================================
+  Typography - Check
+==================================================== */
+
+// Bold Style Global Override
+b,
+strong {
+    font-weight: 600;
+}
+
+// Links
+// -------------------------
+.link-unstyled,
+a.link-unstyled {
+    color: @text-color; // @link-color-dark
+    &:active,
+    &:focus,
+    &:hover {
+        color: darken(@text-color, 10%); // @link-hover-color-dark
+        text-decoration: none;
+    }
+}
+
+.link-unstyled-hover,
+a.link-unstyled-hover {
+    color: @text-color; // @link-color-dark
+    &:active,
+    &:focus,
+    &:hover {
+        color: darken(@brand-primary, 2%); // @link-hover-color-dark
+        text-decoration: none;
+    }
+}
+
+// Headings
+// -------------------------
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    text-rendering: optimizelegibility;
+}
+.h1, .h2, .h3, h1, h2, h3 {
+    .small, small {
+        font-size: 75%;
+    }
+}
+.h4, .h5, .h6, h4, h5, h6 {
+    .small, small {
+        font-size: 88%;
+    }
+}
+.h1 .small, h1 small {
+    font-size: 70%;
+}
+.h6, h6 {
+    font-size: @font-size-h6;
+    color: @font-color-h6;
+}
+
+// Headings Helper Classes
+// ---------------------------
+.short {
+    line-height: 1.5;
+}
+.tall {
+    line-height: 1.8;
+}
+
+
+// Emphasis & misc
+// -------------------------
+
+// Undo browser default styling
+cite {
+    font-style: normal;
+}
+
+// Page header
+// -------------------------
+
+.page-header {
+    padding-bottom: ((@line-height-computed / 2) + 7);
+}
+
+// Content header
+// -------------------------
+
+.content-header {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 35px;
+}
+.content-header h1,
+.content-header h2,
+.content-header h3,
+.content-header h4 {
+    line-height: 30px;
+    margin-top: 15px;
+}
+
+// Micro Content header
+// -------------------------
+.micro-header {
+    color: #999;
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+// Misc
+// -------------------------
+
+// Blockquotes
+blockquote {
+
+    // blockquote options
+    &.blockquote-rounded {
+        border-radius: 11px;
+    }
+    &.blockquote-thin {
+        border-width: 3px;
+    }
+
+}
+
+// Quotes
+blockquote:after,
+blockquote:before {
+    content: "";
+}
+
+// Dropcaps
+.dropcap {
+    min-height: 75px;
+    &:first-letter {
+        font-family: 'Droid Serif', serif;
+        float: left;
+        color: #555;
+        font-size: 60px;
+        font-weight: 600;
+        line-height: 45px;
+        padding: 5px;
+        margin: 0 5px 0 0;
+    }
+    &.lead:first-letter {
+        font-size: 90px;
+        line-height: 25px;
+    }
+    &.dropcap-fill:first-letter {
+        border-radius: 6px;
+        color: #FFF;
+        margin: 0 10px 0 0;
+    }
+    &.lead.dropcap-fill:first-letter {
+        border-radius: 6px;
+        color: #FFF;
+        margin: 0 10px 0 0;
+        padding-bottom: 26px;
+    }
+
+}
+
+/*===============================================
+  D. Dividers
+================================================= */
+hr {
+    margin: 35px 0;
+    border-top: 1px solid #DDD;
+}
+hr.alt {
+    border-top: 1px dashed #CCC;
+}
+hr.short {
+    margin: 20px 0;
+}
+hr.shorter {
+    margin: 15px 0;
+}
+hr.tall {
+    margin: 55px 0;
+}
+
+hr.dotted,
+hr.dashed {
+    border-style: dotted;
+}
+
+.divider {
+    height: 1px;
+    margin: 25px 0;
+    background: #e2e2e2;
+}
+
