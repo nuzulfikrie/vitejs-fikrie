@@ -1,0 +1,46 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"vetur.useWorkspaceDependencies": true,
+		"vetur.experimental.templateInterpolationService": true,
+		"editor.minimap.enabled": false,
+		"editor.theme": "Shades Of Purple(Super Dark)",
+		"terminal.integrated.fontFamily": "UbuntuMono Nerd Font",
+		"terminal.integrated.defaultProfile.linux": "zsh",
+		"terminal.integrated.fontSize": 15,
+		"editor.fontFamily": "UbuntuMono Nerd Font",
+	},
+	"tasks": [
+		{
+			"label": "Build",
+			"type": "shell",
+			"command": "npm run build",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Start",
+			"type": "shell",
+			"command": "npm start",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Test",
+			"type": "shell",
+			"command": "npm test",
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
+		}
+	]
+}

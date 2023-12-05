@@ -1,4 +1,6 @@
-import PanelBody  from "./PanelBody";
+import PanelBody  from "../Panel/PanelBody";
+import  './../../../assets'
+
 const BasePanel = () => {
   return (
     <div className="panel panel-system">
