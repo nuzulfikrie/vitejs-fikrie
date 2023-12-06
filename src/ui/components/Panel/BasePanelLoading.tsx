@@ -1,13 +1,14 @@
-import PanelBody from "../Panel/PanelBody";
-import './../../../assets/css/loading.css';
+import "./../../../assets/css/loading.css";
 
-const BasePanel = () => {
+const BasePanelLoading = () => {
     return (
-        <div className="panel panel-system">
+        <div className="panel panel-default">
             <div className="panel-heading fill">
             </div>
             <div className="panel-footer">
+                <div className="container">
                 <div className="loading-spinner"></div>
+                </div>
             </div>
             <div className="panel-footer">
             </div>
@@ -15,4 +16,4 @@ const BasePanel = () => {
     );
 };
 
-export default BasePanel;
+export default BasePanelLoading;

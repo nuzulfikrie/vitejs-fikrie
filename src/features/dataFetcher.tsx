@@ -1,10 +1,10 @@
 import axios from 'axios';
+import URL_LINKS from '../constants/urls';
 
-
-export const useFetchData = () => {
+const useFetchData = (url:string) => {
   return new Promise((resolve, reject) => {
     try {
-      axios.post('https://example.com/api').then(res =>{
+      axios.post(url).then(res =>{
         resolve(res.data);
       })
     } catch (err) {
@@ -12,3 +12,12 @@ export const useFetchData = () => {
     }
   });
 };
+
+
+const fetchStep07 = async () => {
+  const url = URL_LINKS.STEP07.value;
+  const data = await useFetchData(url);
+  return data;
+};
+
+export { fetchStep07};

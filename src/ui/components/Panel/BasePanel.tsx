@@ -1,16 +1,22 @@
+import React from "react";
 import PanelBody  from "../Panel/PanelBody";
-import  './../../../assets'
+import PanelFooter from "../Panel/PanelFooter";
 
-const BasePanel = () => {
+interface BasePanelProps {
+  title: string;
+  data: string; //parsed json data
+
+};
+
+
+const BasePanel: React.FC<BasePanelProps> = ({ title, data }) => {
   return (
     <div className="panel panel-system">
       <div className="panel-heading fill">
-        <span className="title">Panel Heading</span>
+        <span className="panel-title">{title}</span>
       </div>
-      <PanelBody/>
-      <div className="panel-footer">
-        Panel Footer
-      </div>
+      <PanelBody data={data} />
+      <PanelFooter/>
     </div>
   );
 };
