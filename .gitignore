@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 
+# all files inside mock folder
+mock
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

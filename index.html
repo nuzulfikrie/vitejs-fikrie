@@ -1846,6 +1846,12 @@
     <script src="assets/js/main.js"></script>
   <script type="text/javascript">
       domready(function() {
+        let user_id = 365;
+        let course_id = 864;
+
+        //store in local storage
+        localStorage.setItem("user_id", user_id);
+        localStorage.setItem("course_id", course_id);
 
         // Init Demo Functionality
         Demo.init({ disableLayout: true })
@@ -1855,7 +1861,8 @@
 
     });
     window.reactInit = {
-      user_id: '<?php echo $user_id; ?>',
+      user_id: 365,
+      course_id: 864,
       _csrfToken: "<?php echo $this->request->getParam('_csrfToken')  ?>"
     };
 

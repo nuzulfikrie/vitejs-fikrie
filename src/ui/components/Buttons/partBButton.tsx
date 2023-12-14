@@ -1,25 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const PartBButton = () => {
-    //button name
-    
-    const [buttonName, setButtonName] = useState('Info');
-    const [isEnabled, setIsEnabled] = useState(true);
+interface PartBButtonProps {
+  buttonName: string;
+  isComplete: boolean;
+  rqConstruct: string;
+  openDrawer: (operation: string, keyIdentifer: string) => void;
 
-    const handleClick = () => {
-        // Handle button click event here
-    };
+  isDrawerOpen: boolean;
+}
 
+const handleButtonClass = (isComplete: boolean) => {
+  if (isComplete === true) {
+    return "btn btn-lg btn-dark btn-block";
+  } else {
+    return "btn btn-lg btn-danger btn-block";
+  }
+};
+
+const handleButtonHover = (isComplete: boolean) => {
+  if (isComplete === true) {
+    return "";
+  } else {
+    return "this subtheme is not complete";
+  }
+};
+
+const PartBButton = ({
+  buttonName,
+  isComplete,
+  rqConstruct,
+  openDrawer,
+  isDrawerOpen,
+}: PartBButtonProps): JSX.Element => {
+
+  //IF OPENDRAWER FALSE
+  //IF OPENDRAWER TRUE
+  if (isDrawerOpen === false) {
     return (
-        <button
-            type="button"
-            className={`btn btn-lg btn-info btn-block ${isEnabled ? '' : 'disabled'}`}
-            onClick={handleClick}
-            disabled={!isEnabled}
-        >
-            Info
-        </button>
+      <button
+        type="button"
+        className={handleButtonClass(isComplete)}
+        id={buttonName}
+        title={handleButtonHover(isComplete)}
+        onClick={() => openDrawer("partB", rqConstruct)}
+      >
+        {buttonName}
+      </button>
     );
+  } else {
+    return (
+      <button
+        type="button"
+        className={handleButtonClass(isComplete)}
+        id={buttonName}
+        title={handleButtonHover(isComplete)}
+        onClick={() => openDrawer("partB", rqConstruct)}
+      >
+        {buttonName + ' ' + rqConstruct}
+      </button>
+    );
+  }
 };
 
 export default PartBButton;
