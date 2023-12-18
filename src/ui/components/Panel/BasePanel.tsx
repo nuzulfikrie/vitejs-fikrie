@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import PanelBody  from "../Panel/PanelBody";
+import PanelBody from "../Panel/PanelBody";
 import PanelFooter from "../Panel/PanelFooter";
-import { getEagletableType,getRqConstructSet,getSubthemelist,getCompletedB } from "../../../utility/basePanelDataExtractor";
+import { getEagletableType, getRqConstructSet, getSubthemelist, getCompletedB } from "../../../utility/basePanelDataExtractor";
 
 //HOOK 
 
@@ -10,13 +10,14 @@ import { getEagletableType,getRqConstructSet,getSubthemelist,getCompletedB } fro
 interface BasePanelProps {
   title: string;
   data: {
-    data:Data;
+    data: Data;
   };
-  showAlertError: (errorMessage:string) => void;
-  showAlertSuccess: (successMessage:string) => void;
-  openDrawer: (operation:string,keyIdentifer:string) => void;
+  showAlertError: (errorMessage: string) => void;
+  showAlertSuccess: (successMessage: string) => void;
+  openDrawer: (operation: string, keyIdentifer: string, keyIdentifierSecond:string, userId: string, projectId: string) => void;
   isDrawerOpen: boolean;
-
+  projectId: string;
+  userId: string;
 };
 interface Data {
   status: string;
@@ -55,40 +56,36 @@ interface Subtheme {
 }
 
 
-const BasePanel: React.FC<BasePanelProps> = ({ title, data, showAlertError, showAlertSuccess, openDrawer, isDrawerOpen }) => {
+const BasePanel: React.FC<BasePanelProps> = ({ title, data, showAlertError, showAlertSuccess, openDrawer, isDrawerOpen, userId, projectId }) => {
   const eagletableType = getEagletableType(data.data);
   const rqConstructSet = getRqConstructSet(data.data);
   const subthemeList = getSubthemelist(data.data);
   const completedB = getCompletedB(data.data);
-
-  console.log('----------- data base panel --------------');
-  console.log(data);
-useEffect(() => {
-  //on finish loading
-  //show alert success
-  if (data.data.status === '"success"') {
-    showAlertSuccess('Data loaded successfully');
-  } else {
-    showAlertError(data.data.message);
-  }
-});
+  useEffect(() => {
+    if (data.data.status === '"success"') {
+      showAlertSuccess('Data loaded successfully');
+    } else {
+      showAlertError(data.data.message);
+    }
+  });
 
   return (
     <div className="panel panel-system">
       <div className="panel-heading fill">
         <span className="panel-title">{title}</span>
       </div>
-      <PanelBody 
-      eagletableType={eagletableType}
-       rqConstructSet={rqConstructSet} 
-       subthemeList={subthemeList} 
-       completedB={completedB}      
+      <PanelBody
+        eagletableType={eagletableType}
+        rqConstructSet={rqConstructSet}
+        subthemeList={subthemeList}
+        completedB={completedB}
         openDrawer={openDrawer}
         isDrawerOpen={isDrawerOpen}
-      
-      
+        userId={userId}
+        projectId={projectId}
+
       />
-      <PanelFooter/>
+      <PanelFooter />
     </div>
   );
 };

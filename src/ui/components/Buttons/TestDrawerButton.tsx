@@ -2,7 +2,7 @@ import React from 'react';
 
 interface TestDrawerButtonProps {
     closeDrawer: () => void;
-    openDrawer: (operation:string,keyIdentifer:string) => void;
+    openDrawer: (operation: string, keyIdentifer: string, keyIdentifierSecond: string, userId: string, projectId: string) => void;
     drawerOpen: boolean;
 }
 
@@ -11,7 +11,7 @@ const TestDrawerButton = ({ closeDrawer, openDrawer, drawerOpen }: TestDrawerBut
         if (drawerOpen) {
             closeDrawer();
         } else {
-            openDrawer('test','test');
+            openDrawer('test','test','test','test');
         }
     };
 

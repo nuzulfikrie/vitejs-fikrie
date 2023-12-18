@@ -8,6 +8,10 @@ const URL_LINKS = {
             'key': 'SUBTHEME',
             'value': 'https://oldsingaporewip3.theeagle.center/api/courses/get-subtheme-data/',
         },
+        DATATABLE:{
+            'key': 'DATATABLE',
+            'value': 'https://oldsingaporewip3.theeagle.center/api/courses/get-data-table-data/',
+        },
         
 };
 

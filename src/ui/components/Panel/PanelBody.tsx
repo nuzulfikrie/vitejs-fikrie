@@ -7,10 +7,17 @@ interface PanelBodyProps {
   rqConstructSet: object;
   subthemeList: { [key: string]: any }; // Add index signature
   completedB: { [key: string]: completedB[] }; // Add index signature
-  openDrawer: (operation: string, keyIdentifer: string) => void;
+  openDrawer: (operation: string, keyIdentifer: string, keyIdentifierSecond: string, userId: string, projectId: string) => void;
   isDrawerOpen: boolean;
+  userId: string;
+  projectId: string;
 
 
+}
+
+interface completedB {
+  //just array of booleans
+  [key: string]: boolean;
 }
 
 const PanelBody: React.FC<PanelBodyProps> = ({
@@ -20,13 +27,10 @@ const PanelBody: React.FC<PanelBodyProps> = ({
   completedB,
   openDrawer,
   isDrawerOpen,
+  userId,
+  projectId,
 }) => {
   const sort = getRqSortData(eagletableType);
-
-  console.log("--- sort --");
-  console.log(sort);
-
-  //(3) ['who', 'what', 'how'] we use this to draw table
 
   return (
     <div className="panel-body">
@@ -40,8 +44,8 @@ const PanelBody: React.FC<PanelBodyProps> = ({
         </thead>
         <tbody>
 
-            {sort && sort.map((key) => (
-              <tr key={key}>
+          {sort && sort.map((key) => (
+            <tr key={key}>
 
               <RowPanelTable
                 rqConstructKey={key}
@@ -49,10 +53,12 @@ const PanelBody: React.FC<PanelBodyProps> = ({
                 rowspan={subthemeList[key].length}
                 rowData={subthemeList[key]}
                 completedB={completedB} // Add completedB prop
-                  openDrawer={openDrawer}
-                  isDrawerOpen={isDrawerOpen}
+                openDrawer={openDrawer}
+                isDrawerOpen={isDrawerOpen}
+                userId={userId}
+                projectId={projectId}
               />
-              </tr>
+            </tr>
 
           ))}
 

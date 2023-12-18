@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import "./../../../assets/css/loading.css";
 
 
 interface PartAButtonProps {
   buttonName: string;
   isComplete: boolean;
   subthemeId: string;
-  openDrawer: (operation: string, keyIdentifer: string) => void;
+  openDrawer: (operation: string, keyIdentifer: string, keyIdentifierSecond: string, userId: string, projectId: string) => void;
   isDrawerOpen: boolean;
-
+  rqConstructKey: string;
+  userId: string;
+  projectId: string;
 
 };
 
@@ -33,8 +36,10 @@ const PartAButton = ({
   isComplete,
   subthemeId,
   openDrawer,
-  isDrawerOpen
-
+  isDrawerOpen,
+  rqConstructKey,
+  userId,
+  projectId,
 }: PartAButtonProps): JSX.Element => {
 
 
@@ -48,7 +53,10 @@ const PartAButton = ({
         title={handleButtonHover(isComplete)}
         onClick={() => openDrawer(
           'partA',
-          subthemeId
+          subthemeId,
+          rqConstructKey,
+          userId,
+          projectId,
         )}
       >
         {buttonName}
@@ -64,7 +72,10 @@ const PartAButton = ({
         title={handleButtonHover(isComplete)}
         onClick={() => openDrawer(
           'partA',
-          subthemeId
+          subthemeId,
+          rqConstructKey,
+          userId,
+          projectId,
         )}
       >
         {buttonName}

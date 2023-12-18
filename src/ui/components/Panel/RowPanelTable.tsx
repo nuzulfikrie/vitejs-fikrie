@@ -15,15 +15,19 @@ interface rowPanelTableProps {
   completedB: {
     [key: string]: completedB[];
   };
-  openDrawer: (operation: string, keyIdentifer: string) => void;
+  openDrawer: (operation: string, keyIdentifer: string, keyIdentifierSecond: string, userId: string, projectId: string) => void;
   isDrawerOpen: boolean;
+  userId: string;
+  projectId: string;
 }
 
 interface completedB {
   //just array of booleans
   [key: string]: boolean;
 }
-
+interface rqConstructSet {
+  rqConstructKey: string;
+};
 const createTDRandomKey = (key: string) => {
   return key + Math.random();
 };
@@ -36,6 +40,8 @@ const RowPanelTable: React.FC<rowPanelTableProps> = ({
   completedB,
   openDrawer,
   isDrawerOpen,
+  userId,
+  projectId,
 }) => {
 
   console.log('--- row data ---');
@@ -49,9 +55,12 @@ const RowPanelTable: React.FC<rowPanelTableProps> = ({
             <PartAButton
               buttonName={rowData.subtheme_description}
               isComplete={rowData.flag_subtheme_complete}
-              subthemeId={rowData.subtheme_id}
+              subthemeId={rowData.subtheme_id.toString()}
               openDrawer={openDrawer}
               isDrawerOpen={isDrawerOpen}
+              rqConstructKey={rqConstructKey}
+              userId={userId}
+              projectId={projectId}
             />
           );
         })}

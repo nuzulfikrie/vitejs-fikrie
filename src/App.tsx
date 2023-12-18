@@ -8,13 +8,22 @@ import TestButtonError from './ui/components/Buttons/TestButtonError';
 import TestHideButton from './ui/components/Buttons/TestHideButton';
 import jsonData from './mock/data.json'; //only for dev purpose, replace with your actual API response
 import { parseDataForEagletable, getRqSortData } from './utility/eagletableTypeUtils';
+import { Drawer } from './ui/components/Drawer/Drawer';
 import { fetchStep07 } from './features/dataFetcher';
-import { Drawer } from './ui/components/Drawer/drawer';
 import TestDrawerButton from './ui/components/Buttons/TestDrawerButton';
 
 
 
 function App(this: any) {
+
+  //---------//
+  // state //
+  //---------//
+
+  const [userId, setUserId] = useState(''); //user id
+  const [projectId, setProjectId] = useState(''); //project id
+
+
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(true);
@@ -23,12 +32,10 @@ function App(this: any) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerOperation, setDrawerOperation] = useState('');
   const [drawerKeyIdentifier, setDrawerKeyIdentifier] = useState('');
+  const [drawerKeyIdentifierSecond, setDrawerKeyIdentifierSecond] = useState('');
+  const [drawerLoading, setDrawerLoading] = useState(false);
 
 
-  //in drawer panel state
-  const [showAlertDrawer, setShowAlertDrawer] = useState(false);
-  const [alertMessageDrawer, setAlertMessageDrawer] = useState('');
-  const [alertClassNameDrawer, setAlertClassNameDrawer] = useState('');
 
   // Data state
   const [data, setData] = useState({});
@@ -41,7 +48,21 @@ function App(this: any) {
   const testMessage = 'This is a test message';
   const testClassName = 'alet alert-danger';
 
+
+
+//-----------//
+// HOOKS     // 
+//-----------//
+
+
+
+
   useEffect(() => {
+
+    setUserId(localStorage.getItem('user_id') || '');
+
+    setProjectId(localStorage.getItem('course_id') || '');
+
     const fetchData = async () => {
       setIsLoading(true); // Set loading to true before fetching data
 
@@ -193,9 +214,10 @@ function App(this: any) {
 
   };
 
-  const openDrawer = (operation: string, keyIdentifer: string) => {
+  const openDrawer = (operation: string, keyIdentifer: string, keyIdentifierSecond:string, userId:string ,projectId:string) => {
     setIsDrawerOpen(true);
     setDrawerOperationValue(operation, keyIdentifer);
+    setDrawerKeyIdentifierSecond(keyIdentifierSecond);
   };
 
   const setDrawerOperationValue = (operation: string, keyIdentifer: string) => {
@@ -204,7 +226,10 @@ function App(this: any) {
   };
 
 
-
+const handleDrawerLoading = (loading: boolean) => {
+    setDrawerLoading(loading);
+  
+};
 
   const handleClick = () => {
     if (isDrawerOpen) {
@@ -212,38 +237,13 @@ function App(this: any) {
     } else {
       openDrawer(
         'test',
+        'test',
+        'test',
+        'test',
         'test'
       );
     }
   };
-
-
-
-  const showAlertSuccessDrawer = (successMessage: string) => {
-    let className = 'alert alert-success';
-    let message = successMessage;
-    let visible = true;
-
-
-    setAlertClassNameDrawer(className);
-    setAlertMessageDrawer(message);
-    setShowAlertDrawer(visible);
-  };
-  const showAlertErrorDrawer = (errorMessage: string) => {
-
-    console.log(' show alert error ');
-    console.log(errorMessage);
-    console.log(' show alert error ');
-
-    let className = 'alert alert-danger';
-    let message = errorMessage;
-    let visible = true;
-    setAlertClassNameDrawer(className);
-    setAlertMessageDrawer(message);
-    setShowAlertDrawer(visible);
-
-  };
-
 
 
   //convert json to array
@@ -261,19 +261,37 @@ function App(this: any) {
         (
           <>
             <BaseAlert message={alertMessage} className={alertClassName} visible={showAlert} />
+            {/* /*
+            const Drawer = ({
+  isOpen,
+  loading,
+  children,
+  direction = DrawerDirection.Right,
+  onClose,
+  closeDrawer,
+  handleDrawerLoading,
+  openDrawer,
+  drawerOpen,
+  operation,
+  keyIdentifier,
+  userId,
+  projectId,
+  keyIdentifierSecond,
+}: Props) => {
+  */ }
             <Drawer
               closeDrawer={closeDrawer}
+              loading={drawerLoading}
               openDrawer={openDrawer}
               drawerOpen={isDrawerOpen}
+                handleDrawerLoading={handleDrawerLoading}
               isOpen={isDrawerOpen}
               onClose={() => setIsDrawerOpen(false)}
               operation={drawerOperation}
               keyIdentifier={drawerKeyIdentifier}
-              alertClassNameDrawer={alertClassNameDrawer}
-              alertMessageDrawer={alertMessageDrawer}
-              showAlertDrawer={showAlertDrawer}
-              showAlertSuccessDrawer={showAlertSuccessDrawer}
-              showAlertErrorDrawer={showAlertErrorDrawer}
+              userId={userId}
+              projectId={projectId}
+              keyIdentifierSecond={drawerKeyIdentifierSecond}
 
             >
               <p>Drawer</p>
@@ -285,6 +303,8 @@ function App(this: any) {
               showAlertSuccess={showAlertSuccess}
               openDrawer={openDrawer}
               isDrawerOpen={isDrawerOpen}
+              userId={userId}
+              projectId={projectId}
             />
             <TestButtonSuccess onClick={clicksuccess} />
             <TestButtonError onClick={clickerror} />
