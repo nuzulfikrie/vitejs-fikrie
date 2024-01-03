@@ -1,0 +1,142 @@
+{
+  "status": "success",
+  "is_article": false,
+  "message": "Data for step seven",
+  "key": "step07",
+  "course_id": 864,
+  "rqConstructSet": {
+    "who": "PPPNP organizational structure",
+    "what": "Sustainable Agriculture",
+    "how": "achieving Cost efficiency"
+  },
+  "subthemeList": {
+    "who": [
+      {
+        "subtheme_description": "Process hello EDIT ",
+        "subtheme_id": 2111,
+        "flag_subtheme_complete": true,
+        "course_subtheme_count": 4
+      },
+      {
+        "subtheme_description": "Technology",
+        "subtheme_id": 2112,
+        "flag_subtheme_complete": true,
+        "course_subtheme_count": 3
+      },
+      {
+        "subtheme_description": "test add edit WHO PPNP",
+        "subtheme_id": 6483,
+        "flag_subtheme_complete": false,
+        "course_subtheme_count": 0
+      }
+    ],
+    "what": [
+      {
+        "subtheme_description": "Types of food crops",
+        "subtheme_id": 1940,
+        "flag_subtheme_complete": true,
+        "course_subtheme_count": 9
+      },
+      {
+        "subtheme_description": "Sustainable resources",
+        "subtheme_id": 3644,
+        "flag_subtheme_complete": true,
+        "course_subtheme_count": 2
+      }
+    ],
+    "how": [
+      {
+        "subtheme_description": "Efficient productivity",
+        "subtheme_id": 1941,
+        "flag_subtheme_complete": true,
+        "course_subtheme_count": 8
+      },
+      {
+        "subtheme_description": "Streamline process",
+        "subtheme_id": 2339,
+        "flag_subtheme_complete": false,
+        "course_subtheme_count": 1
+      },
+      {
+        "subtheme_description": "Economy components",
+        "subtheme_id": 3645,
+        "flag_subtheme_complete": true,
+        "course_subtheme_count": 1
+      }
+    ]
+  },
+  "completedB": {
+    "who": false,
+    "what": false,
+    "how": true
+  },
+  "dataStepSeven": {
+    "who": {
+      "construct_definition": "PPPNP organizational structure",
+      "subtheme_count": 3,
+      "subtheme_data": [
+        {
+          "subtheme_id": 2111,
+          "flag_complete": true,
+          "subtheme_description": "Process hello EDIT ",
+          "course_subtheme_count": 4
+        },
+        {
+          "subtheme_id": 2112,
+          "flag_complete": true,
+          "subtheme_description": "Technology",
+          "course_subtheme_count": 3
+        },
+        {
+          "subtheme_id": 6483,
+          "flag_complete": false,
+          "subtheme_description": "test add edit WHO PPNP",
+          "course_subtheme_count": 0
+        }
+      ]
+    },
+    "what": {
+      "construct_definition": "Sustainable Agriculture",
+      "subtheme_count": 2,
+      "subtheme_data": [
+        {
+          "subtheme_id": 1940,
+          "flag_complete": true,
+          "subtheme_description": "Types of food crops",
+          "course_subtheme_count": 9
+        },
+        {
+          "subtheme_id": 3644,
+          "flag_complete": true,
+          "subtheme_description": "Sustainable resources",
+          "course_subtheme_count": 2
+        }
+      ]
+    },
+    "how": {
+      "construct_definition": "achieving Cost efficiency",
+      "subtheme_count": 3,
+      "subtheme_data": [
+        {
+          "subtheme_id": 1941,
+          "flag_complete": true,
+          "subtheme_description": "Efficient productivity",
+          "course_subtheme_count": 8
+        },
+        {
+          "subtheme_id": 2339,
+          "flag_complete": false,
+          "subtheme_description": "Streamline process",
+          "course_subtheme_count": 1
+        },
+        {
+          "subtheme_id": 3645,
+          "flag_complete": true,
+          "subtheme_description": "Economy components",
+          "course_subtheme_count": 1
+        }
+      ]
+    }
+  },
+  "eagletable_type": "master"
+}
