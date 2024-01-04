@@ -8,8 +8,17 @@ interface PanelBodyProps {
   data: object;
   subthemeCount: number;
   loading: boolean;
-  deleteDataClick: (item_id: string, identifier: string, content: string) => void;
-  editDataClick: (item_id: string, identifier: string, title: string, content: string) => void;
+  deleteDataClick: (
+    item_id: string,
+    identifier: string,
+    content: string
+  ) => void;
+  editDataClick: (
+    item_id: string,
+    identifier: string,
+    title: string,
+    content: string
+  ) => void;
   addData: (identifier: string, title: string, content: string) => void;
   error: string | null;
 }
@@ -116,6 +125,68 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
   let Content9Empty = content9 === "" || content9 === null;
 
   {
+    /**
+  build title content map 
+*/
+  }
+  const buildTitleContentMap = (
+    subthemeCount: number,
+    titles: Array<string>,
+    contents: Array<string>
+  ) => {
+    const map: { [key: string]: { title: string; content: string } } = {};
+
+    if (subthemeCount === 3) {
+      // Assuming titles and contents arrays have at least 6 elements
+
+      map["4"] = {
+        title: titles[0] + " " + titles[1],
+        content: contents[0] + " " + contents[1],
+      };
+      map["5"] = {
+        title: titles[1] + " " + titles[2],
+        content: contents[1] + " " + contents[2],
+      };
+      map["6"] = {
+        title: titles[2] + " " + titles[0],
+        content: contents[2] + " " + contents[0],
+      };
+      map["7"] = {
+        title: titles[3] + " " + titles[4],
+        content: contents[3] + " " + contents[4],
+      };
+      map["8"] = {
+        title: titles[4] + " " + titles[5],
+        content: contents[4] + " " + contents[5],
+      };
+      map["9"] = {
+        title: titles[5] + " " + titles[3],
+        content: contents[5] + " " + contents[3],
+      };
+    } else if (subthemeCount === 2) {
+      // Assuming titles and contents arrays have at least 4 elements
+      map["4"] = {
+        title: titles[0] + " " + titles[1],
+        content: contents[0] + " " + contents[1],
+      };
+      map["5"] = { title: titles[1], content: contents[1] };
+      map["7"] = {
+        title: titles[2] + " " + titles[3],
+        content: contents[2] + " " + contents[3],
+      };
+      map["8"] = { title: titles[3], content: contents[3] };
+      map["9"] = { title: titles[2], content: contents[2] };
+    } else if (subthemeCount === 1) {
+      // Assuming titles and contents arrays have at least 3 elements
+      map["4"] = { title: titles[0], content: contents[0] };
+      map["7"] = { title: titles[1], content: contents[1] };
+      map["9"] = { title: titles[2], content: contents[2] };
+    }
+
+    return map;
+  };
+
+  {
     /* get add button disable status  */
   }
   const getAddButtonDisable = (identifier: string) => {
@@ -125,20 +196,28 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       if (identifier === "4") {
         if (
           title1 === null ||
+          title1 === "" ||
           title2 === null ||
+          title2 === "" ||
           content1 === null ||
-          content2 === null
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      } else if (identifier === "5") {
-        if (
-          title2 === null ||
-          title3 === null ||
+          content1 === "" ||
           content2 === null ||
-          content3 === null
+          content2 === ""
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (identifier === "5") {
+        if (
+          title2 === null ||
+          title2 === "" ||
+          title3 === null ||
+          title3 === "" ||
+          content2 === null ||
+          content2 === "" ||
+          content3 === null ||
+          content3 === ""
         ) {
           return true;
         } else {
@@ -147,9 +226,13 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       } else if (identifier === "6") {
         if (
           title3 === null ||
+          title3 === "" ||
           title1 === null ||
+          title1 === "" ||
           content3 === null ||
-          content1 === null
+          content3 === "" ||
+          content1 === null ||
+          content1 === ""
         ) {
           return true;
         } else {
@@ -158,9 +241,13 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       } else if (identifier === "7") {
         if (
           title4 === null ||
+          title4 === "" ||
           title5 === null ||
+          title5 === "" ||
           content4 === null ||
-          content5 === null
+          content4 === "" ||
+          content5 === null ||
+          content5 === ""
         ) {
           return true;
         } else {
@@ -169,9 +256,13 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       } else if (identifier === "8") {
         if (
           title5 === null ||
+          title5 === "" ||
           title6 === null ||
+          title6 === "" ||
           content5 === null ||
-          content6 === null
+          content5 === "" ||
+          content6 === null ||
+          content6 === ""
         ) {
           return true;
         } else {
@@ -180,9 +271,13 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       } else if (identifier === "9") {
         if (
           title7 === null ||
+          title7 === "" ||
           title8 === null ||
+          title8 === "" ||
           content7 === null ||
-          content8 === null
+          content7 === "" ||
+          content8 === null ||
+          content8 === ""
         ) {
           return true;
         } else {
@@ -193,16 +288,25 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       if (identifier === "4") {
         if (
           title1 === null ||
+          title1 === "" ||
           title2 === null ||
+          title2 === "" ||
           content1 === null ||
-          content2 === null
+          content1 === "" ||
+          content2 === null ||
+          content2 === ""
         ) {
           return true;
         } else {
           return false;
         }
       } else if (identifier === "5") {
-        if (title2 === null || content2 === null) {
+        if (
+          title2 === null ||
+          content2 === null ||
+          title2 === "" ||
+          content2 === ""
+        ) {
           return true;
         } else {
           return false;
@@ -210,16 +314,25 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       } else if (identifier === "7") {
         if (
           title4 === null ||
+          title4 === "" ||
           title5 === null ||
+          title5 === "" ||
           content4 === null ||
-          content5 === null
+          content4 === "" ||
+          content5 === null ||
+          content5 === ""
         ) {
           return true;
         } else {
           return false;
         }
       } else if (identifier === "8") {
-        if (title5 === null || content5 === null) {
+        if (
+          title5 === null ||
+          content5 === null ||
+          title5 === "" ||
+          content5 === ""
+        ) {
           return true;
         } else {
           return false;
@@ -227,9 +340,13 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       } else if (identifier === "9") {
         if (
           title7 === null ||
+          title7 === "" ||
           title8 === null ||
+          title8 === "" ||
           content7 === null ||
-          content8 === null
+          content7 === "" ||
+          content8 === null ||
+          content8 === ""
         ) {
           return true;
         } else {
@@ -238,19 +355,34 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       }
     } else if (subthemeCount === 1) {
       if (identifier === "4") {
-        if (title1 === null || content1 === null) {
+        if (
+          title1 === null ||
+          content1 === null ||
+          title1 === "" ||
+          content1 === ""
+        ) {
           return true;
         } else {
           return false;
         }
       } else if (identifier === "7") {
-        if (title4 === null || content4 === null) {
+        if (
+          title4 === null ||
+          content4 === null ||
+          title4 === "" ||
+          content4 === ""
+        ) {
           return true;
         } else {
           return false;
         }
       } else if (identifier === "9") {
-        if (title7 === null || content7 === null) {
+        if (
+          title7 === null ||
+          content7 === null ||
+          title7 === "" ||
+          content7 === ""
+        ) {
           return true;
         } else {
           return false;
@@ -259,83 +391,6 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
     }
   };
 
-  {
-    /* content combo */
-  }
-  const getContentAndTitleComboForAdd = (identifier: string) => {
-    if (subthemeCount === 3) {
-      if (identifier === "4") {
-        const title = title1 + " " + title2;
-        const content = content1 + " " + content2;
-
-        return { title, content };
-      } else if (identifier === "5") {
-        const title = title2 + " " + title3;
-        const content = content2 + " " + content3;
-        return { title, content };
-      } else if (identifier === "6") {
-        const title = title3 + " " + title1;
-        const content = content3 + " " + content1;
-
-        return { title, content };
-      } else if (identifier === "7") {
-        const title = title4 + " " + title5;
-        const content = content4 + " " + content5;
-
-        return { title, content };
-      } else if (identifier === "8") {
-        const title = title5 + " " + title6;
-        const content = content5 + " " + content6;
-
-        return { title, content };
-      } else if (identifier === "9") {
-        const title = title7 + " " + title8;
-        const content = content7 + " " + content8;
-
-        return { title, content };
-      }
-    } else if (subthemeCount === 2) {
-      if (identifier === "4") {
-        const title = title1 + " " + title2;
-        const content = content1 + " " + content2;
-
-        return { title, content };
-      } else if (identifier === "5") {
-        const title = title2;
-        const content = content2;
-        return { title, content };
-      } else if (identifier === "7") {
-        const title = title4 + " " + title5;
-        const content = content4 + " " + content5;
-
-        return { title, content };
-      } else if (identifier === "8") {
-        const title = title5;
-        const content = content5;
-
-        return { title, content };
-      } else if (identifier === "9") {
-        const title = title7 + " " + title8;
-        const content = content7 + " " + content8;
-
-        return { title, content };
-      }
-    } else if (subthemeCount === 1) {
-      if (identifier === "4") {
-        const title = title1;
-        const content = content1;
-        return { title, content };
-      } else if (identifier === "7") {
-        const title = title4;
-        const content = content4;
-        return { title, content };
-      } else if (identifier === "9") {
-        const title = title7;
-        const content = content7;
-        return { title, content };
-      }
-    }
-  };
 
   // to use getContentAndTitleComboForAdd in addData
   // addData = (item: string) => {
@@ -343,6 +398,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
   //   const {title, content} = getContentAndTitleComboForAdd(item);
   //   console.log(title);
   //   console.log(content);
+  const titleContentMap = buildTitleContentMap(subthemeCount, extractedData.titles, extractedData.summaries);
 
   if (subthemeCount === 3) {
     let addButtonDisable4 = getAddButtonDisable("4");
@@ -351,12 +407,26 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
     let addButtonDisable7 = getAddButtonDisable("7");
     let addButtonDisable8 = getAddButtonDisable("8");
     let addButtonDisable9 = getAddButtonDisable("9");
-    let { titleAdd4, contentAdd4 } = getContentAndTitleComboForAdd("4");
-    let { titleAdd5, contentAdd5 } = getContentAndTitleComboForAdd("5");
-    let { titleAdd6, contentAdd6 } = getContentAndTitleComboForAdd("6");
-    let { titleAdd7, contentAdd7 } = getContentAndTitleComboForAdd("7");
-    let { titleAdd8, contentAdd8 } = getContentAndTitleComboForAdd("8");
-    let { titleAdd9, contentAdd9 } = getContentAndTitleComboForAdd("9");
+
+    const { title: titleAdd4, content: contentAdd4 } = titleContentMap["4"] || { title: '', content: '' };
+    const { title: titleAdd5, content: contentAdd5 } = titleContentMap["5"] || { title: '', content: '' };
+    const { title: titleAdd6, content: contentAdd6 } = titleContentMap["6"] || { title: '', content: '' };
+    const { title: titleAdd7, content: contentAdd7 } = titleContentMap["7"] || { title: '', content: '' };
+    const { title: titleAdd8, content: contentAdd8 } = titleContentMap["8"] || { title: '', content: '' };
+    const { title: titleAdd9, content: contentAdd9 } = titleContentMap["9"] || { title: '', content: '' };
+
+
+    console.log("$$$$$$$$$$$$ addButtonDisable4 $$$$$$$$$$$");
+    console.log(addButtonDisable4);
+
+    console.log("$$$$$$$$$$$$ addButtonDisable7 $$$$$$$$$$$");
+    console.log(addButtonDisable7);
+
+    console.log("$$$$$$$$$$$$ titleAdd4 $$$$$$$$$$$");
+    console.log(titleAdd4);
+
+    console.log("$$$$$$$$$$$$ contentAdd4 $$$$$$$$$$$");
+    console.log(contentAdd4);
     return (
       <div className="panel-body">
         <div className="row mb20" data-animate="400">
@@ -378,6 +448,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 identifier="1"
                 podIndicator="POD 1"
                 addData={addData}
+                addButtonDisabled={false}
               />
             ) : (
               <PanelActive
@@ -411,6 +482,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 identifier="2"
                 podIndicator="POD 2"
                 addData={addData}
+                addButtonDisabled={false}
               />
             ) : (
               <PanelActive
@@ -444,6 +516,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 identifier="3"
                 podIndicator="POD 3"
                 addData={addData}
+                addButtonDisabled={false}
               />
             ) : (
               <PanelActive
@@ -679,13 +752,15 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       </div>
     );
   } else if (subthemeCount === 2) {
-
     let addButtonDisable4 = getAddButtonDisable("4");
     let addButtonDisable7 = getAddButtonDisable("7");
     let addButtonDisable9 = getAddButtonDisable("9");
-    let { titleAdd4, contentAdd4 } = getContentAndTitleComboForAdd("4");
-    let { titleAdd7, contentAdd7 } = getContentAndTitleComboForAdd("7");
-    let { titleAdd9, contentAdd9 } = getContentAndTitleComboForAdd("9");
+
+
+    const { title: titleAdd4, content: contentAdd4 } = titleContentMap["4"] || { title: '', content: '' };
+
+    const { title: titleAdd7, content: contentAdd7 } = titleContentMap["7"] || { title: '', content: '' };
+    const { title: titleAdd9, content: contentAdd9 } = titleContentMap["9"] || { title: '', content: '' };
 
     return (
       <div className="panel-body">
@@ -930,13 +1005,13 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
       </div>
     );
   } else if (subthemeCount === 1) {
-
     let addButtonDisable4 = getAddButtonDisable("4");
     let addButtonDisable7 = getAddButtonDisable("7");
     let addButtonDisable9 = getAddButtonDisable("9");
-    let { titleAdd4, contentAdd4 } = getContentAndTitleComboForAdd("4");
-    let { titleAdd7, contentAdd7 } = getContentAndTitleComboForAdd("7");
-    let { titleAdd9, contentAdd9 } = getContentAndTitleComboForAdd("9");
+    const { title: titleAdd4, content: contentAdd4 } = titleContentMap["4"] || { title: '', content: '' };
+
+    const { title: titleAdd7, content: contentAdd7 } = titleContentMap["7"] || { title: '', content: '' };
+    const { title: titleAdd9, content: contentAdd9 } = titleContentMap["9"] || { title: '', content: '' };
     return (
       <div className="panel-body">
         <div className="row mb20" data-animate="400">

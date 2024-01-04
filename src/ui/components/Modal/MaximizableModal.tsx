@@ -62,6 +62,8 @@ const MaximizableModal: React.FC<MaximizableModalProps> = ({
 
           {/* editor */}
           <div className="card">
+            <label htmlFor="Content">Content</label>
+
             <EditorBase initialContent={content} onEditorChange={onEditorChange}  />
           </div>
           <SaveButtonModal

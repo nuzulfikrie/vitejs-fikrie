@@ -105,7 +105,7 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
         </div>
       );
     } else if (content === "" || content === null) {
-vv
+      let idIdentifier = identifierIdTitleSetter(identifier);
       return (
         <div className="panel panel-dark overflow-auto">
           <div className="panel-heading fill">
@@ -131,10 +131,12 @@ vv
       );
     }
   } else if (NOT_EDITABLE.includes(identifier)) {
+    let idIdentifier = identifierIdTitleSetter(identifier);
+
     return (
       <div className="panel panel-dark overflow-auto">
         <div className="panel-heading fill">
-          <span className="panel-title" id="filter_one_title">
+          <span className="panel-title" id={idIdentifier}>
             {title}
           </span>
           <div className="widget-menu pull-right mr10">
@@ -150,7 +152,19 @@ vv
       </div>
     );
   } else {
+    return (
+      <div className="panel panel-default">
+        <div className="panel-heading fill">
+          <span className="panel-title" id="filter_one_title">Loading..</span>
 
+        </div>
+        <div className="panel-body">
+          <div className="container">
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 };
 

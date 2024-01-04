@@ -14,6 +14,8 @@ import { dataFetcher } from "./features/dataFetcher";
 import dataLibrary from "./features/dataLibrary";
 import MaximizableModal from "./ui/components/Modal/MaximizableModal";
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import axios from 'axios';
+import URL_LINKS from "./constants/urls";
 
 function App() {
   const [data, setData] = useState({});
@@ -80,12 +82,56 @@ function App() {
     }, 3000);
   };
 
+  const HtmlContentAlert = ({ html }: { html: string }) => {
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  };
+
+
   const deleteDataClick = (item_id: string, identifier: string, content:string) => {
     console.log(
       " -- deleteDataClick -- " + item_id + " - identifier - " + identifier + " - content - " + content
     );
     console.log(item_id);
+
+    confirmDialog({
+      message: (
+        <div>
+          <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+          <HtmlContentAlert html={content} />
+        </div>
+      ), 
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => performDelete(item_id, identifier),
+      reject: () => showWarn('Delete cancelled')
+    });
   };
+
+  const performDelete = async (item_id: string, identifier: string) => {
+    try {
+      // Replace with your API endpoint and pass necessary data
+      const urlDelete = URL_LINKS.DELETE_RESEARCH_FILTER.value + projectId;
+      const response = await axios.post(urlDelete + "/" + item_id);
+      
+
+
+
+
+      console.log('-- response  ---');
+      console.log(response);
+      console.log('-- response  ---');
+
+
+
+      showSuccess('Item successfully deleted');
+      // Refresh data or perform any other actions needed after successful deletion
+      loadData();
+    } catch (error) {
+      showError('Failed to delete item');
+      console.error('Delete Error:', error);
+    }
+  };
+
 
   const editDataClick = (
     item_id: string,
@@ -105,8 +151,10 @@ function App() {
     setContent(content);
     setModalTitle(title);
   };
-  const saveData = (
+  const saveData = async (
   ) => {
+
+
     console.log(" -- saveData -- " + modalItemId + " - identifier - " + modalIdentifier);
     console.log(modalItemId);
 
@@ -114,6 +162,42 @@ function App() {
     console.log(modalTitle);
     console.log("########### content ######");
     console.log(content);
+
+    let title = modalTitle;
+    let forty_words_summary = content;
+    let count_subtheme = subthemeCount;
+    let item_identifier = modalIdentifier;
+    let course_id = projectId;
+    let rq_construct = rqConstruct;
+    let user_id = userId;
+    let course_type = localStorage.getItem("course_type");
+
+    let URLSAVE = URL_LINKS.SAVE_RESEARCH_FILTER.value + projectId;
+
+    // perform save
+      try {
+        const response = await axios.post(URLSAVE, {
+          title,
+          forty_words_summary,
+          count_subtheme,
+          item_identifier,
+          course_id,
+          rq_construct,
+          user_id,
+          course_type,
+        });
+
+        console.log('-- response  ---');
+        console.log(response);
+        console.log('-- response  ---');
+        showSuccess('Item successfully saved');
+        // Refresh data or perform any other actions needed after successful save
+        loadData();
+      } catch (error) {
+        showError('Failed to save item');
+        console.error('Save Error:', error);
+      }
+    
   };
   // (identifier: string, title?: string, content?: string) => void;
   const addData = (identifier: string, title: string, content: string) => {
@@ -129,6 +213,7 @@ function App() {
     openModal();
     setContent(content);
     setModalTitle(title);
+    setModalIdentifier(identifier);
   };
 
   const resetData = () => {
