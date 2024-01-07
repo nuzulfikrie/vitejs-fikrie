@@ -25,36 +25,44 @@ interface PanelActiveProps {
   addData: (identifier: string, title: string, content: string) => void;
 }
 
-const EDITABLE = ["4", "5", "6", "7", "8", "9"];
-const NOT_EDITABLE = ["1", "2", "3"];
+const EDITABLE = ['4', '5', '6', '7', '8', '9', "4", "5", "6", "7", "8", "9", 4, 5, 6, 7, 8, 9];
+const NOT_EDITABLE = ['1', '2', '3', "1", "2", "3", 1, 2, 3];
 
 const identifierIdTitleSetter = (identifier: string) => {
   switch (identifier) {
-  case "1":
-    return "filter_one_title";
-  case "2":
-    return "filter_two_title";
-  case "3":
-    return "filter_three_title";
-  case "4":
-    return "filter_four_title";
-  case "5":
-    return "filter_five_title";
-  case "6":
-    return "filter_six_title";
-  case "7":
-    return "filter_seven_title";
-  case "8":
-    return "filter_eight_title";
-  case "9":
-    return "filter_nine_title";
-  default:
-    return "filter_one_title";
+    case "1":
+      return "filter_one_title";
+    case "2":
+      return "filter_two_title";
+    case "3":
+      return "filter_three_title";
+    case "4":
+      return "filter_four_title";
+    case "5":
+      return "filter_five_title";
+    case "6":
+      return "filter_six_title";
+    case "7":
+      return "filter_seven_title";
+    case "8":
+      return "filter_eight_title";
+    case "9":
+      return "filter_nine_title";
+    default:
+      return "filter_one_title";
   }
 
 };
 
-const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
+const stripeTitleIfExceedLength = (title: string) => {
+  if (title.length > 20) {
+    return title.slice(0, 20) + "...";
+  } else {
+    return title;
+  }
+};
+
+const PanelActive = ({
   key,
   item_id,
   identifier,
@@ -64,9 +72,21 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
   deleteDataClick,
   editDataClick,
   addData,
-}) => {
+}: PanelActiveProps) => {
+  // Function implementation goes here
+  console.log('--- identifier ---');
+  console.log(identifier);
+  console.log('--- identifier ---');
+
+
   const dirty = content;
   const clean = DOMPurify.sanitize(dirty);
+
+  //if identifier is null or undefined, return null
+  if (identifier === null || identifier === undefined) {
+    return undefined;
+  }
+
   if (EDITABLE.includes(identifier)) {
     if (content !== "" || content !== null) {
       let idIdentifier = identifierIdTitleSetter(identifier);
@@ -74,7 +94,7 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
         <div className="panel panel-dark overflow-auto">
           <div className="panel-heading fill">
             <span className="panel-title" id={idIdentifier}>
-              {title}
+              {stripeTitleIfExceedLength(title)}
             </span>
             <div className="widget-menu pull-right mr10">
               <span className="label bg-primary mr10">{podIndicator}</span>
@@ -110,7 +130,7 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
         <div className="panel panel-dark overflow-auto">
           <div className="panel-heading fill">
             <span className="panel-title" id={idIdentifier}>
-              {title}
+              {stripeTitleIfExceedLength(title)}
             </span>
             <div className="widget-menu pull-right mr10">
               <span className="label bg-primary mr10">{podIndicator}</span>
@@ -123,7 +143,7 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
                 title={""}
                 content={""}
                 identifier={identifier}
-                buttonEnabled={false}
+                buttonDisabled={false}
               />
             </div>
           </div>
@@ -137,7 +157,7 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
       <div className="panel panel-dark overflow-auto">
         <div className="panel-heading fill">
           <span className="panel-title" id={idIdentifier}>
-            {title}
+            {stripeTitleIfExceedLength(title)}
           </span>
           <div className="widget-menu pull-right mr10">
             <span className="label bg-primary mr10">{podIndicator}</span>
@@ -151,21 +171,9 @@ const PanelActive: React.FunctionComponent<PanelActiveProps> = ({
         <div className="panel-footer"></div>
       </div>
     );
-  } else {
-    return (
-      <div className="panel panel-default">
-        <div className="panel-heading fill">
-          <span className="panel-title" id="filter_one_title">Loading..</span>
 
-        </div>
-        <div className="panel-body">
-          <div className="container">
-            <div className="loading-spinner"></div>
-          </div>
-        </div>
-      </div>
-    );
   }
+
 };
 
 export default PanelActive;

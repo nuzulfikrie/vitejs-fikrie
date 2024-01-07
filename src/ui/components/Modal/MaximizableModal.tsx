@@ -39,6 +39,9 @@ const MaximizableModal: React.FC<MaximizableModalProps> = ({
 
   const dirtyTitle = title;
   const clean = DOMPurify.sanitize(dirtyTitle, { ALLOWED_TAGS: [] });
+  // using `clean` extract text only 
+  //const cleanExtract = DOMPurify.sanitize(content, { ALLOWED_TAGS: [] });
+
   //for title , strip all tags, retain only text
 
   const handleSaveClick = () => {
@@ -64,11 +67,11 @@ const MaximizableModal: React.FC<MaximizableModalProps> = ({
           <div className="card">
             <label htmlFor="Content">Content</label>
 
-            <EditorBase initialContent={content} onEditorChange={onEditorChange}  />
+            <EditorBase initialContent={content} onEditorChange={onEditorChange} />
           </div>
           <SaveButtonModal
             onClick={handleSaveClick}
-           
+
           />
           <CloseButton onClick={close} />
         </Dialog>

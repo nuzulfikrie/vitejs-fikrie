@@ -71,9 +71,20 @@ function App() {
       setData(lib.getSummariesByKey());
       setSubthemeCount(subthemeCount);
       setTitle(title);
-    } catch (err) {
+
+      {/**
+    Here's how you can fix it:
+
+Instead of passing a function that returns a string to setError,
+ you should directly pass the error message. 
+ If you want to use the previous state, you can do so, b
+ ut the way you're currently trying to set the state is incorrect. Here's the corrected part of your code:
+    
+    */}
+    } catch (err: any) {
       console.error("Error in fetchSubtheme:", err);
-      setError(err.message || "An error occurred"); // Assume setError is a function to update error state
+      // Directly set the error message
+      setError(err?.message || "An error occurred");
     }
 
     // Delay for 3 seconds before setting loading to false
@@ -87,7 +98,7 @@ function App() {
   };
 
 
-  const deleteDataClick = (item_id: string, identifier: string, content:string) => {
+  const deleteDataClick = (item_id: string, identifier: string, content: string) => {
     console.log(
       " -- deleteDataClick -- " + item_id + " - identifier - " + identifier + " - content - " + content
     );
@@ -99,7 +110,7 @@ function App() {
           <p>Are you sure you want to delete this item? This action cannot be undone.</p>
           <HtmlContentAlert html={content} />
         </div>
-      ), 
+      ),
       header: 'Delete Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => performDelete(item_id, identifier),
@@ -112,7 +123,7 @@ function App() {
       // Replace with your API endpoint and pass necessary data
       const urlDelete = URL_LINKS.DELETE_RESEARCH_FILTER.value + projectId;
       const response = await axios.post(urlDelete + "/" + item_id);
-      
+
 
 
 
@@ -175,39 +186,46 @@ function App() {
     let URLSAVE = URL_LINKS.SAVE_RESEARCH_FILTER.value + projectId;
 
     // perform save
-      try {
-        const response = await axios.post(URLSAVE, {
-          title,
-          forty_words_summary,
-          count_subtheme,
-          item_identifier,
-          course_id,
-          rq_construct,
-          user_id,
-          course_type,
-        });
+    try {
+      const response = await axios.post(URLSAVE, {
+        title,
+        forty_words_summary,
+        count_subtheme,
+        item_identifier,
+        course_id,
+        rq_construct,
+        user_id,
+        course_type,
+      });
 
-        console.log('-- response  ---');
-        console.log(response);
-        console.log('-- response  ---');
-        showSuccess('Item successfully saved');
-        // Refresh data or perform any other actions needed after successful save
-        loadData();
-      } catch (error) {
-        showError('Failed to save item');
-        console.error('Save Error:', error);
+      console.log('-- ####################### response #######################################3 ---');
+      console.log(response);
+      console.log('-- ####################### response #######################################3 ---');
+
+      if (response.data.status === 'success') {
+        console.log('success');
+        showSuccess(response.data.message);
+      } else {
+        showError(response.data.message);
       }
-    
+      closeModal();
+      // Refresh data or perform any other actions needed after successful save
+      loadData();
+    } catch (error: any) {
+      showError('Failed to save item ' + error.data.message);
+      console.error('Save Error:', error);
+    }
+
   };
   // (identifier: string, title?: string, content?: string) => void;
   const addData = (identifier: string, title: string, content: string) => {
     console.log(
       " -- addData -- " +
-        identifier +
-        " - title - " +
-        title +
-        " - content - " +
-        content
+      identifier +
+      " - title - " +
+      title +
+      " - content - " +
+      content
     );
 
     openModal();
@@ -335,7 +353,7 @@ function App() {
           title={modalTitle}
           item_id={modalItemId}
           identifier={modalIdentifier}
-          setModalVisible={openModal}
+          setModalVisible={modalVisibleChange}
           saveData={saveData}
           close={closeModal}
         />

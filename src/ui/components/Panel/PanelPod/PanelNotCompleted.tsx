@@ -49,8 +49,8 @@ const PanelNotCompleted: React.FC<PanelProps> = ({
               <AddButton
                 onClick={addData}
                 identifier={identifier}
-                title={title}
-                content={content}
+                title={title || ''}
+                content={content || ''}
                 buttonDisabled={addButtonDisabled}
               />
             </div>
@@ -76,6 +76,21 @@ const PanelNotCompleted: React.FC<PanelProps> = ({
           <div className="panel-body">
             <div className="p2" id="filter_one_content">
               {content}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <div className="panel panel-danger">
+          <div className="panel-heading fill">
+            <span className="panel-title" id="filter_one_title">
+              {"Loading.."}
+            </span>
+            <div className="widget-menu pull-right mr10">
+              <span className="label bg-primary mr10">{podIndicator}</span>
             </div>
           </div>
         </div>

@@ -388,6 +388,8 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
           return false;
         }
       }
+    } else {
+      return true;
     }
   };
 
@@ -415,18 +417,6 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
     const { title: titleAdd8, content: contentAdd8 } = titleContentMap["8"] || { title: '', content: '' };
     const { title: titleAdd9, content: contentAdd9 } = titleContentMap["9"] || { title: '', content: '' };
 
-
-    console.log("$$$$$$$$$$$$ addButtonDisable4 $$$$$$$$$$$");
-    console.log(addButtonDisable4);
-
-    console.log("$$$$$$$$$$$$ addButtonDisable7 $$$$$$$$$$$");
-    console.log(addButtonDisable7);
-
-    console.log("$$$$$$$$$$$$ titleAdd4 $$$$$$$$$$$");
-    console.log(titleAdd4);
-
-    console.log("$$$$$$$$$$$$ contentAdd4 $$$$$$$$$$$");
-    console.log(contentAdd4);
     return (
       <div className="panel-body">
         <div className="row mb20" data-animate="400">
@@ -551,7 +541,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd4}
                 identifier="4"
                 podIndicator={"POD 4"}
-                addButtonDisabled={addButtonDisable4}
+                addButtonDisabled={addButtonDisable4 || false}
                 addData={addData}
               />
             ) : (
@@ -585,7 +575,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd5}
                 identifier="5"
                 podIndicator={"POD 5"}
-                addButtonDisabled={addButtonDisable5}
+                addButtonDisabled={addButtonDisable5 || false}
                 addData={addData}
               />
             ) : (
@@ -619,7 +609,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd6}
                 identifier="6"
                 podIndicator={"POD 6"}
-                addButtonDisabled={addButtonDisable6}
+                addButtonDisabled={addButtonDisable6 || false}
                 addData={addData}
               />
             ) : (
@@ -657,7 +647,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd7}
                 identifier="7"
                 podIndicator={"POD 7"}
-                addButtonDisabled={addButtonDisable7}
+                addButtonDisabled={addButtonDisable7 || false}
                 addData={addData}
               />
             ) : (
@@ -691,7 +681,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd8}
                 identifier="8"
                 podIndicator={"POD 8"}
-                addButtonDisabled={addButtonDisable8}
+                addButtonDisabled={addButtonDisable8 || false}
                 addData={addData}
               />
             ) : (
@@ -730,7 +720,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd9}
                 identifier="9"
                 podIndicator={"POD 9"}
-                addButtonDisabled={addButtonDisable9}
+                addButtonDisabled={addButtonDisable9 || false}
                 addData={addData}
               />
             ) : (
@@ -782,6 +772,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={content1}
                 identifier="1"
                 podIndicator="POD 1"
+                addButtonDisabled={true}
                 addData={addData}
               />
             ) : (
@@ -815,6 +806,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={content2}
                 identifier="2"
                 podIndicator="POD 2"
+                addButtonDisabled={true}
                 addData={addData}
               />
             ) : (
@@ -864,7 +856,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd4}
                 identifier="4"
                 podIndicator={"POD 4"}
-                addButtonDisabled={addButtonDisable4}
+                addButtonDisabled={addButtonDisable4 || false}
                 addData={addData}
               />
             ) : (
@@ -930,7 +922,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd7}
                 identifier="7"
                 podIndicator={"POD 7"}
-                addButtonDisabled={addButtonDisable7}
+                addButtonDisabled={addButtonDisable7 || false}
                 addData={addData}
               />
             ) : (
@@ -983,7 +975,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd9}
                 identifier="9"
                 podIndicator={"POD 9"}
-                addButtonDisabled={addButtonDisable9}
+                addButtonDisabled={addButtonDisable9 || false}
                 addData={addData}
               />
             ) : (
@@ -1032,6 +1024,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={content1}
                 identifier="1"
                 podIndicator="POD 1"
+                addButtonDisabled={true}
                 addData={addData}
               />
             ) : (
@@ -1095,7 +1088,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd4}
                 identifier="4"
                 podIndicator={"POD 4"}
-                addButtonDisabled={addButtonDisable4}
+                addButtonDisabled={addButtonDisable4 || false}
                 addData={addData}
               />
             ) : (
@@ -1161,7 +1154,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd7}
                 identifier="7"
                 podIndicator={"POD 7"}
-                addButtonDisabled={addButtonDisable7}
+                addButtonDisabled={addButtonDisable7 || false}
                 addData={addData}
               />
             ) : (
@@ -1214,7 +1207,7 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 content={contentAdd9}
                 identifier="9"
                 podIndicator={"POD 9"}
-                addButtonDisabled={addButtonDisable9}
+                addButtonDisabled={addButtonDisable9 || false}
                 addData={addData}
               />
             ) : (
