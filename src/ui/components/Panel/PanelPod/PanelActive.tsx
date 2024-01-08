@@ -26,7 +26,6 @@ interface PanelActiveProps {
 }
 
 const EDITABLE = ['4', '5', '6', '7', '8', '9', "4", "5", "6", "7", "8", "9", 4, 5, 6, 7, 8, 9];
-const NOT_EDITABLE = ['1', '2', '3', "1", "2", "3", 1, 2, 3];
 
 const identifierIdTitleSetter = (identifier: string) => {
   switch (identifier) {
@@ -81,78 +80,8 @@ const PanelActive = ({
 
   const dirty = content;
   const clean = DOMPurify.sanitize(dirty);
-
-  //if identifier is null or undefined, return null
-  if (identifier === null || identifier === undefined) {
-    return undefined;
-  }
-
-  if (EDITABLE.includes(identifier)) {
-    if (content !== "" || content !== null) {
-      let idIdentifier = identifierIdTitleSetter(identifier);
-      return (
-        <div className="panel panel-dark overflow-auto">
-          <div className="panel-heading fill">
-            <span className="panel-title" id={idIdentifier}>
-              {stripeTitleIfExceedLength(title)}
-            </span>
-            <div className="widget-menu pull-right mr10">
-              <span className="label bg-primary mr10">{podIndicator}</span>
-            </div>
-          </div>
-          <div className="panel-body">
-            <div className="p2" id={item_id}>
-              <div dangerouslySetInnerHTML={{ __html: clean }} />
-            </div>
-          </div>
-          <div className="panel-footer">
-            <div className="btn-group">
-              <EditButton
-                onClick={editDataClick}
-                item_id={item_id}
-                identifier={identifier}
-                title={title}
-                content={clean}
-              />
-              <DeleteButton
-                onClick={deleteDataClick}
-                item_id={item_id}
-                identifier={identifier}
-                content={clean}
-              />
-            </div>
-          </div>
-        </div>
-      );
-    } else if (content === "" || content === null) {
-      let idIdentifier = identifierIdTitleSetter(identifier);
-      return (
-        <div className="panel panel-dark overflow-auto">
-          <div className="panel-heading fill">
-            <span className="panel-title" id={idIdentifier}>
-              {stripeTitleIfExceedLength(title)}
-            </span>
-            <div className="widget-menu pull-right mr10">
-              <span className="label bg-primary mr10">{podIndicator}</span>
-            </div>
-          </div>
-          <div className="panel-footer">
-            <div className="btn-group">
-              <AddButton
-                onClick={addData}
-                title={""}
-                content={""}
-                identifier={identifier}
-                buttonDisabled={false}
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-  } else if (NOT_EDITABLE.includes(identifier)) {
+  if (content !== "" || content !== null) {
     let idIdentifier = identifierIdTitleSetter(identifier);
-
     return (
       <div className="panel panel-dark overflow-auto">
         <div className="panel-heading fill">
@@ -164,15 +93,70 @@ const PanelActive = ({
           </div>
         </div>
         <div className="panel-body">
-          <div className="p2" id={key}>
+          <div className="p2" id={item_id}>
             <div dangerouslySetInnerHTML={{ __html: clean }} />
           </div>
         </div>
-        <div className="panel-footer"></div>
+        <div className="panel-footer">
+          <div className="btn-group">
+            <EditButton
+              onClick={editDataClick}
+              item_id={item_id}
+              identifier={identifier}
+              title={title}
+              content={clean}
+            />
+            <DeleteButton
+              onClick={deleteDataClick}
+              item_id={item_id}
+              identifier={identifier}
+              content={clean}
+            />
+          </div>
+        </div>
       </div>
     );
+  } else if (content === "" || content === null) {
+    let idIdentifier = identifierIdTitleSetter(identifier);
+    return (
+      <div className="panel panel-dark overflow-auto">
+        <div className="panel-heading fill">
+          <span className="panel-title" id={idIdentifier}>
+            {stripeTitleIfExceedLength(title)}
+          </span>
+          <div className="widget-menu pull-right mr10">
+            <span className="label bg-primary mr10">{podIndicator}</span>
+          </div>
+        </div>
+        <div className="panel-footer">
+          <div className="btn-group">
+            <AddButton
+              onClick={addData}
+              title={""}
+              content={""}
+              identifier={identifier}
+              buttonDisabled={false}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className="panel panel-default">
+        <div className="panel-heading fill">
+          <span className="panel-title" id="filter_one_title">Loading..</span>
 
+        </div>
+        <div className="panel-body">
+          <div className="container">
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
+
 
 };
 

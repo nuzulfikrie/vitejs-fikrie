@@ -1,3 +1,4 @@
+import PanelActiveDisplayOnly from "./PanelPod/PanelActiveDIsplayOnly";
 import PanelActive from "../Panel/PanelPod/PanelActive";
 import PanelLoading from "./PanelPod/PanelLoading";
 import PanelAllDark from "./PanelPod/PanelAllDark";
@@ -441,16 +442,12 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 addButtonDisabled={false}
               />
             ) : (
-              <PanelActive
+              <PanelActiveDisplayOnly
                 key={key1}
-                item_id={key1}
                 identifier="1"
                 title={title1}
                 content={content1}
                 podIndicator="POD 1"
-                deleteDataClick={deleteDataClick}
-                editDataClick={editDataClick}
-                addData={addData}
               />
             )}
           </div>
@@ -475,16 +472,12 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 addButtonDisabled={false}
               />
             ) : (
-              <PanelActive
+              <PanelActiveDisplayOnly
                 key={key2}
-                item_id={key2}
                 title={title2}
                 identifier="2"
                 content={content2}
                 podIndicator="POD 2"
-                deleteDataClick={deleteDataClick}
-                editDataClick={editDataClick}
-                addData={addData}
               />
             )}
           </div>
@@ -509,16 +502,12 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 addButtonDisabled={false}
               />
             ) : (
-              <PanelActive
+              <PanelActiveDisplayOnly
                 key={key3}
-                item_id={key3}
                 title={title3}
                 identifier="3"
                 content={content3}
                 podIndicator="POD 3"
-                deleteDataClick={deleteDataClick}
-                editDataClick={editDataClick}
-                addData={addData}
               />
             )}
           </div>
@@ -776,16 +765,12 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 addData={addData}
               />
             ) : (
-              <PanelActive
+              <PanelActiveDisplayOnly
                 key={key1}
-                item_id={key1}
                 identifier="1"
                 title={title1}
                 content={content1}
                 podIndicator="POD 1"
-                deleteDataClick={deleteDataClick}
-                editDataClick={editDataClick}
-                addData={addData}
               />
             )}
           </div>
@@ -810,16 +795,12 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 addData={addData}
               />
             ) : (
-              <PanelActive
+              <PanelActiveDisplayOnly
                 key={key2}
-                item_id={key2}
                 identifier="2"
                 title={title2}
                 content={content2}
                 podIndicator="POD 2"
-                deleteDataClick={deleteDataClick}
-                editDataClick={editDataClick}
-                addData={addData}
               />
             )}
           </div>
@@ -1028,16 +1009,12 @@ const PanelBody: React.FunctionComponent<PanelBodyProps> = ({
                 addData={addData}
               />
             ) : (
-              <PanelActive
+              <PanelActiveDisplayOnly
                 key={key1}
-                item_id={key1}
                 title={title1}
                 identifier="1"
                 content={content1}
                 podIndicator="POD 1"
-                deleteDataClick={deleteDataClick}
-                editDataClick={editDataClick}
-                addData={addData}
               />
             )}
           </div>
