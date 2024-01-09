@@ -1,44 +1,87 @@
-import { useEffect, useState, useCallback } from "react";
-import "./assets/skin/default_skin/css/theme.min.css";
-import { PrimeReactProvider } from "primereact/api";
-import "primereact/resources/themes/lara-light-indigo/theme.css"; // theme
-import "primeflex/primeflex.css"; // css utility
-import "primeicons/primeicons.css";
-import "primereact/resources/primereact.css"; // core css
-import { STEP_SETTING } from "./constants/step_constants";
-import BasePanel from "./ui/components/Panel/BasePanel";
-import { Toast } from "primereact/toast";
-import React from "react";
-import constants from "./constants/constants";
-import { dataFetcher } from "./features/dataFetcher";
-import dataLibrary from "./features/dataLibrary";
-import MaximizableModal from "./ui/components/Modal/MaximizableModal";
+import { useEffect, useState, useCallback } from 'react';
+import './assets/skin/default_skin/css/theme.min.css';
+import { PrimeReactProvider } from 'primereact/api';
+import 'primereact/resources/themes/lara-light-indigo/theme.css'; // theme
+import 'primeflex/primeflex.css'; // css utility
+import 'primeicons/primeicons.css';
+import 'primereact/resources/primereact.css'; // core css
+import { STEP_SETTING } from './constants/step_constants';
+import { Toast } from 'primereact/toast';
+import React from 'react';
+import constants from './constants/constants';
+import { dataFetcher } from './features/dataFetcher';
+import dataLibrary from './features/dataLibrary';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import axios from 'axios';
-import URL_LINKS from "./constants/urls";
-
+import URL_LINKS from './constants/urls';
+import PanelTableBase from './ui/components/Panel/PanelTableBase';
+import PanelCompilation from './ui/components/Panel/PanelCompilation';
+import PanelPodSummary from './ui/components/Panel/PanelPodSummary';
+import RefreshButton from './ui/components/Buttons/RefreshButton';
+import { PodDataExtractor } from './features/PodDataExtractor';
+import { Accordion, AccordionTab } from 'primereact/accordion';
+import {
+  DataTableSelectEvent,
+  DataTableUnselectEvent,
+} from 'primereact/datatable';
 function App() {
-  const [data, setData] = useState({});
-  const [subthemeCount, setSubthemeCount] = useState(0);
+  const [datatable, setDatatable] = useState([]);
   const [title, setTitle] = useState(STEP_SETTING.TITLE.value);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [panelCompilationLoading, setPanelCompilationLoading] = useState(false);
+  const [panelPodSummaryLoading, setPanelPodSummaryLoading] = useState(false);
+
   const [error, setError] = useState(null);
+  //-----------------------------//
+  // function for toast messages //
+  //-----------------------------//
+
+  const toast = React.useRef(null);
+
+  {
+    /**
+     FOR DATA TABLE - data state is selection
+     */
+  }
+
+  //1 check if item is selected
+  const [selections, setSelections] = useState([]);
+  const [rowsSelected, setRowsSelected] = useState([]);
+  const [rowClick, setRowClick] = useState(true);
+
+  const [summary40Words, setSummary40Words] = useState('');
+
+  const [compilation, setCompilation] = useState('');
+
+  const [compilationRaw, setCompilationRaw] = useState('');
+
+  const [aiSuggestion, setAiSuggestion] = useState('');
 
   {
     /* -- use in modal */
   }
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [content, setContent] = useState("");
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalIdentifier, setModalIdentifier] = useState("");
-  const [modalItemId, setModalItemId] = useState("");
+  const [content, setContent] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalIdentifier, setModalIdentifier] = useState('');
+  const [modalItemId, setModalItemId] = useState('');
 
-  let urlData = constants.STEP_SEVEN_B.value;
+  let projectId = localStorage.getItem('course_id');
+  let userId = localStorage.getItem('user_id');
+  let rqConstruct = localStorage.getItem('rq_construct');
+  let subthemeId = localStorage.getItem('subtheme_id');
+  let urlDataTable =
+    URL_LINKS.DATATABLE_DATA.value +
+    projectId +
+    '/' +
+    subthemeId +
+    '/' +
+    rqConstruct +
+    '/' +
+    userId;
 
-  let projectId = localStorage.getItem("course_id");
-  let userId = localStorage.getItem("user_id");
-  let rqConstruct = localStorage.getItem("rq_construct");
+  let urlSubthemeData = URL_LINKS.SUBTHEME.value + subthemeId;
 
   const setEditorContent = (content: string) => {
     setContent(content);
@@ -59,32 +102,92 @@ function App() {
 
   const loadData = async () => {
     setLoading(true);
+    setPanelCompilationLoading(true);
+    setPanelPodSummaryLoading(true);
 
-    const urlB = urlData + "/" + projectId + "/" + userId + "/" + rqConstruct;
+    //const urlB = urlData + '/' + projectId + '/' + userId + '/' + rqConstruct;
     try {
-      const dataStep = await dataFetcher(urlB);
-      const lib = new dataLibrary(dataStep);
+      // First Axios call
+      axios
+        .get(urlDataTable)
+        .then((response) => {
+          // Process the response from the first call
 
-      const title = lib.getTitle();
-      const subthemeCount = lib.getSubthemeCount();
+          if (response.data.status === 'success') {
+            console.log(
+              '####################### response  data #######################',
+            );
+            console.log(response.data.data);
+            console.log(
+              '####################### response  data #######################',
+            );
+            setDatatable(response.data.data);
+            if (response.data.data.selections !== null) {
+              const preselections = response.data.selections;
+              setSelections(preselections);
+              console.log(
+                '####################### preselections #######################',
+              );
+              console.log(preselections);
+              console.log(
+                '####################### preselections #######################',
+              );
+              console.log(
+                '####################### datatable #######################',
+              );
+              console.log(datatable);
+              console.log(
+                '####################### datatable #######################',
+              );
 
-      setData(lib.getSummariesByKey());
-      setSubthemeCount(subthemeCount);
-      setTitle(title);
+              const preselectedRows = datatable.filter((row: any) =>
+                preselections.includes(row.id),
+              );
+              console.log(
+                '####################### preselectedRows #######################',
+              );
+              console.log(preselectedRows);
+              console.log(
+                '####################### preselectedRows #######################',
+              );
+              setRowsSelected(preselectedRows);
+            }
+          } else {
+            showError(response.data.message);
+          }
 
-      {/**
-    Here's how you can fix it:
+          // Second Axios call
+          return axios.get(urlSubthemeData);
+        })
+        .then((response) => {
+          if (response.data.status === 'success') {
+            setLoading(false);
+            setSummary40Words(response.data.data.subtheme_40_summary);
+            setCompilation(response.data.data.subtheme_pod);
+            console.log('--- subtheme raw content 11----------------');
+            console.log(response.data.data.subtheme_raw);
+            console.log('--- subtheme raw content 11----------------');
+            //parse and get text only
+            let subthemeRawContent = PodDataExtractor.extractTextFromHtml(
+              response.data.data.subtheme_raw,
+            );
 
-Instead of passing a function that returns a string to setError,
- you should directly pass the error message. 
- If you want to use the previous state, you can do so, b
- ut the way you're currently trying to set the state is incorrect. Here's the corrected part of your code:
-    
-    */}
+            console.log('--- subtheme raw content ----------------');
+            console.log(subthemeRawContent);
+            console.log('--- subtheme raw content ----------------');
+            setCompilationRaw(subthemeRawContent);
+            setPanelCompilationLoading(false);
+            setPanelPodSummaryLoading(false);
+          }
+        })
+        .catch((error) => {
+          // Handle any error that occurs during the calls
+          console.error('An error occurred:', error);
+        });
     } catch (err: any) {
-      console.error("Error in fetchSubtheme:", err);
+      console.error('Error in fetchSubtheme:', err);
       // Directly set the error message
-      setError(err?.message || "An error occurred");
+      setError(err?.message || 'An error occurred');
     }
 
     // Delay for 3 seconds before setting loading to false
@@ -97,24 +200,48 @@ Instead of passing a function that returns a string to setError,
     return <div dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
+  //retrieve primereact datatable selection
+  const updateSelections = (selectedRow: any) => {
+    setRowsSelected(selectedRow);
+  };
 
-  const deleteDataClick = (item_id: string, identifier: string, content: string) => {
+  const unselectAll = () => {
+    setSelections([]);
+  };
+
+  const removeDataClick = () => {};
+
+  const onCheckedChange = (id: string, checked: boolean, content: string) => {};
+
+  const deleteDataClick = (
+    item_id: string,
+    identifier: string,
+    content: string,
+  ) => {
     console.log(
-      " -- deleteDataClick -- " + item_id + " - identifier - " + identifier + " - content - " + content
+      ' -- deleteDataClick -- ' +
+        item_id +
+        ' - identifier - ' +
+        identifier +
+        ' - content - ' +
+        content,
     );
     console.log(item_id);
 
     confirmDialog({
       message: (
         <div>
-          <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+          <p>
+            Are you sure you want to delete this item? This action cannot be
+            undone.
+          </p>
           <HtmlContentAlert html={content} />
         </div>
       ),
       header: 'Delete Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => performDelete(item_id, identifier),
-      reject: () => showWarn('Delete cancelled')
+      reject: () => showWarn('Delete cancelled'),
     });
   };
 
@@ -122,17 +249,11 @@ Instead of passing a function that returns a string to setError,
     try {
       // Replace with your API endpoint and pass necessary data
       const urlDelete = URL_LINKS.DELETE_RESEARCH_FILTER.value + projectId;
-      const response = await axios.post(urlDelete + "/" + item_id);
-
-
-
-
+      const response = await axios.post(urlDelete + '/' + item_id);
 
       console.log('-- response  ---');
       console.log(response);
       console.log('-- response  ---');
-
-
 
       showSuccess('Item successfully deleted');
       // Refresh data or perform any other actions needed after successful deletion
@@ -143,15 +264,14 @@ Instead of passing a function that returns a string to setError,
     }
   };
 
-
   const editDataClick = (
     item_id: string,
     identifier: string,
     title: string,
-    content: string
+    content: string,
   ) => {
     console.log(
-      " -- editDataClick -- " + item_id + " - identifier - " + identifier
+      ' -- editDataClick -- ' + item_id + ' - identifier - ' + identifier,
     );
     console.log(content);
     console.log(item_id);
@@ -162,26 +282,23 @@ Instead of passing a function that returns a string to setError,
     setContent(content);
     setModalTitle(title);
   };
-  const saveData = async (
-  ) => {
-
-
-    console.log(" -- saveData -- " + modalItemId + " - identifier - " + modalIdentifier);
+  const saveData = async () => {
+    console.log(
+      ' -- saveData -- ' + modalItemId + ' - identifier - ' + modalIdentifier,
+    );
     console.log(modalItemId);
 
-    console.log("########### title ######");
+    console.log('########### title ######');
     console.log(modalTitle);
-    console.log("########### content ######");
+    console.log('########### content ######');
     console.log(content);
 
     let title = modalTitle;
     let forty_words_summary = content;
-    let count_subtheme = subthemeCount;
-    let item_identifier = modalIdentifier;
     let course_id = projectId;
     let rq_construct = rqConstruct;
     let user_id = userId;
-    let course_type = localStorage.getItem("course_type");
+    let course_type = localStorage.getItem('course_type');
 
     let URLSAVE = URL_LINKS.SAVE_RESEARCH_FILTER.value + projectId;
 
@@ -190,17 +307,19 @@ Instead of passing a function that returns a string to setError,
       const response = await axios.post(URLSAVE, {
         title,
         forty_words_summary,
-        count_subtheme,
-        item_identifier,
         course_id,
         rq_construct,
         user_id,
         course_type,
       });
 
-      console.log('-- ####################### response #######################################3 ---');
+      console.log(
+        '-- ####################### response #######################################3 ---',
+      );
       console.log(response);
-      console.log('-- ####################### response #######################################3 ---');
+      console.log(
+        '-- ####################### response #######################################3 ---',
+      );
 
       if (response.data.status === 'success') {
         console.log('success');
@@ -215,17 +334,16 @@ Instead of passing a function that returns a string to setError,
       showError('Failed to save item ' + error.data.message);
       console.error('Save Error:', error);
     }
-
   };
   // (identifier: string, title?: string, content?: string) => void;
   const addData = (identifier: string, title: string, content: string) => {
     console.log(
-      " -- addData -- " +
-      identifier +
-      " - title - " +
-      title +
-      " - content - " +
-      content
+      ' -- addData -- ' +
+        identifier +
+        ' - title - ' +
+        title +
+        ' - content - ' +
+        content,
     );
 
     openModal();
@@ -235,16 +353,16 @@ Instead of passing a function that returns a string to setError,
   };
 
   const resetData = () => {
-    console.log(" -- resetData -- ");
+    console.log(' -- resetData -- ');
   };
 
   const saveAllData = () => {
-    console.log(" -- saveAllData -- ");
+    console.log(' -- saveAllData -- ');
   };
 
   const refreshData = () => {
     // will call load data again
-    console.log(" -- RefreshData ===-- ");
+    console.log(' -- RefreshData ===-- ');
     loadData();
   };
 
@@ -259,17 +377,80 @@ Instead of passing a function that returns a string to setError,
   const closeModal = () => {
     modalVisibleChange(false);
     //wipe out content
-    setContent("");
-    setModalTitle("");
-    setModalIdentifier("");
-    setModalItemId("");
+    setContent('');
+    setModalTitle('');
+    setModalIdentifier('');
+    setModalItemId('');
   };
 
+  //########################################## data table interaction ##########################################//
+
+  const onRowSelect = (event: DataTableSelectEvent) => {
+    console.log(' --- row select ---');
+    console.log(event);
+
+    showSuccess('test');
+    showInfo('Item selected  ' + event.data.string_data);
+
+    let stringExtract = PodDataExtractor.extractPodTextContent(
+      event.data.string_data,
+    );
+
+    //extract string, remove html tag
+    //remove double .. at the end if exist
+    let stringExtracted = stringExtract[0];
+    if (stringExtracted.endsWith('..')) {
+      stringExtracted = stringExtracted.slice(0, -2);
+    }
+
+    //append to both compilation and compilationRaw
+    let compilationNew = compilation + ' ' + stringExtracted;
+    let compilationRawNew = compilationRaw + ' ' + stringExtracted;
+
+    setCompilation(compilationNew);
+    setCompilationRaw(compilationRawNew);
+
+    //re render PanelCompilation
+    setPanelCompilationLoading(true);
+    setTimeout(() => {
+      setPanelCompilationLoading(false);
+    }, 3000);
+  };
+
+  const onRowUnselect = (event: DataTableUnselectEvent) => {
+    console.log(' --- row unselect ---');
+    console.log(event);
+
+    showWarn('Item unselected  ' + event.data.string_data);
+
+    let stringExtract = PodDataExtractor.extractPodTextContent(
+      event.data.string_data,
+    );
+
+    //extract string, remove html tag
+    //remove double .. at the end if exist
+    let stringExtracted = stringExtract[0];
+    if (stringExtracted.endsWith('..')) {
+      stringExtracted = stringExtracted.slice(0, -2);
+    }
+    //search compilation and remove string
+    let compilationNew = compilation.replace(stringExtracted, '');
+    let compilationRawNew = compilationRaw.replace(stringExtracted, '');
+
+    setCompilation(compilationNew);
+    setCompilationRaw(compilationRawNew);
+
+    setPanelCompilationLoading(true);
+    setTimeout(() => {
+      setPanelCompilationLoading(false);
+    }, 3000);
+  };
+  //########################################## data table interaction ##########################################//
   const fetchData = async (
     urlData: string,
     projectId: string,
     userId: string,
-    rqConstruct: string
+    rqConstruct: string,
   ) => {
     try {
       const urlB = `${urlData}/${projectId}/${userId}/${rqConstruct}`;
@@ -282,20 +463,15 @@ Instead of passing a function that returns a string to setError,
         title: lib.getTitle(),
       };
     } catch (err) {
-      console.error("Error in fetchSubtheme:", err);
+      console.error('Error in fetchSubtheme:', err);
       throw err; // Rethrow the error so it can be caught in the component
     }
   };
-  //-----------------------------//
-  // function for toast messages //
-  //-----------------------------//
-
-  const toast = React.useRef(null);
 
   const showSuccess = (message: string) => {
     (toast.current as Toast | null)?.show({
-      severity: "success",
-      summary: "Success",
+      severity: 'success',
+      summary: 'Success',
       detail: message,
       life: 3000,
     });
@@ -303,8 +479,8 @@ Instead of passing a function that returns a string to setError,
 
   const showInfo = (message: string) => {
     (toast.current as Toast | null)?.show({
-      severity: "info",
-      summary: "Info",
+      severity: 'info',
+      summary: 'Info',
       detail: message,
       life: 3000,
     });
@@ -312,8 +488,8 @@ Instead of passing a function that returns a string to setError,
 
   const showWarn = (message: string) => {
     (toast.current as Toast | null)?.show({
-      severity: "warn",
-      summary: "Warning",
+      severity: 'warn',
+      summary: 'Warning',
       detail: message,
       life: 3000,
     });
@@ -321,8 +497,8 @@ Instead of passing a function that returns a string to setError,
 
   const showError = (message: string) => {
     (toast.current as Toast | null)?.show({
-      severity: "error",
-      summary: "Error",
+      severity: 'error',
+      summary: 'Error',
       detail: message,
       life: 3000,
     });
@@ -331,46 +507,59 @@ Instead of passing a function that returns a string to setError,
   useEffect(() => {
     loadData();
   }, []);
-
-  console.log(" -- data -- ");
-  console.log(data);
-  console.log(" -- subthemeCount -- ");
-  console.log(subthemeCount);
-  console.log(" -- title -- ");
-  console.log(title);
-
   return (
     <PrimeReactProvider>
-      <div className="App">
-        <ConfirmDialog />
-        <Toast ref={toast} />
-        <MaximizableModal
-          modalVisible={modalVisible}
-          onEditorChange={handleEditorChange}
-          handleTitleChange={handleTitleChange}
-          getEditorContent={retrieveEditorContent}
-          content={content}
-          title={modalTitle}
-          item_id={modalItemId}
-          identifier={modalIdentifier}
-          setModalVisible={modalVisibleChange}
-          saveData={saveData}
-          close={closeModal}
-        />
-        <h1>{STEP_SETTING.TITLE.value}</h1>
-        <BasePanel
-          data={data}
-          subthemeCount={subthemeCount}
-          title={title}
-          loading={loading}
-          deleteDataClick={deleteDataClick}
-          editDataClick={editDataClick}
-          refreshData={refreshData}
-          addData={addData}
-          resetData={resetData}
-          saveAllData={saveAllData}
-          error={error}
-        />
+      <Toast ref={toast} />
+      <div className='App'>
+        <div className='panel panel-default'>
+          <div className='panel-heading'>
+            <span className='panel-title'>
+              {STEP_SETTING.TITLE_PART_A.value}
+            </span>
+          </div>
+          <div className='panel-body'>
+            <PanelTableBase
+              datatable={datatable}
+              rowsSelected={rowsSelected}
+              loading={loading}
+              // Rest of the code...
+              onCheckedChange={onCheckedChange}
+              updateSelections={updateSelections}
+              onRowSelect={onRowSelect}
+              onRowUnselect={onRowUnselect}
+              rowClick={rowClick}
+              setRowClick={setRowClick}
+            />
+            <div className='row'>
+              <div className='card'>
+                <Accordion activeIndex={0}>
+                  <AccordionTab header='Compilation Raw'>
+                    <p className='m-0'>{compilationRaw}</p>
+                  </AccordionTab>
+                </Accordion>
+              </div>
+            </div>
+            <div className='row'>
+              <PanelCompilation
+                compilation={compilation}
+                loading={panelCompilationLoading}
+                showSuccess={showSuccess}
+                showError={showError}
+              />
+            </div>
+            <div className='row'>
+              <PanelPodSummary
+                summary={summary40Words}
+                loading={panelPodSummaryLoading}
+                showSuccess={showSuccess}
+                showError={showError}
+              />
+            </div>
+          </div>
+          <div className='panel-footer'>
+            <RefreshButton onClick={refreshData} />
+          </div>
+        </div>
       </div>
     </PrimeReactProvider>
   );
