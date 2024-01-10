@@ -24,12 +24,25 @@ import {
   DataTableSelectEvent,
   DataTableUnselectEvent,
 } from 'primereact/datatable';
+import ResetButton from './ui/components/Buttons/ResetButton';
+import GenerateButton from './ui/components/Buttons/GenerateButton';
+import SaveButton from './ui/components/Buttons/SaveButton';
+import DeleteButton from './ui/components/Buttons/DeleteButton';
+import GoToButton from './ui/components/Buttons/GoToButton';
+import {
+  savedata,
+  goto,
+  generate,
+  deletedata,
+} from './functions/app/AppFunctions';
+import '../src/ui/css/loading.css';
 function App() {
   const [datatable, setDatatable] = useState([]);
   const [title, setTitle] = useState(STEP_SETTING.TITLE.value);
   const [loading, setLoading] = useState(false);
   const [panelCompilationLoading, setPanelCompilationLoading] = useState(false);
   const [panelPodSummaryLoading, setPanelPodSummaryLoading] = useState(false);
+  const [panelRawLoading, setPanelRawLoading] = useState(false);
 
   const [error, setError] = useState(null);
   //-----------------------------//
@@ -45,16 +58,23 @@ function App() {
   }
 
   //1 check if item is selected
+  const [projectId, setProjectId] = useState(
+    localStorage.getItem('course_id') || '',
+  );
+  const [subthemeId, setSubthemeId] = useState(
+    localStorage.getItem('subtheme_id') || '',
+  );
+  const [rqConstruct, setRqConstruct] = useState(
+    localStorage.getItem('rq_construct') || '',
+  );
+  const [userId, setUserId] = useState(localStorage.getItem('user_id') || '');
   const [selections, setSelections] = useState([]);
   const [rowsSelected, setRowsSelected] = useState([]);
   const [rowClick, setRowClick] = useState(true);
-
+  const [expandedRows, setExpandedRows] = useState(null);
   const [summary40Words, setSummary40Words] = useState('');
-
   const [compilation, setCompilation] = useState('');
-
   const [compilationRaw, setCompilationRaw] = useState('');
-
   const [aiSuggestion, setAiSuggestion] = useState('');
 
   {
@@ -67,10 +87,6 @@ function App() {
   const [modalIdentifier, setModalIdentifier] = useState('');
   const [modalItemId, setModalItemId] = useState('');
 
-  let projectId = localStorage.getItem('course_id');
-  let userId = localStorage.getItem('user_id');
-  let rqConstruct = localStorage.getItem('rq_construct');
-  let subthemeId = localStorage.getItem('subtheme_id');
   let urlDataTable =
     URL_LINKS.DATATABLE_DATA.value +
     projectId +
@@ -105,6 +121,18 @@ function App() {
     setPanelCompilationLoading(true);
     setPanelPodSummaryLoading(true);
 
+    if (!projectId || !subthemeId || !rqConstruct || !userId) {
+      showError(
+        'important data project id, subtheme id, rq construct, user id is missing',
+      );
+    }
+
+    //WIPE OUT ALL LOCAL STORAGE BY KEY
+    localStorage.removeItem('subtheme_pod');
+    localStorage.removeItem('subtheme_40_summary');
+    localStorage.removeItem('subtheme_raw');
+    localStorage.removeItem('preselections');
+
     //const urlB = urlData + '/' + projectId + '/' + userId + '/' + rqConstruct;
     try {
       // First Axios call
@@ -114,41 +142,19 @@ function App() {
           // Process the response from the first call
 
           if (response.data.status === 'success') {
-            console.log(
-              '####################### response  data #######################',
-            );
-            console.log(response.data.data);
-            console.log(
-              '####################### response  data #######################',
-            );
             setDatatable(response.data.data);
             if (response.data.data.selections !== null) {
               const preselections = response.data.selections;
               setSelections(preselections);
-              console.log(
-                '####################### preselections #######################',
-              );
-              console.log(preselections);
-              console.log(
-                '####################### preselections #######################',
-              );
-              console.log(
-                '####################### datatable #######################',
-              );
-              console.log(datatable);
-              console.log(
-                '####################### datatable #######################',
+
+              //set initial preselections in local storage use on reset
+              localStorage.setItem(
+                'preselections',
+                JSON.stringify(preselections),
               );
 
               const preselectedRows = datatable.filter((row: any) =>
                 preselections.includes(row.id),
-              );
-              console.log(
-                '####################### preselectedRows #######################',
-              );
-              console.log(preselectedRows);
-              console.log(
-                '####################### preselectedRows #######################',
               );
               setRowsSelected(preselectedRows);
             }
@@ -162,20 +168,44 @@ function App() {
         .then((response) => {
           if (response.data.status === 'success') {
             setLoading(false);
-            setSummary40Words(response.data.data.subtheme_40_summary);
-            setCompilation(response.data.data.subtheme_pod);
-            console.log('--- subtheme raw content 11----------------');
-            console.log(response.data.data.subtheme_raw);
-            console.log('--- subtheme raw content 11----------------');
+
+            let summary40Words = PodDataExtractor.extractTextFromHtml(
+              response.data.data.subtheme_40_summary,
+            );
+
+            //sanitize remove all \n
+            summary40Words = summary40Words.replace(/\n/g, ' ');
+
+            let compilation = PodDataExtractor.extractTextFromHtml(
+              response.data.data.subtheme_pod,
+            );
+
+            //sanitize remove all \n
+            compilation = compilation.replace(/\n/g, ' ');
+            setSummary40Words(summary40Words);
+            setCompilation(compilation);
+
+            //set in local storage for reset
+            localStorage.setItem('subtheme_pod', JSON.stringify(compilation));
+
+            //set in local storage for reset
+            localStorage.setItem(
+              'subtheme_40_summary',
+              JSON.stringify(summary40Words),
+            );
+
             //parse and get text only
             let subthemeRawContent = PodDataExtractor.extractTextFromHtml(
               response.data.data.subtheme_raw,
             );
 
-            console.log('--- subtheme raw content ----------------');
-            console.log(subthemeRawContent);
-            console.log('--- subtheme raw content ----------------');
             setCompilationRaw(subthemeRawContent);
+
+            //set in local storage for reset
+            localStorage.setItem(
+              'subtheme_raw',
+              JSON.stringify(subthemeRawContent),
+            );
             setPanelCompilationLoading(false);
             setPanelPodSummaryLoading(false);
           }
@@ -445,7 +475,103 @@ function App() {
       setPanelCompilationLoading(false);
     }, 3000);
   };
+
+  const expandAll = () => {
+    let _expandedRows = {};
+
+    datatable.forEach((p) => (_expandedRows[`${p.id}`] = true));
+
+    setExpandedRows(_expandedRows);
+  };
+
+  const collapseAll = () => {
+    setExpandedRows(null);
+  };
   //########################################## data table interaction ##########################################//
+
+  //########################################## button interaction ##########################################//
+
+  /**
+   * show confirm dialog for reset
+   */
+  const confirmReset = () => {
+    confirmDialog({
+      message: 'Are you sure you want to reset the data?',
+      header: 'Reset Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => performReset(),
+      reject: () => rejectReset(),
+    });
+  };
+
+  const rejectReset = () => {
+    showWarn('Reset cancelled');
+  };
+
+  const performReset = () => {
+    //read from local storage and set state to initial
+    console.log(' -- performReset -- ');
+
+    let subtheme_pod = localStorage.getItem('subtheme_pod') || '';
+    let subtheme_40_summary = localStorage.getItem('subtheme_40_summary') || '';
+    let subtheme_raw = localStorage.getItem('subtheme_raw') || '';
+    let preselections = JSON.parse(
+      localStorage.getItem('preselections') || '[]',
+    );
+
+    console.log('-- in local storage --');
+    console.log(subtheme_pod, subtheme_40_summary, subtheme_raw, preselections);
+    console.log('-- in local storage --');
+
+    const preselectedRows = datatable.filter((row: any) =>
+      preselections.includes(row.id),
+    );
+
+    setRowsSelected(preselectedRows);
+
+    // Set the states with the retrieved data
+    setCompilation(subtheme_pod);
+    setSummary40Words(subtheme_40_summary);
+    setCompilationRaw(subtheme_raw);
+    setSelections(preselections);
+
+    console.log('-- after setting state --');
+    console.log(compilation, summary40Words, compilationRaw, selections);
+    console.log('-- after setting state --');
+
+    setLoading(true);
+    setPanelCompilationLoading(true);
+    setPanelPodSummaryLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      setPanelCompilationLoading(false);
+      setPanelPodSummaryLoading(false);
+    }, 3000);
+    showSuccess('Data successfully reset');
+  };
+
+  const editDatatableClick = (journal_id: string) => {
+    console.log(' -- editDatatableClick -- ' + journal_id);
+  };
+
+  const removeDatatableClick = (
+    journal_id: string,
+    rqConstruct: string,
+    id: string,
+  ) => {
+    console.log(
+      ' -- removeDatatableClick -- ' +
+        journal_id +
+        ' - id - ' +
+        id +
+        ' - rqConstruct - ' +
+        rqConstruct,
+    );
+  };
+
+  //########################################## button interaction ##########################################//
+
   const fetchData = async (
     urlData: string,
     projectId: string,
@@ -510,6 +636,7 @@ function App() {
   return (
     <PrimeReactProvider>
       <Toast ref={toast} />
+      <ConfirmDialog />
       <div className='App'>
         <div className='panel panel-default'>
           <div className='panel-heading'>
@@ -518,18 +645,27 @@ function App() {
             </span>
           </div>
           <div className='panel-body'>
-            <PanelTableBase
-              datatable={datatable}
-              rowsSelected={rowsSelected}
-              loading={loading}
-              // Rest of the code...
-              onCheckedChange={onCheckedChange}
-              updateSelections={updateSelections}
-              onRowSelect={onRowSelect}
-              onRowUnselect={onRowUnselect}
-              rowClick={rowClick}
-              setRowClick={setRowClick}
-            />
+            <div className='row'>
+              <div className='card'>
+                <PanelTableBase
+                  rqConstruct={rqConstruct}
+                  datatable={datatable}
+                  rowsSelected={rowsSelected}
+                  loading={loading}
+                  // Rest of the code...
+                  onCheckedChange={onCheckedChange}
+                  updateSelections={updateSelections}
+                  onRowSelect={onRowSelect}
+                  onRowUnselect={onRowUnselect}
+                  rowClick={rowClick}
+                  setRowClick={setRowClick}
+                  editDatatableClick={editDatatableClick}
+                  removeDatatableClick={removeDatatableClick}
+                  expandedRows={expandedRows}
+                  setExpandedRows={setExpandedRows}
+                />
+              </div>
+            </div>
             <div className='row'>
               <div className='card'>
                 <Accordion activeIndex={0}>
@@ -557,7 +693,12 @@ function App() {
             </div>
           </div>
           <div className='panel-footer'>
+            <DeleteButton onClick={deletedata} />
             <RefreshButton onClick={refreshData} />
+            <ResetButton onClick={confirmReset} />
+            <GenerateButton onClick={generate} />
+            <SaveButton onClick={savedata} />
+            <GoToButton onClick={goto} />
           </div>
         </div>
       </div>

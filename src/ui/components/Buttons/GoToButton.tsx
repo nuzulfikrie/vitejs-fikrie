@@ -1,19 +1,19 @@
 import React from 'react';
 
-interface SaveButtonProps {
+interface GoToButtonProps {
   onClick: () => void;
 }
 
-const SaveButton: React.FC<SaveButtonProps> = ({ onClick }) => {
+const GoToButton: React.FC<GoToButtonProps> = ({ onClick }) => {
   return (
     <button
       type='button'
       className='btn btn-md btn-system'
       onClick={() => onClick()}
     >
-      <i className='fa fa-floppy-disk'></i> Save
+      <i className='fa fa-arrow'></i> Go To Step Seven
     </button>
   );
 };
 
-export default SaveButton;
+export default GoToButton;

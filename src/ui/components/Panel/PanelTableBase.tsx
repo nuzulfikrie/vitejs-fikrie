@@ -3,6 +3,7 @@ import DataTable from '../Table/DataTable';
 import '../../css/loading.css';
 
 interface PanelTableBaseProps {
+  rqConstruct: string;
   datatable: [];
   rowsSelected: [];
   loading: boolean;
@@ -12,9 +13,18 @@ interface PanelTableBaseProps {
   onRowUnselect: (e: any) => void;
   rowClick: boolean;
   setRowClick: (value: boolean) => void;
+  editDatatableClick: (journal_id: string) => void;
+  removeDatatableClick: (
+    journal_id: string,
+    rqConstruct: string,
+    id: string,
+  ) => void;
+  expandedRows: any[];
+  setExpandedRows: (value: any[]) => void;
 }
 
 const PanelTableBase: React.FC<PanelTableBaseProps> = ({
+  rqConstruct,
   datatable,
   rowsSelected,
   loading,
@@ -24,6 +34,10 @@ const PanelTableBase: React.FC<PanelTableBaseProps> = ({
   onRowUnselect,
   rowClick,
   setRowClick,
+  editDatatableClick,
+  removeDatatableClick,
+  expandedRows,
+  setExpandedRows,
 }) => {
   return (
     <>
@@ -35,6 +49,7 @@ const PanelTableBase: React.FC<PanelTableBaseProps> = ({
         </div>
       ) : (
         <DataTable
+          rqConstruct={rqConstruct}
           datatable={datatable}
           rowsSelected={rowsSelected}
           loading={loading}
@@ -44,6 +59,10 @@ const PanelTableBase: React.FC<PanelTableBaseProps> = ({
           onRowUnselect={onRowUnselect}
           rowClick={rowClick}
           setRowClick={setRowClick}
+          editDatatableClick={editDatatableClick}
+          removeDatatableClick={removeDatatableClick}
+          expandedRows={expandedRows}
+          setExpandedRows={setExpandedRows}
         />
       )}
     </>
