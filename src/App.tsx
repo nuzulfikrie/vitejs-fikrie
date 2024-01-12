@@ -36,6 +36,7 @@ import {
   deletedata,
 } from './functions/app/AppFunctions';
 import '../src/ui/css/loading.css';
+import EditJournalModal from './ui/components/Modal/EditJournalModal';
 function App() {
   const [datatable, setDatatable] = useState([]);
   const [title, setTitle] = useState(STEP_SETTING.TITLE.value);
@@ -78,9 +79,16 @@ function App() {
   const [aiSuggestion, setAiSuggestion] = useState('');
 
   {
+    /*
+      - use in form
+      */
+  }
+  const [selectedJournal, setSelectedJournal] = useState('');
+  const [modalEditVisible, setModalEditVisible] = useState(false);
+  {
     /* -- use in modal */
   }
-  const [modalEditVisible, setModalEditVisible] = useState(false);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState('');
   const [modalTitle, setModalTitle] = useState('');
@@ -239,9 +247,9 @@ function App() {
     setSelections([]);
   };
 
-  const removeDataClick = () => { };
+  const removeDataClick = () => {};
 
-  const onCheckedChange = (id: string, checked: boolean, content: string) => { };
+  const onCheckedChange = (id: string, checked: boolean, content: string) => {};
 
   const deleteDataClick = (
     item_id: string,
@@ -250,11 +258,11 @@ function App() {
   ) => {
     console.log(
       ' -- deleteDataClick -- ' +
-      item_id +
-      ' - identifier - ' +
-      identifier +
-      ' - content - ' +
-      content,
+        item_id +
+        ' - identifier - ' +
+        identifier +
+        ' - content - ' +
+        content,
     );
     console.log(item_id);
 
@@ -369,11 +377,11 @@ function App() {
   const addData = (identifier: string, title: string, content: string) => {
     console.log(
       ' -- addData -- ' +
-      identifier +
-      ' - title - ' +
-      title +
-      ' - content - ' +
-      content,
+        identifier +
+        ' - title - ' +
+        title +
+        ' - content - ' +
+        content,
     );
 
     openModal();
@@ -553,6 +561,9 @@ function App() {
 
   const editDatatableClick = (journal_id: string) => {
     console.log(' -- editDatatableClick -- ' + journal_id);
+
+    setSelectedJournal(journal_id);
+    setModalEditVisible(true);
   };
 
   const removeDatatableClick = (
@@ -562,11 +573,11 @@ function App() {
   ) => {
     console.log(
       ' -- removeDatatableClick -- ' +
-      journal_id +
-      ' - id - ' +
-      id +
-      ' - rqConstruct - ' +
-      rqConstruct,
+        journal_id +
+        ' - id - ' +
+        id +
+        ' - rqConstruct - ' +
+        rqConstruct,
     );
   };
 
@@ -636,7 +647,17 @@ function App() {
   return (
     <PrimeReactProvider>
       <Toast ref={toast} />
-      <ConfirmDialog />
+      <EditJournalModal
+        label='Edit Journal'
+        icon='pi pi-pencil'
+        visible={modalEditVisible}
+        onHide={() => setModalEditVisible(false)}
+        setVisible={setModalEditVisible}
+        selectedProvider={selectedProvider}
+        journalId={selectedJournal}
+        projectId={projectId}
+        onSave={saveData}
+      />
       <div className='App'>
         <div className='panel panel-default'>
           <div className='panel-heading'>

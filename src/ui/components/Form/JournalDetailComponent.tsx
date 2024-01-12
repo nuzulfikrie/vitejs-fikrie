@@ -1,101 +1,85 @@
-import React, { Component } from 'react';
-import { Button } from 'primereact/button';
+import React, { useRef } from 'react';
+import { useFormik } from 'formik';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Checkbox } from 'primereact/checkbox';
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
+import { classNames } from 'primereact/utils';
+import { Dropdown } from 'primereact/dropdown'; // If needed for provider selection
 
-class JournalDetailsComponent extends Component {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            selectedProvider: null,
-            // Add other state variables as needed
-        };
-    }
+export default function JournalDetailsComponent() {
+  const toast = useRef(null);
 
-    handleProviderChange = (e) => {
-        this.setState({ selectedProvider: e.value });
-    }
+  const formik = useFormik({
+    initialValues: {
+      article_title: '',
+      authors: '',
+      journal_name: '',
+      doi: '',
+      year: '',
+      volume: '',
+      issue: '',
+      pages: '',
+      step06: [],
+      article_about_content: '',
+      article_about_page: '',
+      article_support_study_content: '',
+      article_support_study_page: '',
+      article_does_not_support_study_content: '',
+      needed_support_study_content: '',
+    },
+    validate: (values) => {
+      const errors: any = {};
+      // Add validation logic here
+      if (!values.article_title) {
+        errors.article_title = 'Article title is required.';
+      }
+      // Add other validation rules as needed
+      return errors;
+    },
+    onSubmit: (values) => {
+      (toast.current as Toast | null)?.show({
+        severity: 'success',
+        summary: 'Form Submitted',
+        detail: 'Data Submitted',
+      });
+      formik.resetForm();
+    },
+  });
 
-    render() {
-        const providers = [
-            { label: 'ELSEVIER', value: 'elsevier' },
-            { label: 'PUBMED', value: 'pubmed' },
-            { label: 'IEEE', value: 'ieee' },
-            { label: 'SPRINGER', value: 'springer' },
-            { label: 'RESET', value: 'reset' },
-        ];
+  const isFormFieldInvalid = (name: any) =>
+    !!(
+      formik.touched[name as keyof typeof formik.touched] &&
+      formik.errors[name as keyof typeof formik.errors]
+    );
 
-        return (
-            <div className="jconfirm-content">
-                <Panel header="Journal Details" className="panel-danger mb40 mt5">
-                    <form method="post" accept-charset="utf-8" id="editJournalForm" role="form" action="/courses/edit-journal-view/863/4155">
-                        {/* Do not render hidden inputs for CSRF protection */}
-                        {/* <input type="hidden" name="_method" value="POST" /> */}
-                        {/* <input type="hidden" name="_csrfToken" value="e4635412c1688acea50ab3f39f8e18b3f6c7e57b9423443fea8489186b833039d54730f77c140805e647edc134a2fc68d0de4a4fe396ecb2d6652b4bd4023374" /> */}
-                        <div className="panel-heading fill">
-                            <span className="panel-title">Journal Details</span>
-                        </div>
-                        <div className="panel-body p20 pb10">
-                            {/* Add your PrimeReact components here */}
-                            <div className="col-md-8">
-                                <div className="form-group text">
-                                    <label htmlFor="doi">Doi</label>
-                                    <InputText id="doi" name="doi" className="gui-input hasButton" />
-                                </div>
-                                <Button className="ui-doi-trigger btn-primary" label="Retrieve metadata" icon="pi pi-search" iconPos="right" />
-                            </div>
-                            <div className="col-md-8">
-                                <div className="form-group text">
-                                    <label htmlFor="author">Author</label>
-                                    <InputText id="author" name="author" className="form-control" placeholder="In this format Karen Yang, David Martinez, Liza Beth" />
-                                </div>
-                            </div>
-                            {/* Other form fields */}
-                            <div className="col-md-8">
-                                <div className="form-group text">
-                                    <label htmlFor="year">Year</label>
-                                    <InputText id="year" name="year" className="form-control" />
-                                </div>
-                            </div>
-                            <div className="col-md-8">
-                                <div className="form-group text">
-                                    <label htmlFor="journal-name">Journal Name</label>
-                                    <InputText id="journal-name" name="journal_name" className="form-control" />
-                                </div>
-                            </div>
-                            {/* Add more form fields */}
-                            <div className="col-md-8">
-                                <div className="form-group text">
-                                    <label htmlFor="page">Page</label>
-                                    <InputText id="page" name="page" className="form-control" />
-                                </div>
-                            </div>
-                            {/* Dropdown for selecting provider */}
-                            <div className="col-md-8">
-                                <div className="form-group text">
-                                    <label>SELECT PROVIDER</label>
-                                    <Dropdown
-                                        id="dropdown-button"
-                                        value={this.state.selectedProvider}
-                                        options={providers}
-                                        onChange={this.handleProviderChange}
-                                        placeholder="Select a provider"
-                                    />
-                                </div>
-                            </div>
-                            {/* Insert Template button */}
-                            <div className="col-md-12">
-                                <div className="btn-group">
-                                    <Button className="insert-template btn-primary btn-md" label="Insert Template" />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </Panel>
-            </div>
-        );
-    }
+  const getFormErrorMessage = (name: any) => {
+    return isFormFieldInvalid(name) ? (
+      <small className='p-error'>{formik.errors[name]}</small>
+    ) : null;
+  };
+
+  return (
+    <div className='card flex justify-content-center'>
+      <form onSubmit={formik.handleSubmit} className='flex flex-column gap-2'>
+        <Toast ref={toast} />
+        {/* Repeat the following pattern for each field */}
+        <span className='p-float-label'>
+          <InputText
+            id='article_title'
+            name='article_title'
+            value={formik.values.article_title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={classNames({
+              'p-invalid': isFormFieldInvalid('article_title'),
+            })}
+          />
+          <label htmlFor='article_title'>Article Title</label>
+        </span>
+        {getFormErrorMessage('article_title')}
+        {/* Continue for other fields */}
+        <Button type='submit' label='Submit' />
+      </form>
+    </div>
+  );
 }
-
-export default JournalDetailsComponent;
