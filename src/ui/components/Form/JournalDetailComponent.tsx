@@ -10,8 +10,7 @@ import 'primeicons/primeicons.css';
 import axios from 'axios';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Card } from 'primereact/card';
-import { Checkbox } from "primereact/checkbox";
-
+import { Checkbox } from 'primereact/checkbox';
 
 interface Category {
   name: string;
@@ -21,14 +20,13 @@ interface JournalDetailsComponentProps {
   journalId: string;
   projectId: string;
   userId: string;
-  data: any,
+  data: any;
   onSave: (journalId: string, projectId: string, journal: any) => void;
 
   showSuccess: (message: string) => void;
   showWarning: (message: string) => void;
   showError: (message: string) => void;
   showInfo: (message: string) => void;
-
 }
 import { InputTextarea } from 'primereact/inputtextarea';
 //use JournalDetailsComponentProps
@@ -41,9 +39,8 @@ export default function JournalDetailsComponent({
   showSuccess,
   showWarning,
   showError,
-  showInfo
+  showInfo,
 }: JournalDetailsComponentProps): JSX.Element {
-
   /**
    * subthemes
    * {
@@ -72,15 +69,13 @@ export default function JournalDetailsComponent({
   interface Subtheme {
     [key: string]: {
       [key: string]: string;
-    }
-
-
-  };
+    };
+  }
   const categories: Category[] = [
     { name: 'Accounting', key: 'A' },
     { name: 'Marketing', key: 'M' },
     { name: 'Production', key: 'P' },
-    { name: 'Research', key: 'R' }
+    { name: 'Research', key: 'R' },
   ];
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
   const [article_title, setArticleTitle] = useState('');
@@ -95,26 +90,46 @@ export default function JournalDetailsComponent({
   const [step06, setStep06] = useState([]);
   const [article_about_content, setArticleAboutContent] = useState('');
   const [article_about_page, setArticleAboutPage] = useState('');
-  const [article_support_study_content, setArticleSupportStudyContent] = useState('');
+  const [article_support_study_content, setArticleSupportStudyContent] =
+    useState('');
   const [article_support_study_page, setArticleSupportStudyPage] = useState('');
-  const [article_does_not_support_study_content, setArticleDoesNotSupportStudyContent] = useState('');
-  const [needed_support_study_content, setNeededSupportStudyContent] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([categories[1]]);
+  const [
+    article_does_not_support_study_content,
+    setArticleDoesNotSupportStudyContent,
+  ] = useState('');
+  const [needed_support_study_content, setNeededSupportStudyContent] =
+    useState('');
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([
+    categories[1],
+  ]);
 
-  const [selectedSubtheme, setSelectedSubtheme] = useState<Subtheme>({});
+  const [subthemeSelections, setSubthemeSelections] =
+    useState<Subtheme[]>(/* Initial value */);
+  const [selectedSubthemes, setSelectedSubthemes] = useState<string[]>([]);
 
   const [authorPodColor, setAuthorPodColor] = useState<string>('');
-  const [articleSupportStudyColor, setArticleSupportStudyColor] = useState<string>('');
-  const [articleDoesNotSupportStudyColor, setArticleDoesNotSupportStudyColor] = useState<string>('');
-  const [neededSupportStudyColor, setNeededSupportStudyColor] = useState<string>('');
+  const [articleSupportStudyColor, setArticleSupportStudyColor] =
+    useState<string>('');
+  const [articleDoesNotSupportStudyColor, setArticleDoesNotSupportStudyColor] =
+    useState<string>('');
+  const [neededSupportStudyColor, setNeededSupportStudyColor] =
+    useState<string>('');
   useEffect(() => {
-
     if (!data) return;
 
     if (data.status === 'success') {
+      setSubthemeSelections(data.data.subthemes);
+      console.log('---subtheme selections');
+      console.log(subthemeSelections);
+      console.log('---subtheme selections');
+
       setAuthorPodColor(data.data.journal_color.author_pod_color);
-      setArticleSupportStudyColor(data.data.journal_color.article_support_study_color);
-      setArticleDoesNotSupportStudyColor(data.data.journal_color.article_dontsupport_study_color);
+      setArticleSupportStudyColor(
+        data.data.journal_color.article_support_study_color,
+      );
+      setArticleDoesNotSupportStudyColor(
+        data.data.journal_color.article_dontsupport_study_color,
+      );
       setNeededSupportStudyColor(data.data.journal_color.your_pod_color);
 
       const formValues = {
@@ -130,11 +145,14 @@ export default function JournalDetailsComponent({
         step06: data.data.journal.step06,
         article_about_content: data.data.journal.article_about.content,
         article_about_page: data.data.journal.article_about.page,
-        article_support_study_content: data.data.journal.article_support_study.content,
-        article_support_study_page: data.data.journal.article_support_study.page,
-        article_does_not_support_study_content: data.data.journal.article_does_not_support_study.content,
-        needed_support_study_content: data.data.journal.needed_support_study.content,
-
+        article_support_study_content:
+          data.data.journal.article_support_study.content,
+        article_support_study_page:
+          data.data.journal.article_support_study.page,
+        article_does_not_support_study_content:
+          data.data.journal.article_does_not_support_study.content,
+        needed_support_study_content:
+          data.data.journal.needed_support_study.content,
       };
       // set the formik values here
       //data.journal
@@ -151,32 +169,52 @@ export default function JournalDetailsComponent({
       setStep06(data.data.journal.step06);
       setArticleAboutContent(data.data.journal.article_about.content);
       setArticleAboutPage(data.data.journal.article_about.page);
-      setArticleSupportStudyContent(data.data.journal.article_support_study.content);
+      setArticleSupportStudyContent(
+        data.data.journal.article_support_study.content,
+      );
       setArticleSupportStudyPage(data.data.journal.article_support_study.page);
-      setArticleDoesNotSupportStudyContent(data.data.journal.article_does_not_support_study.content);
-      setNeededSupportStudyContent(data.data.journal.needed_support_study.content);
+      setArticleDoesNotSupportStudyContent(
+        data.data.journal.article_does_not_support_study.content,
+      );
+      setNeededSupportStudyContent(
+        data.data.journal.needed_support_study.content,
+      );
       formik.resetForm({ values: formValues });
     }
   }, [data]);
+
+  const onSubthemeChange = (subthemeKey: string) => {
+    setSelectedSubthemes((prevSelected) => {
+      if (prevSelected.includes(subthemeKey)) {
+        return prevSelected.filter((key) => key !== subthemeKey);
+      } else {
+        return [...prevSelected, subthemeKey];
+      }
+    });
+  };
+
   //load state from props here use super
 
   console.log('--- journalId --- ' + journalId);
   console.log('--- projectId --- ' + projectId);
   console.log('--- userId --- ' + userId);
 
-
-
-  console.log('-------------- data fetch journal in journal detail component --------------------------');
+  console.log(
+    '-------------- data fetch journal in journal detail component --------------------------',
+  );
   console.log(data);
-  console.log('-------------- data fetch journal in journal detail component --------------------------');
+  console.log(
+    '-------------- data fetch journal in journal detail component --------------------------',
+  );
   //set userId here
   const onCategoryChange = (e: CheckboxChangeEvent) => {
     let _selectedCategories = [...selectedCategories];
 
-    if (e.checked)
-      _selectedCategories.push(e.value);
+    if (e.checked) _selectedCategories.push(e.value);
     else
-      _selectedCategories = _selectedCategories.filter(category => category.key !== e.value.key);
+      _selectedCategories = _selectedCategories.filter(
+        (category) => category.key !== e.value.key,
+      );
 
     setSelectedCategories(_selectedCategories);
   };
@@ -191,7 +229,7 @@ export default function JournalDetailsComponent({
     console.log('callVideo', userId);
     setModalVideoVisible(true);
   };
-  const retrieveMetadata = () => { };
+  const retrieveMetadata = () => {};
   const formik = useFormik({
     initialValues: {
       article_title: article_title,
@@ -208,7 +246,8 @@ export default function JournalDetailsComponent({
       article_about_page: article_about_page,
       article_support_study_content: article_support_study_content,
       article_support_study_page: article_support_study_page,
-      article_does_not_support_study_content: article_does_not_support_study_content,
+      article_does_not_support_study_content:
+        article_does_not_support_study_content,
       needed_support_study_content: needed_support_study_content,
     },
     validate: (values) => {
@@ -528,68 +567,98 @@ export default function JournalDetailsComponent({
         </div>
 
         <Splitter style={{ height: '600px' }}>
-          <SplitterPanel
-            className='flex flex-column'
-            size={60}
-            minSize={60}
-          >
-            <label htmlFor="description">What is the article about and author's point of departure ?</label>
+          <SplitterPanel className='flex flex-column' size={60} minSize={60}>
+            <label htmlFor='description'>
+              What is the article about and author's point of departure ?
+            </label>
 
             <InputTextarea
-              inputid="article_about_content"
-              name="article_about_content"
+              inputid='article_about_content'
+              name='article_about_content'
               rows={4}
               cols={30}
               style={{ color: authorPodColor, borderColor: authorPodColor }}
-              className={classNames({ 'p-invalid': isFormFieldInvalid('article_about_content') })}
+              className={classNames({
+                'p-invalid': isFormFieldInvalid('article_about_content'),
+              })}
               value={formik.values.article_about_content}
               onChange={(e) => {
                 formik.setFieldValue('article_about_content', e.target.value);
               }}
             />
             {getFormErrorMessage('article_about_content')}
-            <label htmlFor="description">How the article support your study ?</label>
+            <label htmlFor='description'>
+              How the article support your study ?
+            </label>
 
             <InputTextarea
-              inputid="article_support_study_content"
-              name="article_support_study_content"
+              inputid='article_support_study_content'
+              name='article_support_study_content'
               rows={4}
               cols={30}
-              className={classNames({ 'p-invalid': isFormFieldInvalid('article_about_content') })}
+              className={classNames({
+                'p-invalid': isFormFieldInvalid('article_about_content'),
+              })}
               value={formik.values.article_about_content}
-              style={{ color: articleSupportStudyColor, borderColor: articleSupportStudyColor }}
+              style={{
+                color: articleSupportStudyColor,
+                borderColor: articleSupportStudyColor,
+              }}
               onChange={(e) => {
-                formik.setFieldValue('article_support_study_content', e.target.value);
+                formik.setFieldValue(
+                  'article_support_study_content',
+                  e.target.value,
+                );
               }}
             />
             {getFormErrorMessage('article_support_study_content')}
-            <label htmlFor="description">How the article does not support your study ?</label>
+            <label htmlFor='description'>
+              How the article does not support your study ?
+            </label>
             <InputTextarea
-              inputid="article_does_not_support_study_content"
-              name="article_does_not_support_study_content"
+              inputid='article_does_not_support_study_content'
+              name='article_does_not_support_study_content'
               rows={4}
               cols={30}
-              style={{ color: articleDoesNotSupportStudyColor, borderColor: articleDoesNotSupportStudyColor }}
-
-              className={classNames({ 'p-invalid': isFormFieldInvalid('article_does_not_support_study_content') })}
+              style={{
+                color: articleDoesNotSupportStudyColor,
+                borderColor: articleDoesNotSupportStudyColor,
+              }}
+              className={classNames({
+                'p-invalid': isFormFieldInvalid(
+                  'article_does_not_support_study_content',
+                ),
+              })}
               value={formik.values.article_does_not_support_study_content}
               onChange={(e) => {
-                formik.setFieldValue('article_does_not_support_study_content', e.target.value);
+                formik.setFieldValue(
+                  'article_does_not_support_study_content',
+                  e.target.value,
+                );
               }}
             />
             {getFormErrorMessage('article_does_not_support_study_content')}
-            <label htmlFor="description">What else is needed to support your study ? (Your POD)</label>
+            <label htmlFor='description'>
+              What else is needed to support your study ? (Your POD)
+            </label>
             <InputTextarea
-              inputid="needed_support_study_content"
-              name="needed_support_study_content"
+              inputid='needed_support_study_content'
+              name='needed_support_study_content'
               rows={4}
               cols={30}
-              style={{ color: neededSupportStudyColor, borderColor: neededSupportStudyColor }}
-
-              className={classNames({ 'p-invalid': isFormFieldInvalid('needed_support_study_content') })}
+              style={{
+                color: neededSupportStudyColor,
+                borderColor: neededSupportStudyColor,
+              }}
+              className={classNames({
+                'p-invalid': isFormFieldInvalid('needed_support_study_content'),
+              })}
               value={formik.values.needed_support_study_content}
               onChange={(e) => {
-                formik.setFieldValue('needed_support_study_content', e.target.value);
+                formik.setFieldValue(
+                  'needed_support_study_content',
+                  e.target.value,
+                );
               }}
             />
             {getFormErrorMessage('needed_support_study_content')}
@@ -600,41 +669,63 @@ export default function JournalDetailsComponent({
             minSize={10}
           >
             <Card>
-              <label htmlFor="article_about_page">Page</label>
-              <div className="card flex justify-content-center">
-                <InputText name="article_about_page"
+              <label htmlFor='article_about_page'>Page</label>
+              <div className='card flex justify-content-center'>
+                <InputText
+                  name='article_about_page'
                   value={formik.values.article_about_page}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  }} />
+                  onChange={() => {}}
+                />
 
                 {getFormErrorMessage('article_about_page')}
               </div>
 
-              <label htmlFor="article_support_study_page">Page</label>
+              <label htmlFor='article_support_study_page'>Page</label>
 
-              <div className="card flex justify-content-center">
-                <InputText name="article_support_study_page"
+              <div className='card flex justify-content-center'>
+                <InputText
+                  name='article_support_study_page'
                   value={formik.values.article_support_study_page}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  }} />
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
+                />
 
                 {getFormErrorMessage('article_support_study_page')}
               </div>
-
-
             </Card>
           </SplitterPanel>
 
-          <SplitterPanel
-            className='flex justify-content-left'
-            size={20}
-          >
+          <SplitterPanel className='flex justify-content-left' size={20}>
             <Card>
-              {categories.map((category) => {
+              {Object.entries(subthemeSelections).map(([mainKey, items]) => (
+                <div key={mainKey}>
+                  <h3>{mainKey}</h3>
+                  {Object.entries(items).map(([key, label]) => (
+                    <div key={key} className='p-field-checkbox'>
+                      <Checkbox
+                        inputId={key}
+                        onChange={() => handleCheckboxChange(mainKey, key)}
+                        checked={!!checkedKeys[mainKey]?.[key]}
+                      />
+                      <label htmlFor={key}>{label}</label>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              {categories.map((category: any) => {
                 return (
-                  <div key={category.key} className="flex align-items-center">
-                    <Checkbox inputId={category.key} name="category" value={category} onChange={onCategoryChange} checked={selectedCategories.some((item) => item.key === category.key)} />
-                    <label htmlFor={category.key} className="ml-2">{category.name}</label>
+                  <div key={category.key} className='flex align-items-center'>
+                    <Checkbox
+                      inputId={category.key}
+                      name='category'
+                      value={category}
+                      onChange={onCategoryChange}
+                      checked={selectedCategories.some(
+                        (item) => item.key === category.key,
+                      )}
+                    />
+                    <label htmlFor={category.key} className='ml-2'>
+                      {category.name}
+                    </label>
                   </div>
                 );
               })}

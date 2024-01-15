@@ -1,82 +1,71 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"terminal.integrated.fontFamily": "RobotoMono Nerd Font Mono",
-		"terminal.integrated.defaultProfile.linux": "zsh",
-		"terminal.integrated.fontSize": 14,
-		"editor.fontFamily": "RobotoMono Nerd Font Mono",
-		"typescript.tsdk": "node_modules/typescript/lib",
-		"editor.formatOnSave": true,
-		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.codeActionsOnSave": {
-			"source.fixAll.eslint": "explicit"
-		},
-		"eslint.validate": [
-			"javascript",
-			"javascriptreact",
-			"typescript",
-			"typescriptreact"
-		],
-		"eslint.options": {
-			"extensions": [
-				".js",
-				".jsx",
-				".ts",
-				".tsx"
-			]
-		},
-		"prettier.jsxSingleQuote": true,
-		"prettier.jsxBracketSameLine": false,
-		"prettier.singleQuote": true,
-		"prettier.trailingComma": "all",
-		"prettier.printWidth": 80
-	},
-	"tasks": {
-		"version": "2.0.0",
-		"tasks": [
-			{
-				"label": "Dev",
-				"command": "vite dev",
-				"type": "shell",
-				"args": [],
-				"problemMatcher": [
-					"$tsc"
-				],
-				"presentation": {
-					"reveal": "always"
-				},
-				"group": "dev"
-			},
-			{
-				"label": "Build",
-				"command": "npm run build",
-				"type": "shell",
-				"args": [],
-				"problemMatcher": [
-					"$tsc"
-				],
-				"presentation": {
-					"reveal": "always"
-				},
-				"group": "build"
-			},
-			{
-				"label": "Test",
-				"command": "npm run test",
-				"type": "shell",
-				"args": [],
-				"problemMatcher": [
-					"$tsc"
-				],
-				"presentation": {
-					"reveal": "always"
-				},
-				"group": "test"
-			}
-		]
-	}
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "terminal.integrated.fontFamily": "Hack Nerd Font",
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.fontSize": 14,
+    "editor.fontFamily": "RobotoMono Nerd Font Mono",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    "eslint.options": {
+      "extensions": [".js", ".jsx", ".ts", ".tsx"]
+    },
+    "prettier.jsxSingleQuote": true,
+    "prettier.jsxBracketSameLine": false,
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "all",
+    "prettier.printWidth": 80
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Dev",
+        "command": "vite dev",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": ["$tsc"],
+        "presentation": {
+          "reveal": "always"
+        },
+        "group": "dev"
+      },
+      {
+        "label": "Build",
+        "command": "npm run build",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": ["$tsc"],
+        "presentation": {
+          "reveal": "always"
+        },
+        "group": "build"
+      },
+      {
+        "label": "Test",
+        "command": "npm run test",
+        "type": "shell",
+        "args": [],
+        "problemMatcher": ["$tsc"],
+        "presentation": {
+          "reveal": "always"
+        },
+        "group": "test"
+      }
+    ]
+  }
 }
