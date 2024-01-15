@@ -247,9 +247,9 @@ function App() {
     setSelections([]);
   };
 
-  const removeDataClick = () => {};
+  const removeDataClick = () => { };
 
-  const onCheckedChange = (id: string, checked: boolean, content: string) => {};
+  const onCheckedChange = (id: string, checked: boolean, content: string) => { };
 
   const deleteDataClick = (
     item_id: string,
@@ -258,11 +258,11 @@ function App() {
   ) => {
     console.log(
       ' -- deleteDataClick -- ' +
-        item_id +
-        ' - identifier - ' +
-        identifier +
-        ' - content - ' +
-        content,
+      item_id +
+      ' - identifier - ' +
+      identifier +
+      ' - content - ' +
+      content,
     );
     console.log(item_id);
 
@@ -377,11 +377,11 @@ function App() {
   const addData = (identifier: string, title: string, content: string) => {
     console.log(
       ' -- addData -- ' +
-        identifier +
-        ' - title - ' +
-        title +
-        ' - content - ' +
-        content,
+      identifier +
+      ' - title - ' +
+      title +
+      ' - content - ' +
+      content,
     );
 
     openModal();
@@ -573,11 +573,11 @@ function App() {
   ) => {
     console.log(
       ' -- removeDatatableClick -- ' +
-        journal_id +
-        ' - id - ' +
-        id +
-        ' - rqConstruct - ' +
-        rqConstruct,
+      journal_id +
+      ' - id - ' +
+      id +
+      ' - rqConstruct - ' +
+      rqConstruct,
     );
   };
 
@@ -653,9 +653,9 @@ function App() {
         visible={modalEditVisible}
         onHide={() => setModalEditVisible(false)}
         setVisible={setModalEditVisible}
-        selectedProvider={selectedProvider}
         journalId={selectedJournal}
         projectId={projectId}
+        userId={userId}
         onSave={saveData}
       />
       <div className='App'>
