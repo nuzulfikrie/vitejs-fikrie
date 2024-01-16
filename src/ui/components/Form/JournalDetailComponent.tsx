@@ -5,22 +5,44 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { classNames } from 'primereact/utils';
 import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown'; // If needed for provider selection
 import 'primeicons/primeicons.css';
-import axios from 'axios';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Card } from 'primereact/card';
-import { Checkbox } from 'primereact/checkbox';
-
-interface Category {
+import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { SplitButton } from 'primereact/splitbutton';
+import { MenuItem } from 'primereact/menuitem';
+interface Subtheme {
   name: string;
   key: string;
 }
+
 interface JournalDetailsComponentProps {
   journalId: string;
   projectId: string;
   userId: string;
-  data: any;
+  article_title: string;
+  authors: string;
+  journal_name: string;
+  location: string;
+  doi: string;
+  year: string;
+  volume: string;
+  issue: string;
+  page: string;
+  step06: [];
+  article_about_content: string;
+  article_about_page: string;
+  article_support_study_content: string;
+  article_support_study_page: string;
+  article_does_not_support_study_content: string;
+  needed_support_study_content: string;
+  authorPodColor: string;
+  articleSupportStudyColor: string;
+  articleDoesNotSupportStudyColor: string;
+  neededSupportStudyColor: string;
+  subthemeSelections: Subtheme[];
+  selected: any[];
   onSave: (journalId: string, projectId: string, journal: any) => void;
 
   showSuccess: (message: string) => void;
@@ -28,196 +50,105 @@ interface JournalDetailsComponentProps {
   showError: (message: string) => void;
   showInfo: (message: string) => void;
 }
-import { InputTextarea } from 'primereact/inputtextarea';
 //use JournalDetailsComponentProps
 export default function JournalDetailsComponent({
   journalId,
   projectId,
   userId,
-  data,
+  article_title,
+  authors,
+  journal_name,
+  location,
+  doi,
+  year,
+  volume,
+  issue,
+  page,
+  step06,
+  article_about_content,
+  article_about_page,
+  article_support_study_content,
+  article_support_study_page,
+  article_does_not_support_study_content,
+  needed_support_study_content,
+  authorPodColor,
+  articleSupportStudyColor,
+  articleDoesNotSupportStudyColor,
+  neededSupportStudyColor,
+  subthemeSelections,
+  selected,
   onSave,
   showSuccess,
   showWarning,
   showError,
   showInfo,
 }: JournalDetailsComponentProps): JSX.Element {
-  /**
-   * subthemes
-   * {
-      "who": {
-          "1735": "characters of undisputed novel invention ",
-          "1744": "methods for constructing undisputed novel invention",
-          "1745": "challenges to achieve undisputed novel invention"
-      },
-      "what": {
-          "1736": "timeline of patent system",
-          "1737": "components of patent system",
-          "1746": "advantages of patent system"
-      },
-      "how_1": {
-          "1738": "characters of impactful innovation",
-          "1739": "strategies towards impactful innovation",
-          "1740": "challenges and reality towards impactful innovation"
-      },
-      "how_2": {
-          "1741": "criteria of wealth of nation",
-          "1742": "types of wealth of nation",
-          "1743": "process of increasing wealth of a nation"
-      }
-  }
-   */
-  interface Subtheme {
-    [key: string]: {
-      [key: string]: string;
-    };
-  }
-  const categories: Category[] = [
-    { name: 'Accounting', key: 'A' },
-    { name: 'Marketing', key: 'M' },
-    { name: 'Production', key: 'P' },
-    { name: 'Research', key: 'R' },
-  ];
+  console.log('--- selected ---');
+  console.log(selected);
+  console.log('--- subthemeSelections ---');
+  console.log(subthemeSelections);
+
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
-  const [article_title, setArticleTitle] = useState('');
-  const [authors, setAuthors] = useState('');
-  const [journal_name, setJournalName] = useState('');
-  const [location, setLocation] = useState('');
-  const [doi, setDoi] = useState('');
-  const [year, setYear] = useState('');
-  const [volume, setVolume] = useState('');
-  const [issue, setIssue] = useState('');
-  const [pages, setPages] = useState('');
-  const [step06, setStep06] = useState([]);
-  const [article_about_content, setArticleAboutContent] = useState('');
-  const [article_about_page, setArticleAboutPage] = useState('');
-  const [article_support_study_content, setArticleSupportStudyContent] =
-    useState('');
-  const [article_support_study_page, setArticleSupportStudyPage] = useState('');
-  const [
-    article_does_not_support_study_content,
-    setArticleDoesNotSupportStudyContent,
-  ] = useState('');
-  const [needed_support_study_content, setNeededSupportStudyContent] =
-    useState('');
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([
-    categories[1],
-  ]);
-
-  const [subthemeSelections, setSubthemeSelections] =
-    useState<Subtheme[]>(/* Initial value */);
-  const [selectedSubthemes, setSelectedSubthemes] = useState<string[]>([]);
-
-  const [authorPodColor, setAuthorPodColor] = useState<string>('');
-  const [articleSupportStudyColor, setArticleSupportStudyColor] =
-    useState<string>('');
-  const [articleDoesNotSupportStudyColor, setArticleDoesNotSupportStudyColor] =
-    useState<string>('');
-  const [neededSupportStudyColor, setNeededSupportStudyColor] =
-    useState<string>('');
+  const [selectedSubthemes, setSelectedSubthemes] = useState<Subtheme[]>([]);
+  const [buttonloading, setButtonloading] = useState<boolean>(false);
   useEffect(() => {
-    if (!data) return;
+    const formValues = {
+      article_title: article_title,
+      authors: authors,
+      journal_name: journal_name,
+      location: location,
+      doi: doi,
+      year: year,
+      volume: volume,
+      issue: issue,
+      page: page,
+      step06: step06,
+      article_about_content: article_about_content,
+      article_about_page: article_about_page,
+      article_support_study_content: article_support_study_content,
+      article_support_study_page: article_support_study_page,
+      article_does_not_support_study_content:
+        article_does_not_support_study_content,
+      needed_support_study_content: needed_support_study_content,
+    };
+    formik.resetForm({ values: formValues });
+    // Initialize selected subthemes based on the 'selected' prop
+    // const initialSelectedSubthemes = subthemeSelections.filter((_, index) =>
+    //   selected.includes(index),
+    // );
+    //filter by index and put in an array
+    const initialSelectedSubthemes = subthemeSelections.filter((_, index) =>
+      selected.includes(index),
+    );
 
-    if (data.status === 'success') {
-      setSubthemeSelections(data.data.subthemes);
-      console.log('---subtheme selections');
-      console.log(subthemeSelections);
-      console.log('---subtheme selections');
+    console.log('-- initialSelectedSubthemes --');
+    console.log(initialSelectedSubthemes);
+    console.log('-- initialSelectedSubthemes --');
+    setSelectedSubthemes(initialSelectedSubthemes);
+  }, [selected, subthemeSelections]);
 
-      setAuthorPodColor(data.data.journal_color.author_pod_color);
-      setArticleSupportStudyColor(
-        data.data.journal_color.article_support_study_color,
-      );
-      setArticleDoesNotSupportStudyColor(
-        data.data.journal_color.article_dontsupport_study_color,
-      );
-      setNeededSupportStudyColor(data.data.journal_color.your_pod_color);
-
-      const formValues = {
-        article_title: data.data.journal.article_title,
-        authors: data.data.journal.author,
-        journal_name: data.data.journal.journal_name,
-        location: data.data.journal.location,
-        doi: data.data.journal.doi,
-        year: data.data.journal.year,
-        volume: data.data.journal.volume,
-        issue: data.data.journal.issue,
-        pages: data.data.journal.page,
-        step06: data.data.journal.step06,
-        article_about_content: data.data.journal.article_about.content,
-        article_about_page: data.data.journal.article_about.page,
-        article_support_study_content:
-          data.data.journal.article_support_study.content,
-        article_support_study_page:
-          data.data.journal.article_support_study.page,
-        article_does_not_support_study_content:
-          data.data.journal.article_does_not_support_study.content,
-        needed_support_study_content:
-          data.data.journal.needed_support_study.content,
-      };
-      // set the formik values here
-      //data.journal
-      //data.data.journal.article_title
-      setArticleTitle(data.data.journal.article_title);
-      setAuthors(data.data.journal.author);
-      setJournalName(data.data.journal.journal_name);
-      setLocation(data.data.journal.location);
-      setDoi(data.data.journal.doi);
-      setYear(data.data.journal.year);
-      setVolume(data.data.journal.volume);
-      setIssue(data.data.journal.issue);
-      setPages(data.data.journal.page);
-      setStep06(data.data.journal.step06);
-      setArticleAboutContent(data.data.journal.article_about.content);
-      setArticleAboutPage(data.data.journal.article_about.page);
-      setArticleSupportStudyContent(
-        data.data.journal.article_support_study.content,
-      );
-      setArticleSupportStudyPage(data.data.journal.article_support_study.page);
-      setArticleDoesNotSupportStudyContent(
-        data.data.journal.article_does_not_support_study.content,
-      );
-      setNeededSupportStudyContent(
-        data.data.journal.needed_support_study.content,
-      );
-      formik.resetForm({ values: formValues });
-    }
-  }, [data]);
-
-  const onSubthemeChange = (subthemeKey: string) => {
-    setSelectedSubthemes((prevSelected) => {
-      if (prevSelected.includes(subthemeKey)) {
-        return prevSelected.filter((key) => key !== subthemeKey);
-      } else {
-        return [...prevSelected, subthemeKey];
-      }
-    });
-  };
-
-  //load state from props here use super
-
-  console.log('--- journalId --- ' + journalId);
-  console.log('--- projectId --- ' + projectId);
-  console.log('--- userId --- ' + userId);
-
-  console.log(
-    '-------------- data fetch journal in journal detail component --------------------------',
-  );
-  console.log(data);
-  console.log(
-    '-------------- data fetch journal in journal detail component --------------------------',
-  );
-  //set userId here
   const onCategoryChange = (e: CheckboxChangeEvent) => {
-    let _selectedCategories = [...selectedCategories];
+    console.log('--- checkboxchangeevent');
 
-    if (e.checked) _selectedCategories.push(e.value);
+    console.log(e);
+
+    let _selectedSubthemes = [...selectedSubthemes];
+
+    if (e.checked) _selectedSubthemes.push(e.value);
     else
-      _selectedCategories = _selectedCategories.filter(
-        (category) => category.key !== e.value.key,
+      _selectedSubthemes = _selectedSubthemes.filter(
+        (subtheme) => subtheme.key !== e.value.key,
       );
+    console.log('--- _selectedSubthemes');
 
-    setSelectedCategories(_selectedCategories);
+    console.log(_selectedSubthemes);
+    console.log('--- _selectedSubthemes');
+
+    setSelectedSubthemes(_selectedSubthemes);
   };
+
+  //set userId here
+
   const toast = useRef(null);
   const key = 'step06';
   const callVideo = (e: any) => {
@@ -230,6 +161,42 @@ export default function JournalDetailsComponent({
     setModalVideoVisible(true);
   };
   const retrieveMetadata = () => {};
+
+  const items: MenuItem[] = [
+    {
+      label: 'Update',
+      icon: 'pi pi-refresh',
+      command: () => {
+        console.log('---update--');
+      },
+    },
+    {
+      label: 'Delete',
+      icon: 'pi pi-times',
+      command: () => {
+        console.log('--- delete--');
+      },
+    },
+    {
+      label: 'React Website',
+      icon: 'pi pi-external-link',
+      command: () => {
+        console.log('-- react --');
+      },
+    },
+    {
+      label: 'Upload',
+      icon: 'pi pi-upload',
+      command: () => {
+        //router.push('/fileupload');
+        console.log('upload');
+      },
+    },
+  ];
+
+  const retrieve = () => {
+    console.log('--retrieve--');
+  };
   const formik = useFormik({
     initialValues: {
       article_title: article_title,
@@ -240,7 +207,7 @@ export default function JournalDetailsComponent({
       year: year,
       volume: volume,
       issue: issue,
-      pages: pages,
+      page: page,
       step06: step06,
       article_about_content: article_about_content,
       article_about_page: article_about_page,
@@ -276,7 +243,7 @@ export default function JournalDetailsComponent({
           .split(',')
           .map((author) => author.trim());
         const invalidAuthors = authorsArray.filter(
-          (author) => !author.match(/^[a-zA-Z\s]+$/),
+          (authors) => !/^[a-zA-Z\s]+$/.exec(authors),
         );
 
         if (invalidAuthors.length > 0) {
@@ -309,6 +276,10 @@ export default function JournalDetailsComponent({
         if (year < 1990 || year > currentYear) {
           errors.year = 'Year must be between 1990 and current year';
         }
+      }
+
+      if (!values.step06) {
+        errors.step06 = 'This is required.';
       }
 
       // Add other validation rules as needed
@@ -394,8 +365,15 @@ export default function JournalDetailsComponent({
             icon='pi pi-video'
             onClick={callVideo}
           />
-          <Button label='Success' severity='success' />
-          <Button label='Info' severity='info' />
+          <div className='card flex justify-content-center'>
+            <SplitButton
+              label='Retrieve Abstract'
+              icon='pi pi-plus'
+              onClick={retrieve}
+              model={items}
+              loading={buttonloading}
+            />
+          </div>
         </div>
         {/** button set end */}
         <span className='p-float-label'>
@@ -465,7 +443,9 @@ export default function JournalDetailsComponent({
             onChange={(e) => {
               formik.setFieldValue('year', e.target.value);
             }}
-            className={classNames({ 'p-invalid': isFormFieldInvalid('year') })}
+            className={classNames({
+              'p-invalid': isFormFieldInvalid('year'),
+            })}
           />
           {getFormErrorMessage('year')}
 
@@ -539,7 +519,9 @@ export default function JournalDetailsComponent({
             onChange={(e) => {
               formik.setFieldValue('issue', e.target.value);
             }}
-            className={classNames({ 'p-invalid': isFormFieldInvalid('issue') })}
+            className={classNames({
+              'p-invalid': isFormFieldInvalid('issue'),
+            })}
           />
           {getFormErrorMessage('issue')}
 
@@ -556,7 +538,9 @@ export default function JournalDetailsComponent({
             onChange={(e) => {
               formik.setFieldValue('pages', e.target.value);
             }}
-            className={classNames({ 'p-invalid': isFormFieldInvalid('pages') })}
+            className={classNames({
+              'p-invalid': isFormFieldInvalid('pages'),
+            })}
           />
           {getFormErrorMessage('pages')}
 
@@ -569,7 +553,7 @@ export default function JournalDetailsComponent({
         <Splitter style={{ height: '600px' }}>
           <SplitterPanel className='flex flex-column' size={60} minSize={60}>
             <label htmlFor='description'>
-              What is the article about and author's point of departure ?
+              What is the article about and authors's point of departure ?
             </label>
 
             <InputTextarea
@@ -696,39 +680,18 @@ export default function JournalDetailsComponent({
 
           <SplitterPanel className='flex justify-content-left' size={20}>
             <Card>
-              {Object.entries(subthemeSelections).map(([mainKey, items]) => (
-                <div key={mainKey}>
-                  <h3>{mainKey}</h3>
-                  {Object.entries(items).map(([key, label]) => (
-                    <div key={key} className='p-field-checkbox'>
-                      <Checkbox
-                        inputId={key}
-                        onChange={() => handleCheckboxChange(mainKey, key)}
-                        checked={!!checkedKeys[mainKey]?.[key]}
-                      />
-                      <label htmlFor={key}>{label}</label>
-                    </div>
-                  ))}
+              {subthemeSelections.map((subtheme, index) => (
+                <div key={subtheme.key} className='flex align-items-center'>
+                  <Checkbox
+                    inputId={subtheme.key}
+                    name='step06'
+                    value={index} // Use index as value
+                    onChange={onCategoryChange}
+                    checked={selected.includes(index)} // Check if index is in 'selected'
+                  />
+                  <label htmlFor={subtheme.key}>{subtheme.name}</label>
                 </div>
               ))}
-              {categories.map((category: any) => {
-                return (
-                  <div key={category.key} className='flex align-items-center'>
-                    <Checkbox
-                      inputId={category.key}
-                      name='category'
-                      value={category}
-                      onChange={onCategoryChange}
-                      checked={selectedCategories.some(
-                        (item) => item.key === category.key,
-                      )}
-                    />
-                    <label htmlFor={category.key} className='ml-2'>
-                      {category.name}
-                    </label>
-                  </div>
-                );
-              })}
             </Card>
           </SplitterPanel>
         </Splitter>
