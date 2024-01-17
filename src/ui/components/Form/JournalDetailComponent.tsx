@@ -1,17 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Splitter, SplitterPanel } from 'primereact/splitter';
+import { Card } from 'primereact/card';
 import { useFormik } from 'formik';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { classNames } from 'primereact/utils';
 import { Dialog } from 'primereact/dialog';
-import 'primeicons/primeicons.css';
-import { Splitter, SplitterPanel } from 'primereact/splitter';
-import { Card } from 'primereact/card';
-import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { SplitButton } from 'primereact/splitbutton';
 import { MenuItem } from 'primereact/menuitem';
+import JournalDetailCheckboxesComponent from './JournalDetailCheckboxesComponent';
+
 interface Subtheme {
   name: string;
   key: string;
@@ -44,14 +46,16 @@ interface JournalDetailsComponentProps {
   subthemeSelections: Subtheme[];
   selected: any[];
   onSave: (journalId: string, projectId: string, journal: any) => void;
-
+  onRemove: (journalId: string, projectId: string, rqConstruct: string) => void;
   showSuccess: (message: string) => void;
-  showWarning: (message: string) => void;
+  showWarn: (message: string) => void;
   showError: (message: string) => void;
   showInfo: (message: string) => void;
+  setVisible: (visible: boolean) => void;
+  setLoading: (loading: boolean) => void;
 }
-//use JournalDetailsComponentProps
-export default function JournalDetailsComponent({
+
+const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   journalId,
   projectId,
   userId,
@@ -78,19 +82,54 @@ export default function JournalDetailsComponent({
   subthemeSelections,
   selected,
   onSave,
+  onRemove,
   showSuccess,
-  showWarning,
+  showWarn,
   showError,
   showInfo,
-}: JournalDetailsComponentProps): JSX.Element {
-  console.log('--- selected ---');
-  console.log(selected);
-  console.log('--- subthemeSelections ---');
-  console.log(subthemeSelections);
-
+  setVisible,
+  setLoading,
+}): JSX.Element => {
+  interface subtheme {
+    name: string;
+    key: string;
+    construct: string;
+  }
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
   const [selectedSubthemes, setSelectedSubthemes] = useState<Subtheme[]>([]);
-  const [buttonloading, setButtonloading] = useState<boolean>(false);
+  const [buttonloading] = useState<boolean>(false);
+  const onCategoryChange = (e: CheckboxChangeEvent) => {
+    console.log('--- checkboxchangeevent');
+
+    console.log(e);
+
+    let _selectedSubthemes = [...selectedSubthemes];
+
+    if (e.checked) _selectedSubthemes.push(e.value);
+    else
+      _selectedSubthemes = _selectedSubthemes.filter(
+        (subtheme) => subtheme.key !== e.value.key,
+      );
+    console.log('--- _selectedSubthemes');
+
+    console.log(_selectedSubthemes);
+    console.log('--- _selectedSubthemes');
+
+    setSelectedSubthemes(_selectedSubthemes);
+  };
+  // Function to organize subthemes by construct
+  const groupByConstruct = (subthemes: any[]) => {
+    return subthemes.reduce((acc, subtheme) => {
+      const construct = subtheme.construct;
+      if (!acc[construct]) {
+        acc[construct] = [];
+      }
+      acc[construct].push(subtheme);
+      return acc;
+    }, {});
+  };
+
+  const groupedSubthemes = groupByConstruct(subthemeSelections);
   useEffect(() => {
     const formValues = {
       article_title: article_title,
@@ -127,41 +166,16 @@ export default function JournalDetailsComponent({
     setSelectedSubthemes(initialSelectedSubthemes);
   }, [selected, subthemeSelections]);
 
-  const onCategoryChange = (e: CheckboxChangeEvent) => {
-    console.log('--- checkboxchangeevent');
-
-    console.log(e);
-
-    let _selectedSubthemes = [...selectedSubthemes];
-
-    if (e.checked) _selectedSubthemes.push(e.value);
-    else
-      _selectedSubthemes = _selectedSubthemes.filter(
-        (subtheme) => subtheme.key !== e.value.key,
-      );
-    console.log('--- _selectedSubthemes');
-
-    console.log(_selectedSubthemes);
-    console.log('--- _selectedSubthemes');
-
-    setSelectedSubthemes(_selectedSubthemes);
-  };
-
-  //set userId here
-
   const toast = useRef(null);
-  const key = 'step06';
   const callVideo = (e: any) => {
-    //call video here use userId
-    //const video = axios.get()
-    //prevent default
-    //
+    // code logic here
     e.preventDefault();
     console.log('callVideo', userId);
     setModalVideoVisible(true);
   };
-  const retrieveMetadata = () => {};
-
+  const retrieveMetadata = () => {
+    // code logic here
+  };
   const items: MenuItem[] = [
     {
       label: 'Update',
@@ -196,6 +210,73 @@ export default function JournalDetailsComponent({
 
   const retrieve = () => {
     console.log('--retrieve--');
+  };
+
+  const resetModalForm = () => {
+    // code logic here
+    // reset form
+    formik.resetForm();
+  };
+
+  const onCancel = () => {
+    // code logic here
+    // reset form
+    formik.resetForm();
+    // close modal
+    setVisible(false);
+  };
+
+  const clearform = () => {
+    // code logic here
+    // will clear the form content
+    //set formik values to empty
+    setLoading(true);
+    formik.setFieldValue('article_title', '');
+    formik.setFieldValue('authors', '');
+    formik.setFieldValue('journal_name', '');
+    formik.setFieldValue('location', '');
+    formik.setFieldValue('doi', '');
+    formik.setFieldValue('year', '');
+    formik.setFieldValue('volume', '');
+    formik.setFieldValue('issue', '');
+    formik.setFieldValue('page', '');
+    formik.setFieldValue('step06', '');
+    formik.setFieldValue('article_about_content', '');
+    formik.setFieldValue('article_about_page', '');
+    formik.setFieldValue('article_support_study_content', '');
+    formik.setFieldValue('article_support_study_page', '');
+    formik.setFieldValue('article_does_not_support_study_content', '');
+    formik.setFieldValue('needed_support_study_content', '');
+    //set selected subthemes to empty
+    console.log('--- reset subthemeSelections; ---');
+    console.log(subthemeSelections);
+    console.log('--- reset subthemeSelections; ---');
+
+    // Reset selectedSubthemes to include only the first element of subthemeSelections
+    const resetSubthemes = subthemeSelections.map((_, index) => index === 0);
+
+    console.log('--- reset ---');
+    console.log(subthemeSelections[0]);
+    console.log('--- reset ---');
+
+    setSelectedSubthemes(subthemeSelections[0]);
+
+    //re render form
+    showSuccess('Form cleared');
+    setLoading(false);
+  };
+
+  const reject = () => {
+    showWarn('You have rejected');
+  };
+  const confirmClearForm = () => {
+    confirmDialog({
+      message: 'Are you sure you want to proceed clear form?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: clearform,
+      reject: reject,
+    });
   };
   const formik = useFormik({
     initialValues: {
@@ -241,9 +322,9 @@ export default function JournalDetailsComponent({
       if (values.authors) {
         const authorsArray = values.authors
           .split(',')
-          .map((author) => author.trim());
+          .map((author: string) => author.trim());
         const invalidAuthors = authorsArray.filter(
-          (authors) => !/^[a-zA-Z\s]+$/.exec(authors),
+          (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors),
         );
 
         if (invalidAuthors.length > 0) {
@@ -296,7 +377,6 @@ export default function JournalDetailsComponent({
   });
   const checkDOI = async (doi: string): Promise<boolean> => {
     const url = `https://doi.org/${doi}`;
-
     try {
       const response = await fetch(url, { method: 'HEAD' });
 
@@ -337,6 +417,8 @@ export default function JournalDetailsComponent({
 
   return (
     <>
+      <ConfirmDialog />
+
       <form onSubmit={formik.handleSubmit} className='flex flex-column gap-2'>
         <Toast ref={toast} />
         <Dialog
@@ -533,7 +615,7 @@ export default function JournalDetailsComponent({
           <InputText
             id='pages'
             aria-describedby='issue-pages'
-            value={formik.values.pages}
+            value={formik.values.page}
             onBlur={formik.handleBlur}
             onChange={(e) => {
               formik.setFieldValue('pages', e.target.value);
@@ -557,7 +639,7 @@ export default function JournalDetailsComponent({
             </label>
 
             <InputTextarea
-              inputid='article_about_content'
+              id='article_about_content'
               name='article_about_content'
               rows={4}
               cols={30}
@@ -576,7 +658,7 @@ export default function JournalDetailsComponent({
             </label>
 
             <InputTextarea
-              inputid='article_support_study_content'
+              id='article_support_study_content'
               name='article_support_study_content'
               rows={4}
               cols={30}
@@ -600,7 +682,7 @@ export default function JournalDetailsComponent({
               How the article does not support your study ?
             </label>
             <InputTextarea
-              inputid='article_does_not_support_study_content'
+              id='article_does_not_support_study_content'
               name='article_does_not_support_study_content'
               rows={4}
               cols={30}
@@ -626,7 +708,7 @@ export default function JournalDetailsComponent({
               What else is needed to support your study ? (Your POD)
             </label>
             <InputTextarea
-              inputid='needed_support_study_content'
+              id='needed_support_study_content'
               name='needed_support_study_content'
               rows={4}
               cols={30}
@@ -679,27 +761,41 @@ export default function JournalDetailsComponent({
           </SplitterPanel>
 
           <SplitterPanel className='flex justify-content-left' size={20}>
-            <Card>
-              {subthemeSelections.map((subtheme, index) => (
-                <div key={subtheme.key} className='flex align-items-center'>
-                  <Checkbox
-                    inputId={subtheme.key}
-                    name='step06'
-                    value={index} // Use index as value
-                    onChange={onCategoryChange}
-                    checked={selected.includes(index)} // Check if index is in 'selected'
-                  />
-                  <label htmlFor={subtheme.key}>{subtheme.name}</label>
-                </div>
-              ))}
-            </Card>
+            <JournalDetailCheckboxesComponent
+              subthemeSelections={subthemeSelections}
+              selected={selected}
+              selectedSubthemes={selectedSubthemes}
+              onCategoryChange={onCategoryChange}
+            />
           </SplitterPanel>
         </Splitter>
 
         {getFormErrorMessage('doi')}
         {/* Continue for other fields */}
-        <Button type='submit' label='Submit' />
+        <div className='card flex flex-wrap gap-3'>
+          <Button type='submit' label='Submit' severity='success' />
+          <Button
+            type='reset'
+            label='Reset'
+            onClick={resetModalForm}
+            severity='warning'
+          />
+          <Button
+            type='button'
+            label='Cancel'
+            onClick={onCancel}
+            severity='secondary'
+          />
+          <Button
+            type='button'
+            label='Clear Form'
+            onClick={confirmClearForm}
+            severity='danger'
+          />
+        </div>
       </form>
     </>
   );
-}
+};
+
+export default JournalDetailComponent;

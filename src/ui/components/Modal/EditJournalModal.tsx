@@ -15,8 +15,9 @@ interface EditJournalModalProps {
   projectId: string;
   userId: string;
   onSave: (journalId: string, projectId: string, journal: any) => void;
+  onRemove: (journalId: string, projectId: string, rqConstruct: string) => void;
   showSuccess: (message: string) => void;
-  showWarning: (message: string) => void;
+  showWarn: (message: string) => void;
   showError: (message: string) => void;
   showInfo: (message: string) => void;
 }
@@ -31,8 +32,9 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   projectId,
   userId,
   onSave,
+  onRemove,
   showSuccess,
-  showWarning,
+  showWarn,
   showError,
   showInfo,
 }) => {
@@ -190,9 +192,11 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             selected={selectedSubthemes}
             onSave={onSave}
             showSuccess={showSuccess}
-            showWarning={showWarning}
+            showWarn={showWarn}
             showError={showError}
             showInfo={showInfo}
+            setVisible={setVisible}
+            setLoading={setLoading}
           />
         </Dialog>
       )}
