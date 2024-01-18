@@ -18,7 +18,12 @@ interface JournalDetailCheckboxesProps {
 
 const JournalDetailCheckboxesComponent: React.FC<
   JournalDetailCheckboxesProps
-> = ({ subthemeSelections, selected, onCategoryChange }) => {
+> = ({
+  subthemeSelections,
+  selected,
+  onCategoryChange,
+  resetAllDataInFields,
+}) => {
   // Add your component logic here
 
   return (

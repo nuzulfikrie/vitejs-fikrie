@@ -10,8 +10,8 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { classNames } from 'primereact/utils';
 import { Dialog } from 'primereact/dialog';
-import { SplitButton } from 'primereact/splitbutton';
 import { MenuItem } from 'primereact/menuitem';
+import { SplitButton } from 'primereact/splitbutton';
 import JournalDetailCheckboxesComponent from './JournalDetailCheckboxesComponent';
 
 interface Subtheme {
@@ -53,6 +53,8 @@ interface JournalDetailsComponentProps {
   showInfo: (message: string) => void;
   setVisible: (visible: boolean) => void;
   setLoading: (loading: boolean) => void;
+  resetAllDataInFields: () => void;
+  resetAllDataInFieldsToInitial: () => void;
 }
 
 const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
@@ -89,6 +91,8 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   showInfo,
   setVisible,
   setLoading,
+  resetAllDataInFields,
+  resetAllDataInFieldsToInitial,
 }): JSX.Element => {
   interface subtheme {
     name: string;
@@ -176,7 +180,7 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   const retrieveMetadata = () => {
     // code logic here
   };
-  const items: MenuItem[] = [
+  const items = [
     {
       label: 'Update',
       icon: 'pi pi-refresh',
@@ -231,39 +235,7 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
     // will clear the form content
     //set formik values to empty
     setLoading(true);
-    formik.setFieldValue('article_title', '');
-    formik.setFieldValue('authors', '');
-    formik.setFieldValue('journal_name', '');
-    formik.setFieldValue('location', '');
-    formik.setFieldValue('doi', '');
-    formik.setFieldValue('year', '');
-    formik.setFieldValue('volume', '');
-    formik.setFieldValue('issue', '');
-    formik.setFieldValue('page', '');
-    formik.setFieldValue('step06', '');
-    formik.setFieldValue('article_about_content', '');
-    formik.setFieldValue('article_about_page', '');
-    formik.setFieldValue('article_support_study_content', '');
-    formik.setFieldValue('article_support_study_page', '');
-    formik.setFieldValue('article_does_not_support_study_content', '');
-    formik.setFieldValue('needed_support_study_content', '');
-    //set selected subthemes to empty
-    console.log('--- reset subthemeSelections; ---');
-    console.log(subthemeSelections);
-    console.log('--- reset subthemeSelections; ---');
-
-    // Reset selectedSubthemes to include only the first element of subthemeSelections
-    const resetSubthemes = subthemeSelections.map((_, index) => index === 0);
-
-    console.log('--- reset ---');
-    console.log(subthemeSelections[0]);
-    console.log('--- reset ---');
-
-    setSelectedSubthemes(subthemeSelections[0]);
-
-    //re render form
-    showSuccess('Form cleared');
-    setLoading(false);
+    resetAllDataInFields();
   };
 
   const reject = () => {
@@ -777,7 +749,7 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
           <Button
             type='reset'
             label='Reset'
-            onClick={resetModalForm}
+            onClick={resetAllDataInFieldsToInitial}
             severity='warning'
           />
           <Button

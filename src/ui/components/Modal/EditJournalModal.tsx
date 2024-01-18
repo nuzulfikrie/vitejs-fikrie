@@ -39,6 +39,40 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   showInfo,
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  {
+    /* initial state - for reset  */
+  }
+  const [articleTitleInitial, setArticleTitleInitial] = useState('');
+  const [authorsInitial, setAuthorsInitial] = useState('');
+  const [journalNameInitial, setJournalNameInitial] = useState('');
+  const [locationInitial, setLocationInitial] = useState('');
+  const [doiInitial, setDoiInitial] = useState('');
+  const [yearInitial, setYearInitial] = useState('');
+  const [volumeInitial, setVolumeInitial] = useState('');
+  const [issueInitial, setIssueInitial] = useState('');
+  const [pageInitial, setPageInitial] = useState('');
+  const [step06Initial, setStep06Initial] = useState([]);
+  const [articleAboutContentInitial, setArticleAboutContentInitial] =
+    useState('');
+  const [articleAboutPageInitial, setArticleAboutPageInitial] = useState('');
+  const [
+    articleSupportStudyContentInitial,
+    setArticleSupportStudyContentInitial,
+  ] = useState('');
+  const [articleSupportStudyPageInitial, setArticleSupportStudyPageInitial] =
+    useState('');
+  const [
+    articleDoesNotSupportStudyContentInitial,
+    setArticleDoesNotSupportStudyContentInitial,
+  ] = useState('');
+  const [
+    neededSupportStudyContentInitial,
+    setNeededSupportStudyContentInitial,
+  ] = useState('');
+  const [selectedSubthemesInitial, setSelectedSubthemesInitial] = useState<
+    Subtheme[]
+  >([]);
+
   const [article_title, setArticleTitle] = useState('');
   const [authors, setAuthors] = useState('');
   const [journal_name, setJournalName] = useState('');
@@ -70,6 +104,53 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     useState('');
   const [neededSupportStudyColor, setNeededSupportStudyColor] = useState('');
 
+  const resetAllDataInFieldsToInitial = () => {
+    setArticleTitle(articleTitleInitial);
+    setAuthors(authorsInitial);
+    setJournalName(journalNameInitial);
+    setLocation(locationInitial);
+    setDoi(doiInitial);
+    setYear(yearInitial);
+    setVolume(volumeInitial);
+    setIssue(issueInitial);
+    setPage(pageInitial);
+    setStep06(step06Initial);
+    setArticleAboutContent(articleAboutContentInitial);
+    setArticleAboutPage(articleAboutPageInitial);
+    setArticleSupportStudyContent(articleSupportStudyContentInitial);
+    setArticleSupportStudyPage(articleSupportStudyPageInitial);
+    setArticleDoesNotSupportStudyContent(
+      articleDoesNotSupportStudyContentInitial,
+    );
+    setNeededSupportStudyContent(neededSupportStudyContentInitial);
+    setSelectedSubthemes(selectedSubthemesInitial);
+  };
+
+  const resetAllDataInFields = () => {
+    setLoading(true);
+    setArticleTitle('');
+    setAuthors('');
+    setJournalName('');
+    setLocation('');
+    setDoi('');
+    setYear('');
+    setVolume('');
+    setIssue('');
+    setPage('');
+    setStep06([]);
+    setArticleAboutContent('');
+    setArticleAboutPage('');
+    setArticleSupportStudyContent('');
+    setArticleSupportStudyPage('');
+    setArticleDoesNotSupportStudyContent('');
+    setNeededSupportStudyContent('');
+
+    setSelectedSubthemes([0]);
+
+    showSuccess('Form cleared');
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (!visible) return;
 
@@ -89,30 +170,57 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
         );
 
         setArticleTitle(data.data.journal.article_title);
+        setArticleTitleInitial(data.data.journal.article_title);
         setAuthors(data.data.journal.author);
+        setAuthorsInitial(data.data.journal.author);
         setJournalName(data.data.journal.journal_name);
+        setJournalNameInitial(data.data.journal.journal_name);
         setLocation(data.data.journal.location);
+        setLocationInitial(data.data.journal.location);
         setDoi(data.data.journal.doi);
+        setDoiInitial(data.data.journal.doi);
         setYear(data.data.journal.year);
+        setYearInitial(data.data.journal.year);
         setVolume(data.data.journal.volume);
+        setVolumeInitial(data.data.journal.volume);
         setIssue(data.data.journal.issue);
+        setIssueInitial(data.data.journal.issue);
         setPage(data.data.journal.page);
+        setPageInitial(data.data.journal.page);
         setArticleAboutContent(data.data.journal.article_about.content);
+        setArticleAboutContentInitial(data.data.journal.article_about.content);
         setArticleAboutPage(data.data.journal.article_about.page);
+        setArticleAboutPageInitial(data.data.journal.article_about.page);
         setArticleSupportStudyContent(
+          data.data.journal.article_support_study.content,
+        );
+        setArticleSupportStudyContentInitial(
           data.data.journal.article_support_study.content,
         );
         setArticleSupportStudyPage(
           data.data.journal.article_support_study.page,
         );
+
+        setArticleSupportStudyPageInitial(
+          data.data.journal.article_support_study.page,
+        );
         setArticleDoesNotSupportStudyContent(
           data.data.journal.article_does_not_support_study.content,
         );
+        setArticleDoesNotSupportStudyContentInitial(
+          data.data.journal.article_does_not_support_study.content,
+        );
+
         setNeededSupportStudyContent(
+          data.data.journal.needed_support_study.content,
+        );
+
+        setNeededSupportStudyContentInitial(
           data.data.journal.needed_support_study.content,
         );
         setSubthemeSelections(data.data.subthemes);
 
+        setSelectedSubthemesInitial(Object.values(data.data.selections));
         //extract all values from data.data.selections
         let values = Object.values(data.data.selections);
         console.log('-- values --');
@@ -197,6 +305,8 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             showInfo={showInfo}
             setVisible={setVisible}
             setLoading={setLoading}
+            resetAllDataInFields={resetAllDataInFields}
+            resetAllDataInFieldsToInitial={resetAllDataInFieldsToInitial}
           />
         </Dialog>
       )}
