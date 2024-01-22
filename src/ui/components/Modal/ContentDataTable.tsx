@@ -19,7 +19,7 @@ const ContentDataTable = ({ journalMetadata }: ContentDataTableProps) => {
   return (
     <>
       <Card>
-        <p>Journal Details</p>
+        <p>Journal Details ff</p>
         <DataTable value={journalMetadata} tableStyle={{ minWidth: '50rem' }}>
           <Column field='category' header='Category'></Column>
           <Column field='data' header='Data'></Column>
