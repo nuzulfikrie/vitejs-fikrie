@@ -35,7 +35,15 @@ const URL_LINKS = {
     value: 'https://oldcopy.theeagle.center/api/courses/get-edit-journal-data/',
   },
 
+  FETCH_ABSTRACT: {
+    key: 'FETCH_ABSTRACT',
+    value: 'https://oldcopy.theeagle.center/api/courses/get-abstract-data/',
+  },
 
+  FETCH_METADATA: {
+    key: 'FETCH_METADATA',
+    value: 'https://oldcopy.theeagle.center/api/courses/get-metadata/',
+  },
 };
 
 export default URL_LINKS;

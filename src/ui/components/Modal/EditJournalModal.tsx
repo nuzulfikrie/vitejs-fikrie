@@ -42,6 +42,9 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   {
     /* initial state - for reset  */
   }
+
+  const [videoData, setVideoData] = useState<any>(null);
+
   const [articleTitleInitial, setArticleTitleInitial] = useState('');
   const [authorsInitial, setAuthorsInitial] = useState('');
   const [journalNameInitial, setJournalNameInitial] = useState('');
@@ -104,6 +107,135 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     useState('');
   const [neededSupportStudyColor, setNeededSupportStudyColor] = useState('');
 
+  {
+    /* for panel abstract  */
+  }
+  const [panelVisible, setPanelVisible] = useState<boolean>(false);
+  const [panelAbstractLoading, setPanelAbstractLoading] =
+    useState<boolean>(false);
+  const [panelAbstractData, setPanelAbstractData] = useState<any>(null);
+  {
+    /* for panel abstract  */
+  }
+
+  // metadata
+
+  // const [loadingMetadataData, setLoadingMetadataData] =
+  //   useState<boolean>(false);
+  // const [modalMetadataVisible, setModalMetadataVisible] =
+  //   useState<boolean>(false);
+  // const [metadata, setMetadata] = useState<any>(null);
+
+  //--------------- handle metadata ----------------------------
+  const useMetadata = (metadata) => {
+    if (!metadata || metadata.length === 0) {
+      showWarn('No metadata to use. Please retrieve metadata first.');
+      return;
+    }
+
+    setLoading(true);
+
+    // Map the metadata array to an object for easier access
+    const metadataObj = metadata.reduce(
+      (obj: { [x: string]: any }, item: { category: string; data: any }) => {
+        obj[item.category.toLowerCase()] = item.data; // Use lowercase for keys
+        return obj;
+      },
+      {},
+    );
+
+    // Now use the metadataObj to set your state values
+
+    console.log('metadataObj', metadataObj);
+    console.log(metadataObj['title']);
+
+    setArticleTitle(metadataObj.title || '');
+    setAuthors(metadataObj.authors || '');
+    setJournalName(metadataObj.journal || '');
+    setLocation(metadataObj.location || ''); // Assuming 'location' is a category in your metadata
+    setDoi(metadataObj.url ? metadataObj['url'].split('doi.org/')[1] : ''); // Extract DOI from URL
+    setYear(metadataObj.year ? metadataObj['year'].toString() : ''); // Convert year to string if it exists
+    setVolume(metadataObj.volume || '');
+    setIssue(metadataObj.issue || '');
+    setPage(metadataObj.page || '');
+
+    setLoading(false);
+    //setModalMetadataVisible(false);
+  };
+  //----------------- handle metadata --------------------------
+
+  // const retrieveMetadata = (doi: string) => {
+  //   if (!doi) {
+  //     showWarn('Please enter doi');
+  //     setLoadingMetadataData(false);
+  //     // No need to set modal visibility here since there's no DOI
+  //     return;
+  //   } else {
+  //     // Check if metadata is already loaded
+  //     //set metadata back to null
+  //     setMetadata(null);
+  //     setModalMetadataVisible(true); // Only set modal visible when metadata is null
+  //     setLoadingMetadataData(true);
+
+  //     const url = `${URL_LINKS.FETCH_METADATA.value}`;
+  //     axios
+  //       .post(url, { doi: doi })
+  //       .then((response) => {
+  //         setMetadata(response.data.data);
+  //         setLoadingMetadataData(false);
+  //       })
+  //       .catch((error: any) => {
+  //         console.error('Error fetching data:', error);
+  //         showWarn('Error fetching metadata');
+  //         setLoadingMetadataData(false);
+  //         setModalMetadataVisible(false);
+  //       });
+
+  //     // If metadata is not null, consider whether you need to update it or handle it differently
+  //   }
+  // };
+
+  const retrieveAbstract = (doi: string, provider: string) => {
+    const url = `${URL_LINKS.FETCH_ABSTRACT.value}${doi}/${provider}`;
+    setPanelVisible(true);
+    setPanelAbstractLoading(true);
+
+    axios
+      .post(url, {
+        doi: doi,
+        keyidentifier: provider,
+      })
+      .then((response) => {
+        //check if response status 200
+        if (response.status === 200) {
+          setPanelAbstractData(response.data.data);
+        } else {
+          showWarn('Error fetching abstract');
+        }
+      })
+      .catch((error: any) => {
+        console.error('Error fetching data:', error);
+
+        showWarn('Error fetching abstract');
+      });
+
+    setPanelAbstractLoading(false);
+  };
+
+  const retrieveVideo = (key: string, userId: string) => {
+    const url = `${URL_LINKS.FETCH_USER_VIDEO.value}${userId}/${key}`;
+    axios
+      .get(url)
+      .then((response) => {
+        setVideoData(response.data.data);
+      })
+      .catch((error: any) => {
+        console.error('Error fetching data:', error);
+
+        showWarn('Error fetching video');
+      });
+  };
+
   const resetAllDataInFieldsToInitial = () => {
     setArticleTitle(articleTitleInitial);
     setAuthors(authorsInitial);
@@ -127,6 +259,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   };
 
   const resetAllDataInFields = () => {
+    console.log('resetAllDataInFields');
     setLoading(true);
     setArticleTitle('');
     setAuthors('');
@@ -146,8 +279,6 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     setNeededSupportStudyContent('');
 
     setSelectedSubthemes([0]);
-
-    showSuccess('Form cleared');
     setLoading(false);
   };
 
@@ -161,13 +292,6 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       .get(urlFetchJournal)
       .then((response) => {
         const data = response.data;
-        console.log(
-          '-------------- data fetch journal --------------------------',
-        );
-        console.log(data);
-        console.log(
-          '-------------- data fetch journal --------------------------',
-        );
 
         setArticleTitle(data.data.journal.article_title);
         setArticleTitleInitial(data.data.journal.article_title);
@@ -307,6 +431,15 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             setLoading={setLoading}
             resetAllDataInFields={resetAllDataInFields}
             resetAllDataInFieldsToInitial={resetAllDataInFieldsToInitial}
+            retrieveVideo={retrieveVideo}
+            videoData={videoData}
+            setPanelVisible={setPanelVisible}
+            setPanelAbstractLoading={setPanelAbstractLoading}
+            panelAbstractData={panelAbstractData}
+            panelVisible={panelVisible}
+            panelAbstractLoading={panelAbstractLoading}
+            retrieveAbstract={retrieveAbstract}
+            useMetadata={useMetadata}
           />
         </Dialog>
       )}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
+import { Divider } from 'primereact/divider';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Card } from 'primereact/card';
@@ -13,7 +14,14 @@ import { Dialog } from 'primereact/dialog';
 import { MenuItem } from 'primereact/menuitem';
 import { SplitButton } from 'primereact/splitbutton';
 import JournalDetailCheckboxesComponent from './JournalDetailCheckboxesComponent';
-
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import VideoModal from '../Modal/VideoModal';
+import PanelAbstractData from '../Panel/PanelAbstractData';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import axios from 'axios';
+import URL_LINKS from '../../../constants/urls';
+import ContentDataTable from '../Modal/ContentDataTable';
 interface Subtheme {
   name: string;
   key: string;
@@ -55,6 +63,15 @@ interface JournalDetailsComponentProps {
   setLoading: (loading: boolean) => void;
   resetAllDataInFields: () => void;
   resetAllDataInFieldsToInitial: () => void;
+  retrieveVideo: (key: string, userId: string) => any | null;
+  videoData: any;
+  setPanelVisible: (visible: boolean) => void;
+  setPanelAbstractLoading: (loading: boolean) => void;
+  panelAbstractData: string;
+  panelVisible: boolean;
+  panelAbstractLoading: boolean;
+  retrieveAbstract: (doi: string, provider: string) => void;
+  useMetadata: (metadata: any) => void;
 }
 
 const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
@@ -93,15 +110,44 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   setLoading,
   resetAllDataInFields,
   resetAllDataInFieldsToInitial,
+  retrieveVideo,
+  videoData,
+  setPanelVisible,
+  setPanelAbstractLoading,
+  panelAbstractData,
+  panelVisible,
+  panelAbstractLoading,
+  retrieveAbstract,
+  useMetadata,
 }): JSX.Element => {
   interface subtheme {
     name: string;
     key: string;
     construct: string;
   }
+
+  interface Provider {
+    name: string;
+    code: string;
+  }
+
+  const providerSelection: Provider[] = [
+    { name: 'IEEE', code: 'ieee' },
+    { name: 'Springer', code: 'springer' },
+    { name: 'Elsevier', code: 'elsevier' },
+    { name: 'Pubmed', code: 'pubmed' },
+    { name: 'Reset', code: 'reset' },
+  ];
+
+  const [loadingMetadata, setLoadingMetadata] = useState<boolean>(false);
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
+    null,
+  );
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
   const [selectedSubthemes, setSelectedSubthemes] = useState<Subtheme[]>([]);
   const [buttonloading] = useState<boolean>(false);
+  const [journalMetadata, setJournalMetadata] = useState(null);
+  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
   const onCategoryChange = (e: CheckboxChangeEvent) => {
     console.log('--- checkboxchangeevent');
 
@@ -175,42 +221,51 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
     // code logic here
     e.preventDefault();
     console.log('callVideo', userId);
+
+    retrieveVideo('step06', userId);
     setModalVideoVisible(true);
   };
-  const retrieveMetadata = () => {
+  const retrieveAbstractData = () => {
     // code logic here
+    //read doi and selected provider
+
+    setLoadingMetadata(true);
+
+    console.log('--- retrieveMetadata ---');
+    let doi = formik.values.doi;
+    let provider = selectedProvider;
+
+    console.log('--- doi ---');
+    console.log(doi);
+
+    console.log('--- provider ---');
+    console.log(provider);
+
+    if (!doi) {
+      showWarn('DOI is required');
+    }
+
+    if (!provider) {
+      showWarn('Provider is required');
+    }
+
+    retrieveAbstract(doi, provider.code);
+
+    setTimeout(() => {
+      setLoadingMetadata(false);
+    }, 2000);
   };
-  const items = [
-    {
-      label: 'Update',
-      icon: 'pi pi-refresh',
-      command: () => {
-        console.log('---update--');
-      },
-    },
-    {
-      label: 'Delete',
-      icon: 'pi pi-times',
-      command: () => {
-        console.log('--- delete--');
-      },
-    },
-    {
-      label: 'React Website',
-      icon: 'pi pi-external-link',
-      command: () => {
-        console.log('-- react --');
-      },
-    },
-    {
-      label: 'Upload',
-      icon: 'pi pi-upload',
-      command: () => {
-        //router.push('/fileupload');
-        console.log('upload');
-      },
-    },
-  ];
+
+  const handleDropDown = (e: DropdownChangeEvent) => {
+    console.log('--- value ---');
+    console.log(e.value);
+    console.log('--- value ---');
+    if (e.value.code === 'reset') {
+      setSelectedProvider(null);
+    } else {
+      setSelectedProvider(e.value);
+    }
+  };
 
   const retrieve = () => {
     console.log('--retrieve--');
@@ -228,6 +283,46 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
     formik.resetForm();
     // close modal
     setVisible(false);
+  };
+
+  const confirmDialogMetadata = () => {
+    let doi = formik.values.doi;
+    console.log('--- confirmDialogMetadata ---');
+
+    console.log('--- doi ---');
+    console.log(doi);
+    console.log('--- doi ---');
+
+    if (!doi) {
+      showWarn('DOI is required');
+      return;
+    }
+
+    // Retrieve metadata
+    const url = `${URL_LINKS.FETCH_METADATA.value}`;
+    axios
+      .post(url, { doi: doi })
+      .then((response) => {
+        if (response.data.status === 'success') {
+          // Ensure the data structure of response is as expected
+          let data = response.data.data;
+
+          console.log('###################### data #############');
+          console.log(data);
+
+          // Instead of calling confirmDialog directly, set state here
+          setJournalMetadata(data);
+          setIsConfirmDialogVisible(true); // This state will be used to control the visibility of the dialog
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        showWarn('Error fetching metadata');
+      });
+  };
+
+  const confirmUseMetadata = (data: any) => {
+    useMetadata(data);
   };
 
   const clearform = () => {
@@ -278,11 +373,13 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
       if (values.doi && values.doi !== '') {
         let existsDoi: any;
         //1 check if doi exists
-        existsDoi = checkDOI(values.doi);
-        console.log('exists ==============', existsDoi);
-        if (!existsDoi) {
-          errors.value = 'DOI does not exist';
-        }
+        // existsDoi = checkDOI(values.doi);
+        // console.log('exists ==============', existsDoi);
+        // if (!existsDoi) {
+        //   errors.value = 'DOI does not exist';
+        // }
+
+        return true;
       }
 
       //authors is required
@@ -390,25 +487,32 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   return (
     <>
       <ConfirmDialog />
-
+      {isConfirmDialogVisible && (
+        <ConfirmDialog
+          visible={isConfirmDialogVisible}
+          onHide={() => setIsConfirmDialogVisible(false)}
+          message='Are you sure you want to proceed?'
+          content={
+            journalMetadata && (
+              <ContentDataTable journalMetadata={journalMetadata} />
+            )
+          }
+          header='Confirmation'
+          icon='pi pi-exclamation-triangle'
+          accept={() => {
+            setIsConfirmDialogVisible(false);
+            confirmUseMetadata(journalMetadata);
+          }}
+          reject={() => setIsConfirmDialogVisible(false)}
+        />
+      )}
       <form onSubmit={formik.handleSubmit} className='flex flex-column gap-2'>
         <Toast ref={toast} />
-        <Dialog
-          header='Header'
-          visible={modalVideoVisible}
-          style={{ width: '50vw' }}
-          onHide={() => setModalVideoVisible(false)}
-        >
-          <p className='m-0'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-        </Dialog>
+        <VideoModal
+          videoData={videoData}
+          modalVideoVisible={modalVideoVisible}
+          setModalVideoVisible={setModalVideoVisible}
+        />
         {/* Repeat the following pattern for each field */}
 
         {/** button set start */}
@@ -419,13 +523,21 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
             icon='pi pi-video'
             onClick={callVideo}
           />
+          <Button
+            label='Retrieve Abstract'
+            icon='pi pi-check'
+            loading={loadingMetadata}
+            onClick={retrieveAbstractData}
+            severity='success'
+          />
           <div className='card flex justify-content-center'>
-            <SplitButton
-              label='Retrieve Abstract'
-              icon='pi pi-plus'
-              onClick={retrieve}
-              model={items}
-              loading={buttonloading}
+            <Dropdown
+              value={selectedProvider}
+              onChange={handleDropDown}
+              options={providerSelection}
+              optionLabel='name'
+              placeholder='Select a Provider'
+              className='w-full md:w-14rem'
             />
           </div>
         </div>
@@ -441,13 +553,14 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
               'p-invalid': isFormFieldInvalid('doi'),
             })}
           />
-          <label htmlFor='doi'>DOI</label>
+          <label htmlFor='doi'>DOI</label>{' '}
+          <Button
+            type='button'
+            label='Retrieve Metadata'
+            onClick={confirmDialogMetadata}
+            severity='danger'
+          />
         </span>
-        <Button
-          label='Retrieve Metadata'
-          severity='info'
-          onClick={retrieveMetadata}
-        />
 
         <div className='flex flex-column gap-2'>
           <label htmlFor='authors'>Authors</label>
@@ -603,6 +716,13 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
         <div className='card flex flex-wrap justify-content-left gap-4'>
           <Button label='Insert Template' severity='info' />
         </div>
+        <Divider />
+        <PanelAbstractData
+          panelVisible={panelVisible}
+          dataLoading={panelAbstractLoading}
+          dataAbstract={panelAbstractData}
+          dataDoi={formik.values.doi}
+        />
 
         <Splitter style={{ height: '600px' }}>
           <SplitterPanel className='flex flex-column' size={60} minSize={60}>
@@ -736,7 +856,6 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
             <JournalDetailCheckboxesComponent
               subthemeSelections={subthemeSelections}
               selected={selected}
-              selectedSubthemes={selectedSubthemes}
               onCategoryChange={onCategoryChange}
             />
           </SplitterPanel>
