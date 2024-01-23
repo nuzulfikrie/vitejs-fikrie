@@ -29,11 +29,7 @@ const PanelAbstractData: React.FC<Props> = ({
       </Card>
     );
   } else {
-    return (
-      <Card title={title}>
-        <p className='m-0'>{dataAbstract}</p>
-      </Card>
-    );
+    return <Card title={title}>{dataAbstract}</Card>;
   }
 };
 

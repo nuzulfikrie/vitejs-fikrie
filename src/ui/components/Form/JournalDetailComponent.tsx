@@ -71,7 +71,12 @@ interface JournalDetailsComponentProps {
   panelVisible: boolean;
   panelAbstractLoading: boolean;
   retrieveAbstract: (doi: string, provider: string) => void;
-  useMetadata: (metadata: any) => void;
+  useMetadata: () => void;
+  journalMetadata: any;
+  setJournalMetadata: (journalMetadata: any) => void;
+  isConfirmDialogVisible: boolean;
+  setIsConfirmDialogVisible: (isConfirmDialogVisible: boolean) => void;
+  setChooseMetadata: (chooseMetadata: boolean) => void;
 }
 
 const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
@@ -119,6 +124,11 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   panelAbstractLoading,
   retrieveAbstract,
   useMetadata,
+  journalMetadata,
+  setJournalMetadata,
+  isConfirmDialogVisible,
+  setIsConfirmDialogVisible,
+  setChooseMetadata,
 }): JSX.Element => {
   interface subtheme {
     name: string;
@@ -146,8 +156,7 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
   const [selectedSubthemes, setSelectedSubthemes] = useState<Subtheme[]>([]);
   const [buttonloading] = useState<boolean>(false);
-  const [journalMetadata, setJournalMetadata] = useState(null);
-  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+
   const onCategoryChange = (e: CheckboxChangeEvent) => {
     console.log('--- checkboxchangeevent');
 
@@ -287,11 +296,6 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
 
   const confirmDialogMetadata = () => {
     let doi = formik.values.doi;
-    console.log('--- confirmDialogMetadata ---');
-
-    console.log('--- doi ---');
-    console.log(doi);
-    console.log('--- doi ---');
 
     if (!doi) {
       showWarn('DOI is required');
@@ -307,9 +311,6 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
           // Ensure the data structure of response is as expected
           let data = response.data.data;
 
-          console.log('###################### data #############');
-          console.log(data);
-
           // Instead of calling confirmDialog directly, set state here
           setJournalMetadata(data);
           setIsConfirmDialogVisible(true); // This state will be used to control the visibility of the dialog
@@ -319,10 +320,6 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
         console.error('Error fetching data:', error);
         showWarn('Error fetching metadata');
       });
-  };
-
-  const confirmUseMetadata = (data: any) => {
-    useMetadata(data);
   };
 
   const clearform = () => {
@@ -491,19 +488,16 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
         <ConfirmDialog
           visible={isConfirmDialogVisible}
           onHide={() => setIsConfirmDialogVisible(false)}
-          message='Are you sure you want to proceed?'
           content={
             journalMetadata && (
-              <ContentDataTable journalMetadata={journalMetadata} />
+              <ContentDataTable
+                journalMetadata={journalMetadata}
+                setChooseMetadata={setChooseMetadata}
+                setLoading={setLoading}
+                setIsConfirmDialogVisible={setIsConfirmDialogVisible}
+              />
             )
           }
-          header='Confirmation'
-          icon='pi pi-exclamation-triangle'
-          accept={() => {
-            setIsConfirmDialogVisible(false);
-            confirmUseMetadata(journalMetadata);
-          }}
-          reject={() => setIsConfirmDialogVisible(false)}
         />
       )}
       <form onSubmit={formik.handleSubmit} className='flex flex-column gap-2'>
@@ -521,7 +515,7 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
             label='Video'
             severity='info'
             icon='pi pi-video'
-            onClick={callVideo}
+            onClick={() => callVideo(event)}
           />
           <Button
             label='Retrieve Abstract'
@@ -557,7 +551,7 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
           <Button
             type='button'
             label='Retrieve Metadata'
-            onClick={confirmDialogMetadata}
+            onClick={() => confirmDialogMetadata()}
             severity='danger'
           />
         </span>
