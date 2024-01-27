@@ -5,10 +5,14 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 
 type ContentDataTableProps = {
+  doi: string;
+
   journalMetadata: journalMetadata[];
   setChooseMetadata: (chooseMetadata: boolean) => void;
-  setLoading: (loading: boolean) => void;
   setIsConfirmDialogVisible: (isConfirmDialogVisible: boolean) => void;
+  panelALoading: boolean;
+  setPanelALoading: (panelALoading: boolean) => void;
+  ProcessUseMetadata: (doi: string) => void;
 };
 type journalMetadata = {
   category: string;
@@ -16,24 +20,23 @@ type journalMetadata = {
 };
 
 const ContentDataTable = ({
+  doi,
   journalMetadata,
   setChooseMetadata,
-  setLoading,
   setIsConfirmDialogVisible,
+  panelALoading,
+  setPanelALoading,
+  ProcessUseMetadata,
 }: ContentDataTableProps) => {
-
-
   const reloadContentForm = () => {
-    console.log('reloadContentForm');
-    setLoading(true); // Assuming you want to show loading before the 3-second delay
+    setIsConfirmDialogVisible(false);
 
+    setPanelALoading(true);
     setTimeout(() => {
       setChooseMetadata(true);
-      setIsConfirmDialogVisible(false);
-      setLoading(false);
-    }, 3000); // 3000 milliseconds = 3 seconds
 
-    return;
+      setPanelALoading(false);
+    }, 3000);
   };
 
   return (

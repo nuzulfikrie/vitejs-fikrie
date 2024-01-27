@@ -1,4 +1,5 @@
 // Define the interface for author details
+
 interface Author {
   firstName: string;
   lastName: string;
@@ -57,9 +58,14 @@ function parseAuthors(authorsString: string): Author[] {
     const parts = name.split(' ');
     const lastName = parts.pop() || ''; // Assumes the last part is the last name
     const firstName = parts.join(' '); // Rest is considered as the first name
+    const prefix = parts.length > 1 ? parts.shift() : undefined;
+    const suffix = parts.length > 1 ? parts.pop() : undefined;
 
-    authors.push({ firstName, lastName });
+    authors.push({ firstName, lastName, prefix, suffix });
   });
 
   return authors;
 }
+
+//EXPORT
+export { generateInTextCitation, parseAuthors };

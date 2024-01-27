@@ -3,6 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import JournalDetailsComponent from '../Form/JournalDetailComponent';
 import URL_LINKS from '../../../constants/urls';
+import {
+  generateInTextCitation,
+  parseAuthors,
+} from '../../../functions/app/Citations';
+import { useFormik } from 'formik';
+
 import '../../css/loading.css';
 
 interface EditJournalModalProps {
@@ -21,7 +27,22 @@ interface EditJournalModalProps {
   showError: (message: string) => void;
   showInfo: (message: string) => void;
 }
-
+/**
+ * Visibles edit journal modal
+ * @param {
+ *   visible,
+ *   setVisible,
+ *   journalId,
+ *   projectId,
+ *   userId,
+ *   onSave,
+ *   showSuccess,
+ *   showWarn,
+ *   showError,
+ *   showInfo,
+ * }
+ * @returns
+ */
 const EditJournalModal: React.FC<EditJournalModalProps> = ({
   visible,
   setVisible,
@@ -35,10 +56,6 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   showInfo,
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
-  {
-    /* initial state - for reset  */
-  }
-
   const [videoData, setVideoData] = useState<any>(null);
 
   const [articleTitleInitial, setArticleTitleInitial] = useState('');
@@ -51,6 +68,15 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   const [issueInitial, setIssueInitial] = useState('');
   const [pageInitial, setPageInitial] = useState('');
   const [step06Initial, setStep06Initial] = useState([]);
+
+  const [selectedSubthemesInitial, setSelectedSubthemesInitial] = useState<
+    Subtheme[]
+  >([]);
+  const [journalMetadata, setJournalMetadata] = useState(null);
+  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+  const [chooseMetadata, setChooseMetadata] = useState(false);
+  const [panelBLoading, setPanelBLoading] = useState<boolean>(false);
+  const [panelBVisible, setPanelBVisible] = useState<boolean>(false);
   const [articleAboutContentInitial, setArticleAboutContentInitial] =
     useState('');
   const [articleAboutPageInitial, setArticleAboutPageInitial] = useState('');
@@ -68,20 +94,6 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     neededSupportStudyContentInitial,
     setNeededSupportStudyContentInitial,
   ] = useState('');
-  const [selectedSubthemesInitial, setSelectedSubthemesInitial] = useState<
-    Subtheme[]
-  >([]);
-
-  {
-    // -- for metadata modal and visibility
-  }
-  const [journalMetadata, setJournalMetadata] = useState(null);
-  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
-  const [chooseMetadata, setChooseMetadata] = useState(false);
-
-  {
-    // -- for metadata modal and visibility
-  }
   const [article_title, setArticleTitle] = useState('');
   const [authors, setAuthors] = useState('');
   const [journal_name, setJournalName] = useState('');
@@ -112,28 +124,307 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   const [articleDoesNotSupportStudyColor, setArticleDoesNotSupportStudyColor] =
     useState('');
   const [neededSupportStudyColor, setNeededSupportStudyColor] = useState('');
+  const [panelALoading, setPanelALoading] = useState<boolean>(false);
+  const [panelAVisible, setPanelAVisible] = useState<boolean>(false);
 
-  {
-    /* for panel abstract  */
-  }
   const [panelVisible, setPanelVisible] = useState<boolean>(false);
   const [panelAbstractLoading, setPanelAbstractLoading] =
     useState<boolean>(false);
   const [panelAbstractData, setPanelAbstractData] = useState<any>(null);
-  {
-    /* for panel abstract  */
-  }
-  //--------------- handle metadata ----------------------------
-  const ProcessUseMetadata = () => {
-    //need to force rerender
 
-    if (!journalMetadata || (journalMetadata as any[]).length === 0) {
-      showWarn('No metadata to use. Please retrieve metadata first.');
-      return;
+  //##################################################################################
+  const formik = useFormik({
+    initialValues: {
+      article_title: '',
+      authors: '',
+      journal_name: '',
+      location: '',
+      doi: '',
+      year: '',
+      volume: '',
+      issue: '',
+      page: '',
+      step06: '',
+      article_about_content: '',
+      article_about_page: '',
+      article_support_study_content: '',
+      article_support_study_page: '',
+      article_does_not_support_study_content: '',
+      needed_support_study_content: '',
+    },
+    validate: (values) => {
+      const errors: any = {};
+      // Add validation logic here
+
+      //doi is optional but if has value need to check if doi exists
+      if (values.doi && values.doi !== '') {
+        let existsDoi: any;
+        //1 check if doi exists
+        // existsDoi = checkDOI(values.doi);
+        // console.log('exists ==============', existsDoi);
+        // if (!existsDoi) {
+        //   errors.value = 'DOI does not exist';
+        // }
+
+        return true;
+      }
+
+      //authors is required
+      if (!values.authors) {
+        errors.authors = 'Authors Name Required';
+      }
+
+      // Authors name can only be separated by commas
+      if (values.authors) {
+        const authorsArray = values.authors
+          .split(',')
+          .map((author: string) => author.trim());
+        const invalidAuthors = authorsArray.filter(
+          (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors),
+        );
+
+        if (invalidAuthors.length > 0) {
+          errors.authors =
+            'Authors Name Cannot be separated by characters other than comma';
+        }
+      }
+      //article_title is required
+      if (!values.article_title) {
+        errors.article_title = 'Article Title Required';
+      }
+
+      //year is required
+      if (!values.year) {
+        errors.year = 'Year Required';
+      }
+
+      //validate year is number format YYYY
+      if (values.year) {
+        const year = values.year;
+        if (!year.match(/^\d{4}$/)) {
+          errors.year = 'Year must be in YYYY format';
+        }
+      }
+
+      // YEAR must be between - the year internet existed and current year
+      if (values.year) {
+        const year = Number(values.year);
+        const currentYear = new Date().getFullYear();
+        if (year < 1990 || year > currentYear) {
+          errors.year = 'Year must be between 1990 and current year';
+        }
+      }
+
+      if (!values.step06) {
+        errors.step06 = 'This is required.';
+      }
+
+      // Add other validation rules as needed
+      return errors;
+    },
+    onSubmit: (values) => {
+      formik.resetForm();
+    },
+  });
+
+  const checkDOI = async (doi: string): Promise<boolean> => {
+    const url = `https://doi.org/${doi}`;
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+
+      console.log('----------- status --------------');
+      console.log(response.status);
+      console.log('----------- status --------------');
+
+      //if fetch failed return false
+      if (!response.ok) {
+        return false;
+      }
+      //if redirect return false
+      if (response.redirected) {
+        return false;
+      }
+
+      if (response.status === 404) {
+        return false;
+      } else if (response.status === 200) {
+        return true;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      return false;
+    }
+  };
+  const isFormFieldInvalid = (name: any) =>
+    !!(
+      formik.touched[name as keyof typeof formik.touched] &&
+      formik.errors[name as keyof typeof formik.errors]
+    );
+
+  const getFormErrorMessage = (name: any) => {
+    return isFormFieldInvalid(name) ? (
+      <small className='p-error'>{formik.errors[name]}</small>
+    ) : null;
+  };
+  //##################################################################################
+
+  const formikManipulation = (
+    conditions: string,
+    citationStrings: string[],
+    fetchedMetadata: any,
+  ) => {
+    switch (conditions) {
+      case 'onLoad':
+        setFormikValueOnLoad();
+
+        break;
+      case 'onReset':
+        setFormikValueOnReset();
+        break;
+      case 'onClear':
+        setFormikValueOnClear();
+        break;
+
+      case 'onMetadata':
+        setFormikValueOnMetadata(fetchedMetadata);
+        break;
+
+      case 'onTemplate':
+        setFormikValueOnTemplate(citationStrings);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  /**
+   *
+   * handling
+   */
+  const insertTemplate = () => {
+    let authorString = formik.values.authors;
+    let year = formik.values.year;
+
+    if (!authorString) {
+      showError('Author is required');
     }
 
-    // Map the metadata array to an object for easier access
-    const metadataObj = (journalMetadata as any[]).reduce(
+    if (!year) {
+      showError('Year is required');
+    }
+
+    //retrigger the useEfect
+
+    handleInsertTemplate(authorString, year);
+  };
+
+  /**
+   * Set formik values on load
+   * - this set the values of formik to the values of the state
+   * @returns void
+   */
+  const setFormikValueOnLoad = () => {
+    formik.setFieldValue('article_title', article_title);
+    formik.setFieldValue('authors', authors);
+    formik.setFieldValue('journal_name', journal_name);
+    formik.setFieldValue('location', location);
+    formik.setFieldValue('doi', doi);
+    formik.setFieldValue('year', year);
+    formik.setFieldValue('volume', volume);
+    formik.setFieldValue('issue', issue);
+    formik.setFieldValue('page', page);
+    formik.setFieldValue('step06', step06);
+    formik.setFieldValue('article_about_content', article_about_content);
+    formik.setFieldValue('article_about_page', article_about_page);
+    formik.setFieldValue(
+      'article_support_study_content',
+      article_support_study_content,
+    );
+    formik.setFieldValue(
+      'article_support_study_page',
+      article_support_study_page,
+    );
+    formik.setFieldValue(
+      'article_does_not_support_study_content',
+      article_does_not_support_study_content,
+    );
+    formik.setFieldValue(
+      'needed_support_study_content',
+      needed_support_study_content,
+    );
+    formik.setFieldValue('author_pod_color', authorPodColor);
+    formik.setFieldValue(
+      'article_support_study_color',
+      articleSupportStudyColor,
+    );
+    formik.setFieldValue(
+      'article_does_not_support_study_color',
+      articleDoesNotSupportStudyColor,
+    );
+    formik.setFieldValue('needed_support_study_color', neededSupportStudyColor);
+    formik.setFieldValue('subtheme_selections', subthemeSelections);
+    formik.setFieldValue('selected', selectedSubthemes);
+  };
+
+  //this function set formik value back to initial value retrieved
+  const setFormikValueOnReset = () => {
+    formik.setFieldValue('article_title', articleTitleInitial);
+    formik.setFieldValue('authors', authorsInitial);
+    formik.setFieldValue('journal_name', journalNameInitial);
+    formik.setFieldValue('location', locationInitial);
+    formik.setFieldValue('doi', doiInitial);
+    formik.setFieldValue('year', yearInitial);
+    formik.setFieldValue('volume', volumeInitial);
+    formik.setFieldValue('issue', issueInitial);
+    formik.setFieldValue('page', pageInitial);
+    formik.setFieldValue('step06', step06Initial);
+    formik.setFieldValue('article_about_content', articleAboutContentInitial);
+    formik.setFieldValue('article_about_page', articleAboutPageInitial);
+    formik.setFieldValue(
+      'article_support_study_content',
+      articleSupportStudyContentInitial,
+    );
+    formik.setFieldValue(
+      'article_support_study_page',
+      articleSupportStudyPageInitial,
+    );
+    formik.setFieldValue(
+      'article_does_not_support_study_content',
+      articleDoesNotSupportStudyContentInitial,
+    );
+
+    formik.setFieldValue(
+      'needed_support_study_content',
+      neededSupportStudyContentInitial,
+    );
+  };
+
+  //this will clear fields
+  const setFormikValueOnClear = () => {
+    formik.setFieldValue('article_title', '');
+    formik.setFieldValue('authors', '');
+    formik.setFieldValue('journal_name', '');
+    formik.setFieldValue('location', '');
+    formik.setFieldValue('doi', '');
+    formik.setFieldValue('year', '');
+    formik.setFieldValue('volume', '');
+    formik.setFieldValue('issue', '');
+    formik.setFieldValue('page', '');
+    formik.setFieldValue('step06', '');
+    formik.setFieldValue('article_about_content', '');
+    formik.setFieldValue('article_about_page', '');
+    formik.setFieldValue('article_support_study_content', '');
+    formik.setFieldValue('article_support_study_page', '');
+    formik.setFieldValue('article_does_not_support_study_content', '');
+    formik.setFieldValue('needed_support_study_content', '');
+  };
+
+  //this will populate metadata and clear form part b
+  const setFormikValueOnMetadata = (journalMetadata: any) => {
+    const metadataObj = (
+      journalMetadata ? (journalMetadata as any[]) : []
+    ).reduce(
       (obj: { [x: string]: any }, item: { category: string; data: any }) => {
         obj[item.category.toLowerCase()] = item.data; // Use lowercase for keys
         return obj;
@@ -141,16 +432,18 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       {},
     );
 
+    // Update Panel A Data
     setArticleTitle(metadataObj['title']);
     setAuthors(metadataObj['authors']);
     setJournalName(metadataObj['journal']);
-    setLocation(metadataObj['location']); // Assuming 'location' is a category in your metadata
-    setDoi(metadataObj.url ? metadataObj['url'].split('doi.org/')[1] : ''); // Extract DOI from URL
-    setYear(metadataObj.year ? metadataObj['year'].toString() : ''); // Convert year to string if it exists
+    setLocation(metadataObj['location']);
+    setDoi(metadataObj.url ? metadataObj['url'].split('doi.org/')[1] : '');
+    setYear(metadataObj.year ? metadataObj['year'].toString() : '');
     setVolume(metadataObj['volume']);
     setIssue(metadataObj['issue']);
     setPage(metadataObj['page']);
 
+    // Update Panel B Data
     setStep06([]);
     setArticleAboutContent('');
     setArticleAboutPage('');
@@ -161,10 +454,149 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
 
     setSelectedSubthemes([0]);
 
-    //delete the metadata
-    setJournalMetadata(null);
+    formik.setFieldValue('article_title', metadataObj.title);
+    formik.setFieldValue('authors', metadataObj.author);
+    formik.setFieldValue('journal_name', metadataObj.journal);
+    formik.setFieldValue('location', metadataObj.location);
+    formik.setFieldValue('doi', metadataObj.doi);
+    formik.setFieldValue('year', metadataObj.year);
+    formik.setFieldValue('volume', metadataObj.volume);
+    formik.setFieldValue('issue', metadataObj.issue);
+    formik.setFieldValue('page', metadataObj.page);
+    formik.setFieldValue('step06', metadataObj.step06);
+    formik.setFieldValue('article_about_content', '');
+    formik.setFieldValue('article_about_page', '');
+    formik.setFieldValue('article_support_study_content', '');
+    formik.setFieldValue('article_support_study_page', '');
   };
 
+  {
+    /* for interaction, button insert template  */
+  }
+  const handleInsertTemplate = (authorString: string, year: string) => {
+    setPanelBLoading(true); // Start loading animation
+
+    // Fetch metadata if not available and then proceed
+    if (!journalMetadata) {
+      fetchMetadata(doi).then((fetchedMetadata) => {
+        continueWithTemplateInsertion(fetchedMetadata, authorString, year);
+      });
+    } else {
+      continueWithTemplateInsertion(journalMetadata, authorString, year);
+    }
+  };
+
+  const fetchMetadata = async (doi: string) => {
+    const url = `${URL_LINKS.FETCH_METADATA.value}`;
+    try {
+      const response = await axios.post(url, { doi });
+      if (response.data.status === 'success') {
+        return response.data.data;
+      }
+    } catch (error) {
+      console.error('Error fetching metadata:', error);
+      showWarn('Error fetching metadata');
+    }
+    return null;
+  };
+
+  const continueWithTemplateInsertion = (
+    metadata: any[],
+    authorString: string,
+    year: string,
+  ) => {
+    // Process metadata and generate citation strings
+    const { citationStrings, metadataAuthor, metadataYear } = processMetadata(
+      metadata,
+      authorString,
+      year,
+    );
+
+    if (!metadataAuthor || !metadataYear) {
+      showWarn('Author and year are required from metadata.');
+      setPanelBLoading(false); // Stop loading animation
+      return;
+    }
+    setTimeout(() => {
+      // Sequentially set new content with delays
+      setArticleAboutContent(citationStrings[0]);
+      setTimeout(() => setArticleSupportStudyContent(citationStrings[1]), 1000);
+      setArticleDoesNotSupportStudyContent(citationStrings[2]);
+
+      setNeededSupportStudyContent(citationStrings[3]);
+
+      formikManipulation('onTemplate', [], citationStrings);
+
+      setPanelBLoading(false); // Stop loading animation
+      showInfo('Template inserted successfully');
+    }, 3000);
+  };
+
+  const processMetadata = (metadata: any[], authorString: any, year: any) => {
+    const metadataObj = metadata.reduce(
+      (obj, item) => ({ ...obj, [item.category.toLowerCase()]: item.data }),
+      {},
+    );
+    const metadataAuthor = authorString || metadataObj.authors;
+    const metadataYear = year || metadataObj.year;
+
+    const authorsObj = parseAuthors(metadataAuthor);
+    const inTextCitation = generateInTextCitation(
+      authorsObj,
+      parseInt(metadataYear),
+    );
+
+    const citationStrings = [
+      `${inTextCitation} states that`,
+      `${inTextCitation} highlighted on`,
+      `However ${inTextCitation} only focused on`,
+      `Therefore based on ${inTextCitation} my study will focus on`,
+    ];
+
+    return { citationStrings, metadataAuthor, metadataYear };
+  };
+
+  const setFormikValueOnTemplate = (citationStrings: string[]) => {
+    formik.setFieldValue('article_about_content', citationStrings[0]);
+    formik.setFieldValue('article_support_study_content', citationStrings[1]);
+    formik.setFieldValue(
+      'article_does_not_support_study_content',
+      citationStrings[2],
+    );
+    formik.setFieldValue('needed_support_study_content', citationStrings[3]);
+  };
+
+  {
+    /* for interaction, button insert template  */
+  }
+
+  //--------------- handle metadata ----------------------------
+  const ProcessUseMetadata = (doi: string) => {
+    // Start loading animations for both panels
+    setPanelALoading(true);
+    setPanelBLoading(true);
+
+    if (!journalMetadata) {
+      //load metadata back
+      //get metadata
+      const url = `${URL_LINKS.FETCH_METADATA.value}`;
+      axios.post(url, { doi: doi }).then((response) => {
+        if (response.data.status === 'success') {
+          // Ensure the data structure of response is as expected
+          let data = response.data.data;
+
+          // Instead of calling confirmDialog directly, set state here
+          setJournalMetadata(data);
+        }
+      });
+    }
+
+    setTimeout(() => {
+      formikManipulation('onMetadata', [], journalMetadata);
+      setPanelALoading(false);
+      setPanelBLoading(false);
+    }, 3000); // 3000 milliseconds = 3 seconds
+  };
   const retrieveAbstract = (doi: string, provider: string) => {
     const url = `${URL_LINKS.FETCH_ABSTRACT.value}`;
     setPanelVisible(true);
@@ -176,12 +608,6 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
         keyidentifier: provider,
       })
       .then((response) => {
-        //check if response status 200
-
-        console.log('--- response --');
-        console.log(response);
-        console.log('--- response --');
-
         if (response.status === 200) {
           //data.abstract
           setPanelAbstractData(response.data.data.abstract);
@@ -255,6 +681,8 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     setNeededSupportStudyContent('');
 
     setSelectedSubthemes([0]);
+
+    formikManipulation('onClear', [], null);
     setLoading(false);
   };
 
@@ -267,6 +695,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       .then((response) => {
         const data = response.data;
 
+        // Update Panel A Data
         setArticleTitle(data.data.journal.article_title);
         setArticleTitleInitial(data.data.journal.article_title);
         setAuthors(data.data.journal.author);
@@ -285,6 +714,11 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
         setIssueInitial(data.data.journal.issue);
         setPage(data.data.journal.page);
         setPageInitial(data.data.journal.page);
+
+        // Update Panel B Data
+        // (your existing code to update Panel B data)
+
+        // below is panel B
         setArticleAboutContent(data.data.journal.article_about.content);
         setArticleAboutContentInitial(data.data.journal.article_about.content);
         setArticleAboutPage(data.data.journal.article_about.page);
@@ -335,25 +769,64 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
           data.data.journal_color.article_dontsupport_study_color,
         );
         setNeededSupportStudyColor(data.data.journal_color.your_pod_color);
+
+        formikManipulation('onLoad', [], null);
       })
       .catch((error: any) => {
         console.error('Error fetching data:', error);
       })
       .finally(() => {
         setLoading(false);
+        // Remove the redundant timeout logic for Panel B
+        setPanelAVisible(true);
+        //wait for 3 seconds
+        setPanelALoading(true);
+
+        setTimeout(() => {
+          setPanelALoading(false);
+        }, 3000); // 3000 milliseconds = 3 seconds
+
+        setPanelBVisible(true);
+        setPanelBLoading(true);
+        setTimeout(() => {
+          setPanelBLoading(false);
+        }, 3000); // 3000 milliseconds = 3 seconds
       });
   };
 
   useEffect(() => {
-    if (!visible) return;
+    console.log('--useEffect--');
 
-    if (chooseMetadata && journalMetadata) {
-      ProcessUseMetadata();
+    console.log('-- in useEffect ####################################### --');
+
+    console.log(article_about_content);
+    console.log(article_about_page);
+    console.log(article_support_study_content);
+    console.log(article_support_study_page);
+    console.log(article_does_not_support_study_content);
+    console.log(needed_support_study_content);
+
+    console.log('-- in useEffect ####################################### --');
+
+    if (!visible) return;
+    if (chooseMetadata) {
+      ProcessUseMetadata(doi);
     } else {
       loadData();
     }
-  }, [visible, projectId, journalId, userId, chooseMetadata]); // Add dependencies here
+  }, [visible, projectId, journalId, userId]); // Add dependencies here
+  console.log('--return--');
 
+  console.log('-- in  ####################################### --');
+
+  console.log(article_about_content);
+  console.log(article_about_page);
+  console.log(article_support_study_content);
+  console.log(article_support_study_page);
+  console.log(article_does_not_support_study_content);
+  console.log(needed_support_study_content);
+
+  console.log('-- in  ####################################### --');
   return (
     <div className='card flex'>
       {loading ? (
@@ -379,46 +852,23 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
           maximizable={true}
         >
           <JournalDetailsComponent
-            journalId={journalId}
-            projectId={projectId}
             userId={userId}
-            article_title={article_title}
-            authors={authors}
-            journal_name={journal_name}
-            location={location}
-            doi={doi}
-            year={year}
-            volume={volume}
-            issue={issue}
-            page={page}
-            step06={step06}
-            article_about_content={article_about_content}
-            article_about_page={article_about_page}
-            article_support_study_content={article_support_study_content}
-            article_support_study_page={article_support_study_page}
-            article_does_not_support_study_content={
-              article_does_not_support_study_content
-            }
-            needed_support_study_content={needed_support_study_content}
+            formik={formik}
+            getFormErrorMessage={getFormErrorMessage}
+            isFormFieldInvalid={isFormFieldInvalid}
             authorPodColor={authorPodColor}
             articleSupportStudyColor={articleSupportStudyColor}
             articleDoesNotSupportStudyColor={articleDoesNotSupportStudyColor}
             neededSupportStudyColor={neededSupportStudyColor}
             subthemeSelections={subthemeSelections}
-            selected={selectedSubthemes}
-            onSave={onSave}
-            showSuccess={showSuccess}
+            selected={selected}
             showWarn={showWarn}
-            showError={showError}
-            showInfo={showInfo}
             setVisible={setVisible}
             setLoading={setLoading}
             resetAllDataInFields={resetAllDataInFields}
             resetAllDataInFieldsToInitial={resetAllDataInFieldsToInitial}
             retrieveVideo={retrieveVideo}
             videoData={videoData}
-            setPanelVisible={setPanelVisible}
-            setPanelAbstractLoading={setPanelAbstractLoading}
             panelAbstractData={panelAbstractData}
             panelVisible={panelVisible}
             panelAbstractLoading={panelAbstractLoading}
@@ -428,6 +878,13 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             isConfirmDialogVisible={isConfirmDialogVisible}
             setIsConfirmDialogVisible={setIsConfirmDialogVisible}
             setChooseMetadata={setChooseMetadata}
+            insertTemplate={insertTemplate}
+            panelBVisible={panelBVisible}
+            panelBLoading={panelBLoading}
+            panelAVisible={panelAVisible}
+            panelALoading={panelALoading}
+            setPanelALoading={setPanelALoading}
+            ProcessUseMetadata={ProcessUseMetadata}
           />
         </Dialog>
       )}

@@ -1,136 +1,100 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
+import { CheckboxChangeEvent } from 'primereact/checkbox';
 import { Divider } from 'primereact/divider';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Card } from 'primereact/card';
-import { useFormik } from 'formik';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { classNames } from 'primereact/utils';
-import { Dialog } from 'primereact/dialog';
-import { MenuItem } from 'primereact/menuitem';
-import { SplitButton } from 'primereact/splitbutton';
+import { Skeleton } from 'primereact/skeleton';
 import JournalDetailCheckboxesComponent from './JournalDetailCheckboxesComponent';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { DropdownChangeEvent } from 'primereact/dropdown';
 import VideoModal from '../Modal/VideoModal';
 import PanelAbstractData from '../Panel/PanelAbstractData';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import axios from 'axios';
 import URL_LINKS from '../../../constants/urls';
 import ContentDataTable from '../Modal/ContentDataTable';
+import PanelA from '../Modal/PanelA';
 interface Subtheme {
   name: string;
   key: string;
 }
 
 interface JournalDetailsComponentProps {
-  journalId: string;
-  projectId: string;
   userId: string;
-  article_title: string;
-  authors: string;
-  journal_name: string;
-  location: string;
-  doi: string;
-  year: string;
-  volume: string;
-  issue: string;
-  page: string;
-  step06: [];
-  article_about_content: string;
-  article_about_page: string;
-  article_support_study_content: string;
-  article_support_study_page: string;
-  article_does_not_support_study_content: string;
-  needed_support_study_content: string;
+  formik: any;
+  getFormErrorMessage: (name: any) => JSX.Element | null;
+  isFormFieldInvalid: (name: any) => boolean;
   authorPodColor: string;
   articleSupportStudyColor: string;
   articleDoesNotSupportStudyColor: string;
   neededSupportStudyColor: string;
-  subthemeSelections: Subtheme[];
+  subthemeSelections: [];
   selected: any[];
-  onSave: (journalId: string, projectId: string, journal: any) => void;
-  onRemove: (journalId: string, projectId: string, rqConstruct: string) => void;
-  showSuccess: (message: string) => void;
   showWarn: (message: string) => void;
-  showError: (message: string) => void;
-  showInfo: (message: string) => void;
   setVisible: (visible: boolean) => void;
   setLoading: (loading: boolean) => void;
   resetAllDataInFields: () => void;
   resetAllDataInFieldsToInitial: () => void;
-  retrieveVideo: (key: string, userId: string) => any | null;
+  retrieveVideo: (key: string, userId: string) => any;
   videoData: any;
-  setPanelVisible: (visible: boolean) => void;
-  setPanelAbstractLoading: (loading: boolean) => void;
   panelAbstractData: string;
   panelVisible: boolean;
   panelAbstractLoading: boolean;
   retrieveAbstract: (doi: string, provider: string) => void;
-  useMetadata: () => void;
   journalMetadata: any;
   setJournalMetadata: (journalMetadata: any) => void;
   isConfirmDialogVisible: boolean;
   setIsConfirmDialogVisible: (isConfirmDialogVisible: boolean) => void;
   setChooseMetadata: (chooseMetadata: boolean) => void;
+  insertTemplate: () => void;
+  panelBVisible: boolean;
+  panelBLoading: boolean;
+  panelAVisible: boolean;
+  panelALoading: boolean;
+  setPanelALoading: (panelALoading: boolean) => void;
+  ProcessUseMetadata: (doi: string) => void;
 }
 
 const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
-  journalId,
-  projectId,
   userId,
-  article_title,
-  authors,
-  journal_name,
-  location,
-  doi,
-  year,
-  volume,
-  issue,
-  page,
-  step06,
-  article_about_content,
-  article_about_page,
-  article_support_study_content,
-  article_support_study_page,
-  article_does_not_support_study_content,
-  needed_support_study_content,
+  formik,
+  getFormErrorMessage,
+  isFormFieldInvalid,
   authorPodColor,
   articleSupportStudyColor,
   articleDoesNotSupportStudyColor,
   neededSupportStudyColor,
   subthemeSelections,
   selected,
-  onSave,
-  onRemove,
-  showSuccess,
   showWarn,
-  showError,
-  showInfo,
   setVisible,
   setLoading,
   resetAllDataInFields,
   resetAllDataInFieldsToInitial,
   retrieveVideo,
   videoData,
-  setPanelVisible,
-  setPanelAbstractLoading,
   panelAbstractData,
   panelVisible,
   panelAbstractLoading,
   retrieveAbstract,
-  useMetadata,
   journalMetadata,
   setJournalMetadata,
   isConfirmDialogVisible,
   setIsConfirmDialogVisible,
   setChooseMetadata,
+  insertTemplate,
+  panelBVisible,
+  panelBLoading,
+  panelAVisible,
+  panelALoading,
+  setPanelALoading,
+  ProcessUseMetadata,
 }): JSX.Element => {
-  interface subtheme {
+  interface Subtheme {
     name: string;
     key: string;
     construct: string;
@@ -188,33 +152,18 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
     }, {});
   };
 
-  const groupedSubthemes = groupByConstruct(subthemeSelections);
+  const confirmTemplate = () => {
+    confirmDialog({
+      message: 'Are you sure you want to proceed use template?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: insertTemplate,
+      reject: reject,
+    });
+  };
+
   useEffect(() => {
-    const formValues = {
-      article_title: article_title,
-      authors: authors,
-      journal_name: journal_name,
-      location: location,
-      doi: doi,
-      year: year,
-      volume: volume,
-      issue: issue,
-      page: page,
-      step06: step06,
-      article_about_content: article_about_content,
-      article_about_page: article_about_page,
-      article_support_study_content: article_support_study_content,
-      article_support_study_page: article_support_study_page,
-      article_does_not_support_study_content:
-        article_does_not_support_study_content,
-      needed_support_study_content: needed_support_study_content,
-    };
-    formik.resetForm({ values: formValues });
-    // Initialize selected subthemes based on the 'selected' prop
-    // const initialSelectedSubthemes = subthemeSelections.filter((_, index) =>
-    //   selected.includes(index),
-    // );
-    //filter by index and put in an array
     const initialSelectedSubthemes = subthemeSelections.filter((_, index) =>
       selected.includes(index),
     );
@@ -242,23 +191,17 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
 
     console.log('--- retrieveMetadata ---');
     let doi = formik.values.doi;
-    let provider = selectedProvider;
-
-    console.log('--- doi ---');
-    console.log(doi);
-
-    console.log('--- provider ---');
-    console.log(provider);
+    let providerSelected = selectedProvider ? selectedProvider.code : null;
 
     if (!doi) {
       showWarn('DOI is required');
     }
 
-    if (!provider) {
+    if (!providerSelected) {
       showWarn('Provider is required');
     }
 
-    retrieveAbstract(doi, provider.code);
+    retrieveAbstract(doi || '', providerSelected || '');
 
     setTimeout(() => {
       setLoadingMetadata(false);
@@ -342,144 +285,6 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
       reject: reject,
     });
   };
-  const formik = useFormik({
-    initialValues: {
-      article_title: article_title,
-      authors: authors,
-      journal_name: journal_name,
-      location: location,
-      doi: doi,
-      year: year,
-      volume: volume,
-      issue: issue,
-      page: page,
-      step06: step06,
-      article_about_content: article_about_content,
-      article_about_page: article_about_page,
-      article_support_study_content: article_support_study_content,
-      article_support_study_page: article_support_study_page,
-      article_does_not_support_study_content:
-        article_does_not_support_study_content,
-      needed_support_study_content: needed_support_study_content,
-    },
-    validate: (values) => {
-      const errors: any = {};
-      // Add validation logic here
-
-      //doi is optional but if has value need to check if doi exists
-      if (values.doi && values.doi !== '') {
-        let existsDoi: any;
-        //1 check if doi exists
-        // existsDoi = checkDOI(values.doi);
-        // console.log('exists ==============', existsDoi);
-        // if (!existsDoi) {
-        //   errors.value = 'DOI does not exist';
-        // }
-
-        return true;
-      }
-
-      //authors is required
-      if (!values.authors) {
-        errors.authors = 'Authors Name Required';
-      }
-
-      // Authors name can only be separated by commas
-      if (values.authors) {
-        const authorsArray = values.authors
-          .split(',')
-          .map((author: string) => author.trim());
-        const invalidAuthors = authorsArray.filter(
-          (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors),
-        );
-
-        if (invalidAuthors.length > 0) {
-          errors.authors =
-            'Authors Name Cannot be separated by characters other than comma';
-        }
-      }
-      //article_title is required
-      if (!values.article_title) {
-        errors.article_title = 'Article Title Required';
-      }
-
-      //year is required
-      if (!values.year) {
-        errors.year = 'Year Required';
-      }
-
-      //validate year is number format YYYY
-      if (values.year) {
-        const year = values.year;
-        if (!year.match(/^\d{4}$/)) {
-          errors.year = 'Year must be in YYYY format';
-        }
-      }
-
-      // YEAR must be between - the year internet existed and current year
-      if (values.year) {
-        const year = Number(values.year);
-        const currentYear = new Date().getFullYear();
-        if (year < 1990 || year > currentYear) {
-          errors.year = 'Year must be between 1990 and current year';
-        }
-      }
-
-      if (!values.step06) {
-        errors.step06 = 'This is required.';
-      }
-
-      // Add other validation rules as needed
-      return errors;
-    },
-    onSubmit: (values) => {
-      (toast.current as Toast | null)?.show({
-        severity: 'success',
-        summary: 'Form Submitted',
-        detail: 'Data Submitted',
-      });
-      formik.resetForm();
-    },
-  });
-  const checkDOI = async (doi: string): Promise<boolean> => {
-    const url = `https://doi.org/${doi}`;
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-
-      console.log('----------- status --------------');
-      console.log(response.status);
-      console.log('----------- status --------------');
-
-      //if fetch failed return false
-      if (!response.ok) {
-        return false;
-      }
-      //if redirect return false
-      if (response.redirected) {
-        return false;
-      }
-
-      if (response.status === 404) {
-        return false;
-      } else if (response.status === 200) {
-        return true;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      return false;
-    }
-  };
-  const isFormFieldInvalid = (name: any) =>
-    !!(
-      formik.touched[name as keyof typeof formik.touched] &&
-      formik.errors[name as keyof typeof formik.errors]
-    );
-
-  const getFormErrorMessage = (name: any) => {
-    return isFormFieldInvalid(name) ? (
-      <small className='p-error'>{formik.errors[name]}</small>
-    ) : null;
-  };
 
   return (
     <>
@@ -491,10 +296,13 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
           content={
             journalMetadata && (
               <ContentDataTable
+                doi={formik.values.doi}
                 journalMetadata={journalMetadata}
                 setChooseMetadata={setChooseMetadata}
-                setLoading={setLoading}
                 setIsConfirmDialogVisible={setIsConfirmDialogVisible}
+                panelALoading={panelALoading}
+                setPanelALoading={setPanelALoading}
+                ProcessUseMetadata={ProcessUseMetadata}
               />
             )
           }
@@ -509,207 +317,27 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
         />
         {/* Repeat the following pattern for each field */}
 
-        {/** button set start */}
-        <div className='card flex flex-wrap gap-3'>
-          <Button
-            label='Video'
-            severity='info'
-            icon='pi pi-video'
-            onClick={() => callVideo(event)}
-          />
-          <Button
-            label='Retrieve Abstract'
-            icon='pi pi-check'
-            loading={loadingMetadata}
-            onClick={retrieveAbstractData}
-            severity='success'
-          />
-          <div className='card flex justify-content-center'>
-            <Dropdown
-              value={selectedProvider}
-              onChange={handleDropDown}
-              options={providerSelection}
-              optionLabel='name'
-              placeholder='Select a Provider'
-              className='w-full md:w-14rem'
-            />
-          </div>
-        </div>
-        {/** button set end */}
-        <span className='p-float-label'>
-          <InputText
-            id='doi'
-            name='doi'
-            value={formik.values.doi}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('doi'),
-            })}
-          />
-          <label htmlFor='doi'>DOI</label>{' '}
-          <Button
-            type='button'
-            label='Retrieve Metadata'
-            onClick={() => confirmDialogMetadata()}
-            severity='danger'
-          />
-        </span>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='authors'>Authors</label>
-          <InputText
-            id='authors'
-            aria-describedby='authors-help'
-            value={formik.values.authors}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('authors', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('article_title'),
-            })}
-          />
-          {getFormErrorMessage('authors')}
-
-          <small id='username-help'>Enter article authors.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='article_title'>Article Title</label>
-          <InputText
-            id='article_title'
-            aria-describedby='article_title-help'
-            value={formik.values.article_title}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('article_title', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('article_title'),
-            })}
-          />
-          {getFormErrorMessage('article_title')}
-
-          <small id='username-help'>Enter article title.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='year'>Article Published Year</label>
-          <InputText
-            id='year'
-            aria-describedby='year-help'
-            value={formik.values.year}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('year', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('year'),
-            })}
-          />
-          {getFormErrorMessage('year')}
-
-          <small id='year-help'>Enter article published year.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='journal_name'>Journal Name</label>
-          <InputText
-            id='journal_name'
-            aria-describedby='journal_name-help'
-            value={formik.values.journal_name}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('journal_name', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('journal_name'),
-            })}
-          />
-          {getFormErrorMessage('journal_name')}
-
-          <small id='year-help'>Enter Journal Name.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='location'>Journal location</label>
-          <InputText
-            id='location'
-            aria-describedby='location-help'
-            value={formik.values.location}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('location', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('location'),
-            })}
-          />
-          {getFormErrorMessage('location')}
-
-          <small id='year-help'>Enter Journal Location.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='volume'>Volume</label>
-          <InputText
-            id='volume'
-            aria-describedby='volume-help'
-            value={formik.values.volume}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('volume', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('volume'),
-            })}
-          />
-          {getFormErrorMessage('volume')}
-
-          <small id='volume-help'>Enter Journal Volume.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='issue'>Issue</label>
-          <InputText
-            id='issue'
-            aria-describedby='issue-help'
-            value={formik.values.issue}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('issue', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('issue'),
-            })}
-          />
-          {getFormErrorMessage('issue')}
-
-          <small id='issue-help'>Enter Journal Issue.</small>
-        </div>
-
-        <div className='flex flex-column gap-2'>
-          <label htmlFor='pages'>Pages</label>
-          <InputText
-            id='pages'
-            aria-describedby='issue-pages'
-            value={formik.values.page}
-            onBlur={formik.handleBlur}
-            onChange={(e) => {
-              formik.setFieldValue('pages', e.target.value);
-            }}
-            className={classNames({
-              'p-invalid': isFormFieldInvalid('pages'),
-            })}
-          />
-          {getFormErrorMessage('pages')}
-
-          <small id='issue-help'>Enter Journal Pages.</small>
-        </div>
-        <div className='card flex flex-wrap justify-content-left gap-4'>
-          <Button label='Insert Template' severity='info' />
-        </div>
+        {/*
+        panel A start
+        */}
+        <PanelA
+          formik={formik}
+          loadingMetadata={loadingMetadata}
+          retrieveAbstractData={retrieveAbstractData}
+          selectedProvider={selectedProvider}
+          providerSelection={providerSelection}
+          confirmDialogMetadata={confirmDialogMetadata}
+          panelALoading={panelALoading}
+          panelAVisible={panelAVisible}
+          getFormErrorMessage={getFormErrorMessage}
+          isFormFieldInvalid={isFormFieldInvalid}
+          callVideo={callVideo}
+          handleDropDown={handleDropDown}
+          confirmTemplate={confirmTemplate}
+        />
+        {/*
+        panel A end
+        */}
         <Divider />
         <PanelAbstractData
           panelVisible={panelVisible}
@@ -720,100 +348,129 @@ const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
 
         <Splitter style={{ height: '600px' }}>
           <SplitterPanel className='flex flex-column' size={60} minSize={60}>
-            <label htmlFor='description'>
-              What is the article about and authors's point of departure ?
-            </label>
+            {panelBLoading && panelBVisible ? (
+              <Skeleton shape='rectangle' width='100%' height='100px' />
+            ) : (
+              <>
+                <label htmlFor='description'>
+                  What is the article about and authors's point of departure ?
+                </label>
+                <InputTextarea
+                  id='article_about_content'
+                  name='article_about_content'
+                  rows={4}
+                  cols={30}
+                  style={{ color: authorPodColor, borderColor: authorPodColor }}
+                  className={classNames({
+                    'p-invalid': isFormFieldInvalid('article_about_content'),
+                  })}
+                  value={formik.values.article_about_content}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'article_about_content',
+                      e.target.value,
+                    );
+                  }}
+                />
+                {getFormErrorMessage('article_about_content')}{' '}
+              </>
+            )}
+            {panelBLoading && panelBVisible ? (
+              <Skeleton shape='rectangle' width='100%' height='100px' />
+            ) : (
+              <>
+                <label htmlFor='description'>
+                  How the article support your study ?
+                </label>
 
-            <InputTextarea
-              id='article_about_content'
-              name='article_about_content'
-              rows={4}
-              cols={30}
-              style={{ color: authorPodColor, borderColor: authorPodColor }}
-              className={classNames({
-                'p-invalid': isFormFieldInvalid('article_about_content'),
-              })}
-              value={formik.values.article_about_content}
-              onChange={(e) => {
-                formik.setFieldValue('article_about_content', e.target.value);
-              }}
-            />
-            {getFormErrorMessage('article_about_content')}
-            <label htmlFor='description'>
-              How the article support your study ?
-            </label>
+                <InputTextarea
+                  id='article_support_study_content'
+                  name='article_support_study_content'
+                  rows={4}
+                  cols={30}
+                  className={classNames({
+                    'p-invalid': isFormFieldInvalid('article_about_content'),
+                  })}
+                  value={formik.values.article_about_content}
+                  style={{
+                    color: articleSupportStudyColor,
+                    borderColor: articleSupportStudyColor,
+                  }}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'article_support_study_content',
+                      e.target.value,
+                    );
+                  }}
+                />
+                {getFormErrorMessage('article_support_study_content')}
+              </>
+            )}
 
-            <InputTextarea
-              id='article_support_study_content'
-              name='article_support_study_content'
-              rows={4}
-              cols={30}
-              className={classNames({
-                'p-invalid': isFormFieldInvalid('article_about_content'),
-              })}
-              value={formik.values.article_about_content}
-              style={{
-                color: articleSupportStudyColor,
-                borderColor: articleSupportStudyColor,
-              }}
-              onChange={(e) => {
-                formik.setFieldValue(
-                  'article_support_study_content',
-                  e.target.value,
-                );
-              }}
-            />
-            {getFormErrorMessage('article_support_study_content')}
-            <label htmlFor='description'>
-              How the article does not support your study ?
-            </label>
-            <InputTextarea
-              id='article_does_not_support_study_content'
-              name='article_does_not_support_study_content'
-              rows={4}
-              cols={30}
-              style={{
-                color: articleDoesNotSupportStudyColor,
-                borderColor: articleDoesNotSupportStudyColor,
-              }}
-              className={classNames({
-                'p-invalid': isFormFieldInvalid(
-                  'article_does_not_support_study_content',
-                ),
-              })}
-              value={formik.values.article_does_not_support_study_content}
-              onChange={(e) => {
-                formik.setFieldValue(
-                  'article_does_not_support_study_content',
-                  e.target.value,
-                );
-              }}
-            />
-            {getFormErrorMessage('article_does_not_support_study_content')}
-            <label htmlFor='description'>
-              What else is needed to support your study ? (Your POD)
-            </label>
-            <InputTextarea
-              id='needed_support_study_content'
-              name='needed_support_study_content'
-              rows={4}
-              cols={30}
-              style={{
-                color: neededSupportStudyColor,
-                borderColor: neededSupportStudyColor,
-              }}
-              className={classNames({
-                'p-invalid': isFormFieldInvalid('needed_support_study_content'),
-              })}
-              value={formik.values.needed_support_study_content}
-              onChange={(e) => {
-                formik.setFieldValue(
-                  'needed_support_study_content',
-                  e.target.value,
-                );
-              }}
-            />
-            {getFormErrorMessage('needed_support_study_content')}
+            {panelBLoading && panelBVisible ? (
+              <Skeleton shape='rectangle' width='100%' height='100px' />
+            ) : (
+              <>
+                <label htmlFor='description'>
+                  How the article does not support your study ?
+                </label>
+                <InputTextarea
+                  id='article_does_not_support_study_content'
+                  name='article_does_not_support_study_content'
+                  rows={4}
+                  cols={30}
+                  style={{
+                    color: articleDoesNotSupportStudyColor,
+                    borderColor: articleDoesNotSupportStudyColor,
+                  }}
+                  className={classNames({
+                    'p-invalid': isFormFieldInvalid(
+                      'article_does_not_support_study_content',
+                    ),
+                  })}
+                  value={formik.values.article_does_not_support_study_content}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'article_does_not_support_study_content',
+                      e.target.value,
+                    );
+                  }}
+                />
+                {getFormErrorMessage('article_does_not_support_study_content')}
+              </>
+            )}
+            {panelBLoading && panelBVisible ? (
+              <Skeleton shape='rectangle' width='100%' height='100px' />
+            ) : (
+              <>
+                <label htmlFor='description'>
+                  What else is needed to support your study ? (Your POD)
+                </label>
+                <InputTextarea
+                  id='needed_support_study_content'
+                  name='needed_support_study_content'
+                  rows={4}
+                  cols={30}
+                  style={{
+                    color: neededSupportStudyColor,
+                    borderColor: neededSupportStudyColor,
+                  }}
+                  className={classNames({
+                    'p-invalid': isFormFieldInvalid(
+                      'needed_support_study_content',
+                    ),
+                  })}
+                  value={formik.values.needed_support_study_content}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'needed_support_study_content',
+                      e.target.value,
+                    );
+                  }}
+                />
+                {getFormErrorMessage('needed_support_study_content')}
+              </>
+            )}
           </SplitterPanel>
           <SplitterPanel
             className='flex justify-content-left'
