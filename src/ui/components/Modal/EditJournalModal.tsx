@@ -23,16 +23,12 @@ interface EditJournalModalProps {
 }
 
 const EditJournalModal: React.FC<EditJournalModalProps> = ({
-  label,
-  icon,
   visible,
-  onHide,
   setVisible,
   journalId,
   projectId,
   userId,
   onSave,
-  onRemove,
   showSuccess,
   showWarn,
   showError,
@@ -76,6 +72,16 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     Subtheme[]
   >([]);
 
+  {
+    // -- for metadata modal and visibility
+  }
+  const [journalMetadata, setJournalMetadata] = useState(null);
+  const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+  const [chooseMetadata, setChooseMetadata] = useState(false);
+
+  {
+    // -- for metadata modal and visibility
+  }
   const [article_title, setArticleTitle] = useState('');
   const [authors, setAuthors] = useState('');
   const [journal_name, setJournalName] = useState('');
@@ -117,26 +123,17 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   {
     /* for panel abstract  */
   }
-
-  // metadata
-
-  // const [loadingMetadataData, setLoadingMetadataData] =
-  //   useState<boolean>(false);
-  // const [modalMetadataVisible, setModalMetadataVisible] =
-  //   useState<boolean>(false);
-  // const [metadata, setMetadata] = useState<any>(null);
-
   //--------------- handle metadata ----------------------------
-  const useMetadata = (metadata) => {
-    if (!metadata || metadata.length === 0) {
+  const ProcessUseMetadata = () => {
+    //need to force rerender
+
+    if (!journalMetadata || (journalMetadata as any[]).length === 0) {
       showWarn('No metadata to use. Please retrieve metadata first.');
       return;
     }
 
-    setLoading(true);
-
     // Map the metadata array to an object for easier access
-    const metadataObj = metadata.reduce(
+    const metadataObj = (journalMetadata as any[]).reduce(
       (obj: { [x: string]: any }, item: { category: string; data: any }) => {
         obj[item.category.toLowerCase()] = item.data; // Use lowercase for keys
         return obj;
@@ -144,59 +141,32 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       {},
     );
 
-    // Now use the metadataObj to set your state values
-
-    console.log('metadataObj', metadataObj);
-    console.log(metadataObj['title']);
-
-    setArticleTitle(metadataObj.title || '');
-    setAuthors(metadataObj.authors || '');
-    setJournalName(metadataObj.journal || '');
-    setLocation(metadataObj.location || ''); // Assuming 'location' is a category in your metadata
+    setArticleTitle(metadataObj['title']);
+    setAuthors(metadataObj['authors']);
+    setJournalName(metadataObj['journal']);
+    setLocation(metadataObj['location']); // Assuming 'location' is a category in your metadata
     setDoi(metadataObj.url ? metadataObj['url'].split('doi.org/')[1] : ''); // Extract DOI from URL
     setYear(metadataObj.year ? metadataObj['year'].toString() : ''); // Convert year to string if it exists
-    setVolume(metadataObj.volume || '');
-    setIssue(metadataObj.issue || '');
-    setPage(metadataObj.page || '');
+    setVolume(metadataObj['volume']);
+    setIssue(metadataObj['issue']);
+    setPage(metadataObj['page']);
 
-    setLoading(false);
-    //setModalMetadataVisible(false);
+    setStep06([]);
+    setArticleAboutContent('');
+    setArticleAboutPage('');
+    setArticleSupportStudyContent('');
+    setArticleSupportStudyPage('');
+    setArticleDoesNotSupportStudyContent('');
+    setNeededSupportStudyContent('');
+
+    setSelectedSubthemes([0]);
+
+    //delete the metadata
+    setJournalMetadata(null);
   };
-  //----------------- handle metadata --------------------------
-
-  // const retrieveMetadata = (doi: string) => {
-  //   if (!doi) {
-  //     showWarn('Please enter doi');
-  //     setLoadingMetadataData(false);
-  //     // No need to set modal visibility here since there's no DOI
-  //     return;
-  //   } else {
-  //     // Check if metadata is already loaded
-  //     //set metadata back to null
-  //     setMetadata(null);
-  //     setModalMetadataVisible(true); // Only set modal visible when metadata is null
-  //     setLoadingMetadataData(true);
-
-  //     const url = `${URL_LINKS.FETCH_METADATA.value}`;
-  //     axios
-  //       .post(url, { doi: doi })
-  //       .then((response) => {
-  //         setMetadata(response.data.data);
-  //         setLoadingMetadataData(false);
-  //       })
-  //       .catch((error: any) => {
-  //         console.error('Error fetching data:', error);
-  //         showWarn('Error fetching metadata');
-  //         setLoadingMetadataData(false);
-  //         setModalMetadataVisible(false);
-  //       });
-
-  //     // If metadata is not null, consider whether you need to update it or handle it differently
-  //   }
-  // };
 
   const retrieveAbstract = (doi: string, provider: string) => {
-    const url = `${URL_LINKS.FETCH_ABSTRACT.value}${doi}/${provider}`;
+    const url = `${URL_LINKS.FETCH_ABSTRACT.value}`;
     setPanelVisible(true);
     setPanelAbstractLoading(true);
 
@@ -207,8 +177,14 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       })
       .then((response) => {
         //check if response status 200
+
+        console.log('--- response --');
+        console.log(response);
+        console.log('--- response --');
+
         if (response.status === 200) {
-          setPanelAbstractData(response.data.data);
+          //data.abstract
+          setPanelAbstractData(response.data.data.abstract);
         } else {
           showWarn('Error fetching abstract');
         }
@@ -282,9 +258,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (!visible) return;
-
+  const loadData = () => {
     setLoading(true);
     const urlFetchJournal = `${URL_LINKS.GET_EDIT_JOURNAL_DATA.value}${projectId}/${journalId}/${userId}`;
 
@@ -368,7 +342,17 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       .finally(() => {
         setLoading(false);
       });
-  }, [visible, projectId, journalId, userId]); // Add dependencies here
+  };
+
+  useEffect(() => {
+    if (!visible) return;
+
+    if (chooseMetadata && journalMetadata) {
+      ProcessUseMetadata();
+    } else {
+      loadData();
+    }
+  }, [visible, projectId, journalId, userId, chooseMetadata]); // Add dependencies here
 
   return (
     <div className='card flex'>
@@ -439,7 +423,11 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             panelVisible={panelVisible}
             panelAbstractLoading={panelAbstractLoading}
             retrieveAbstract={retrieveAbstract}
-            useMetadata={useMetadata}
+            journalMetadata={journalMetadata}
+            setJournalMetadata={setJournalMetadata}
+            isConfirmDialogVisible={isConfirmDialogVisible}
+            setIsConfirmDialogVisible={setIsConfirmDialogVisible}
+            setChooseMetadata={setChooseMetadata}
           />
         </Dialog>
       )}
