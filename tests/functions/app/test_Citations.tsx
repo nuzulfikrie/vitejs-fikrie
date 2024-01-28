@@ -1,7 +1,14 @@
+/**
+ * author @nuzulfikrie
+ * date 2021-02-28
+ * description test cases for functions/app/Citations.tsx
+ *
+ */
+
 import {
   generateInTextCitation,
   parseAuthors,
-} from '../../../src/functions/app/Citations';
+} from '../../functions/app/Citations';
 
 describe('generateInTextCitation', () => {
   it('should return empty string if no authors provided', () => {
