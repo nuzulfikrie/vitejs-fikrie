@@ -56,6 +56,8 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
   showInfo,
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [journalData, setJournalData] = useState<any>(null);
+  const [journalDataInitial, setJournalDataInitial] = useState<any>(null);
   const [videoData, setVideoData] = useState<any>(null);
 
   const [articleTitleInitial, setArticleTitleInitial] = useState('');
@@ -134,24 +136,28 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
 
   //##################################################################################
   const formik = useFormik({
+
     initialValues: {
-      article_title: '',
-      authors: '',
-      journal_name: '',
-      location: '',
-      doi: '',
-      year: '',
-      volume: '',
-      issue: '',
-      page: '',
-      step06: '',
-      article_about_content: '',
-      article_about_page: '',
-      article_support_study_content: '',
-      article_support_study_page: '',
-      article_does_not_support_study_content: '',
-      needed_support_study_content: '',
+      article_title: article_title,
+      authors: authors,
+      journal_name: journal_name,
+      location: location,
+      doi: doi,
+      year: year,
+      volume: volume,
+      issue: issue,
+      page: page,
+      step06: step06,
+      article_about_content: article_about_content,
+      article_about_page: article_about_page,
+      article_support_study_content: article_support_study_content,
+      article_support_study_page: article_support_study_page,
+      article_does_not_support_study_content: article_does_not_support_study_content,
+      needed_support_study_content: needed_support_study_content,
     },
+
+
+
     validate: (values) => {
       const errors: any = {};
       // Add validation logic here
@@ -201,7 +207,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       //validate year is number format YYYY
       if (values.year) {
         const year = values.year;
-        if (!year.match(/^\d{4}$/)) {
+        if (!/^\d{4}$/.test(year)) {
           errors.year = 'Year must be in YYYY format';
         }
       }
@@ -219,10 +225,42 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
         errors.step06 = 'This is required.';
       }
 
+      if (!values.article_about_content) {
+        errors.article_about_content = 'This is required.';
+      }
+
+      if (!values.article_about_page) {
+        errors.article_about_page = 'This is required.';
+      }
+
+      if (!values.article_support_study_content) {
+        errors.article_support_study_content = 'This is required.';
+      }
+
+      if (!values.article_support_study_page) {
+        errors.article_support_study_page = 'This is required.';
+      }
+
+      if (!values.article_does_not_support_study_content) {
+        errors.article_does_not_support_study_content = 'This is required.';
+      }
+
+      if (!values.needed_support_study_content) {
+        errors.needed_support_study_content = 'This is required.';
+      }
+
+
+
       // Add other validation rules as needed
       return errors;
     },
     onSubmit: (values) => {
+
+      console.log('---- values submit ---');
+
+      console.log(values);
+      console.log('---- values submit ---');
+
       formik.resetForm();
     },
   });
@@ -231,10 +269,6 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     const url = `https://doi.org/${doi}`;
     try {
       const response = await fetch(url, { method: 'HEAD' });
-
-      console.log('----------- status --------------');
-      console.log(response.status);
-      console.log('----------- status --------------');
 
       //if fetch failed return false
       if (!response.ok) {
@@ -267,6 +301,12 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     ) : null;
   };
   //##################################################################################
+
+  const refreshFormContent = () => {
+
+    loadData();
+    //trigger formik reload
+  };
 
   const formikManipulation = (
     conditions: string,
@@ -325,45 +365,45 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
    * @returns void
    */
   const setFormikValueOnLoad = () => {
-    formik.setFieldValue('article_title', article_title);
-    formik.setFieldValue('authors', authors);
-    formik.setFieldValue('journal_name', journal_name);
-    formik.setFieldValue('location', location);
-    formik.setFieldValue('doi', doi);
-    formik.setFieldValue('year', year);
-    formik.setFieldValue('volume', volume);
-    formik.setFieldValue('issue', issue);
-    formik.setFieldValue('page', page);
-    formik.setFieldValue('step06', step06);
-    formik.setFieldValue('article_about_content', article_about_content);
-    formik.setFieldValue('article_about_page', article_about_page);
+    formik.setFieldValue('article_title', journalData.article_title);
+    formik.setFieldValue('authors', journalData.authors);
+    formik.setFieldValue('journal_name', journalData.journal_name);
+    formik.setFieldValue('location', journalData.location);
+    formik.setFieldValue('doi', journalData.doi);
+    formik.setFieldValue('year', journalData.year);
+    formik.setFieldValue('volume', journalData.volume);
+    formik.setFieldValue('issue', journalData.issue);
+    formik.setFieldValue('page', journalData.page);
+    formik.setFieldValue('step06', journalData.step06);
+    formik.setFieldValue('article_about_content', journalData.article_about_content);
+    formik.setFieldValue('article_about_page', journalData.article_about_page);
     formik.setFieldValue(
       'article_support_study_content',
-      article_support_study_content,
+      journalData.article_support_study_content,
     );
     formik.setFieldValue(
       'article_support_study_page',
-      article_support_study_page,
+      journalData.article_support_study_page,
     );
     formik.setFieldValue(
       'article_does_not_support_study_content',
-      article_does_not_support_study_content,
+      journalData.article_does_not_support_study_content,
     );
     formik.setFieldValue(
       'needed_support_study_content',
-      needed_support_study_content,
+      journalData.needed_support_study_content,
     );
     formik.setFieldValue('author_pod_color', authorPodColor);
     formik.setFieldValue(
       'article_support_study_color',
-      articleSupportStudyColor,
+      journalData.articleSupportStudyColor,
     );
     formik.setFieldValue(
       'article_does_not_support_study_color',
-      articleDoesNotSupportStudyColor,
+      journalData.articleDoesNotSupportStudyColor,
     );
-    formik.setFieldValue('needed_support_study_color', neededSupportStudyColor);
-    formik.setFieldValue('subtheme_selections', subthemeSelections);
+    formik.setFieldValue('needed_support_study_color', journalData.neededSupportStudyColor);
+    formik.setFieldValue('subtheme_selections', journalData.subthemeSelections);
     formik.setFieldValue('selected', selectedSubthemes);
   };
 
@@ -455,7 +495,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     setSelectedSubthemes([0]);
 
     formik.setFieldValue('article_title', metadataObj.title);
-    formik.setFieldValue('authors', metadataObj.author);
+    formik.setFieldValue('authors', metadataObj.authors);
     formik.setFieldValue('journal_name', metadataObj.journal);
     formik.setFieldValue('location', metadataObj.location);
     formik.setFieldValue('doi', metadataObj.doi);
@@ -658,6 +698,10 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
     );
     setNeededSupportStudyContent(neededSupportStudyContentInitial);
     setSelectedSubthemes(selectedSubthemesInitial);
+
+    formikManipulation(
+      'onReset', [], null
+    );
   };
 
   const resetAllDataInFields = () => {
@@ -695,60 +739,64 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
       .then((response) => {
         const data = response.data;
 
+        setJournalData(data.data.journal);
+        setJournalDataInitial(data.data.journal);
+
+        formikManipulation('onLoad', [], null);
         // Update Panel A Data
-        setArticleTitle(data.data.journal.article_title);
-        setArticleTitleInitial(data.data.journal.article_title);
-        setAuthors(data.data.journal.author);
-        setAuthorsInitial(data.data.journal.author);
-        setJournalName(data.data.journal.journal_name);
-        setJournalNameInitial(data.data.journal.journal_name);
-        setLocation(data.data.journal.location);
-        setLocationInitial(data.data.journal.location);
-        setDoi(data.data.journal.doi);
-        setDoiInitial(data.data.journal.doi);
-        setYear(data.data.journal.year);
-        setYearInitial(data.data.journal.year);
-        setVolume(data.data.journal.volume);
-        setVolumeInitial(data.data.journal.volume);
-        setIssue(data.data.journal.issue);
-        setIssueInitial(data.data.journal.issue);
-        setPage(data.data.journal.page);
-        setPageInitial(data.data.journal.page);
+        setArticleTitle(journalData.article_title);
+        setArticleTitleInitial(journalData.article_title);
+        setAuthors(journalData.author);
+        setAuthorsInitial(journalData.author);
+        setJournalName(journalData.journal_name);
+        setJournalNameInitial(journalData.journal_name);
+        setLocation(journalData.location);
+        setLocationInitial(journalData.location);
+        setDoi(journalData.doi);
+        setDoiInitial(journalData.doi);
+        setYear(journalData.year);
+        setYearInitial(journalData.year);
+        setVolume(journalData.volume);
+        setVolumeInitial(journalData.volume);
+        setIssue(journalData.issue);
+        setIssueInitial(journalData.issue);
+        setPage(journalData.page);
+        setPageInitial(journalData.page);
 
         // Update Panel B Data
         // (your existing code to update Panel B data)
 
         // below is panel B
-        setArticleAboutContent(data.data.journal.article_about.content);
-        setArticleAboutContentInitial(data.data.journal.article_about.content);
-        setArticleAboutPage(data.data.journal.article_about.page);
-        setArticleAboutPageInitial(data.data.journal.article_about.page);
+        setArticleAboutContent(journalData.article_about.content);
+        setArticleAboutContentInitial(journalData.article_about.content);
+        setArticleAboutPage(journalData.article_about.page);
+        setArticleAboutPageInitial(journalData.article_about.page);
         setArticleSupportStudyContent(
-          data.data.journal.article_support_study.content,
+          journalData.article_support_study.content,
         );
         setArticleSupportStudyContentInitial(
-          data.data.journal.article_support_study.content,
+          journalData.article_support_study.content,
         );
         setArticleSupportStudyPage(
-          data.data.journal.article_support_study.page,
+          journalData.article_support_study.page,
         );
 
         setArticleSupportStudyPageInitial(
-          data.data.journal.article_support_study.page,
+          journalData.article_support_study.page,
         );
         setArticleDoesNotSupportStudyContent(
-          data.data.journal.article_does_not_support_study.content,
+          journalData.article_does_not_support_study.content,
         );
         setArticleDoesNotSupportStudyContentInitial(
-          data.data.journal.article_does_not_support_study.content,
+          journalData.article_does_not_support_study.content,
         );
 
         setNeededSupportStudyContent(
-          data.data.journal.needed_support_study.content,
+          journalData.needed_support_study.content,
         );
 
         setNeededSupportStudyContentInitial(
-          data.data.journal.needed_support_study.content,
+          journalData.needed_support_study.content,
         );
         setSubthemeSelections(data.data.subthemes);
 
@@ -808,7 +856,11 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
 
     console.log('-- in useEffect ####################################### --');
 
-    if (!visible) return;
+    if (!visible) {
+      //Wipe all state values
+      resetAllDataInFields();
+      return;
+    }
     if (chooseMetadata) {
       ProcessUseMetadata(doi);
     } else {
@@ -861,7 +913,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             articleDoesNotSupportStudyColor={articleDoesNotSupportStudyColor}
             neededSupportStudyColor={neededSupportStudyColor}
             subthemeSelections={subthemeSelections}
-            selected={selected}
+            selected={selectedSubthemes}
             showWarn={showWarn}
             setVisible={setVisible}
             setLoading={setLoading}
@@ -885,6 +937,7 @@ const EditJournalModal: React.FC<EditJournalModalProps> = ({
             panelALoading={panelALoading}
             setPanelALoading={setPanelALoading}
             ProcessUseMetadata={ProcessUseMetadata}
+            refreshFormContent={refreshFormContent}
           />
         </Dialog>
       )}

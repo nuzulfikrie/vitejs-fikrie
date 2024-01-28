@@ -9,6 +9,19 @@ interface Provider {
   name: string;
   code: string;
 }
+
+
+interface PanelAFormData {
+  doi: string | null;
+  authors: string | null;
+  article_title: string | null;
+  year: string | null;
+  journal_name: string | null;
+  location: string | null;
+  volume: string | null;
+  issue: string | null;
+  pages: string | null;
+};
 interface PanelAProps {
   // Define your props here
   formik: any;
@@ -24,6 +37,7 @@ interface PanelAProps {
   callVideo: (e: any) => void;
   handleDropDown: (e: DropdownChangeEvent) => void;
   confirmTemplate: () => void;
+  PanelAFormData: PanelAFormData;
 }
 
 const PanelA: React.FC<PanelAProps> = ({
