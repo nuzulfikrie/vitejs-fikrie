@@ -24,6 +24,7 @@ const App = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [selectedRows, setSelectedRows] = useState([]);
+  const [subthemeOptions, setSubthemeOptions] = useState([]); // [Subtheme selection options]
 
   const toast = useRef<Toast>(null);
 
@@ -45,9 +46,14 @@ const App = () => {
         URL_LINKS.FETCH_ALL_JOURNAL.value + projectId + '/' + userId;
 
       const dataResponse = await fetchData(linkFetch1);
-      console.log('--- data response 1 ---');
+      console.log('--- data  ---');
       console.log(dataResponse);
       setData(dataResponse);
+      console.log('--- data  ---');
+      console.log(dataResponse);
+
+
+      setSubthemeOptions(dataResponse.subthemes);
 
       const dataTableResponse = await fetchData(linkFetch2);
       console.log('--- data response 2 ---');
@@ -139,6 +145,16 @@ const App = () => {
     console.log('--- on save add journal --');
   };
 
+  const deleteMultipleJournalsClick = async () => {
+    const selections = selectedRows.map((row: any) => row.id);
+
+    if (selections.length === 0) {
+      showWarn('Please select at least one journal to delete');
+      return;
+    }
+
+  };
+
   {
     /*
   -- Journal handling methods --
@@ -151,11 +167,13 @@ const App = () => {
         <Card>
           <div className='p-d-flex p-jc-between p-ai-center'>
             <Button
+              icon='fa fa-refresh'
               label='Refresh'
               onClick={handleRefresh}
               disabled={loading}
+              style={{ 'color': 'white' }}
             />
-            <Button label='Add New Journal' onClick={handleAddNewJournal} />
+            <Button icon='fa fa-plus' label='Add New Journal' severity='success' onClick={handleAddNewJournal} />
             {/* Enable checkbox for multiple selection */}
             {enableCheckBox ? (
               <Button
@@ -170,6 +188,25 @@ const App = () => {
                 onClick={() => handleEnableCheckBox(true)}
               />
             )}
+            {
+              (enableCheckBox && selectedRows.length > 0) ? (
+                <Button
+                  icon='fa fa-trash'
+                  label='Delete Multiple Journals'
+                  severity='danger'
+                  onClick={() => deleteMultipleJournalsClick()}
+                />) :
+                (
+                  <Button
+                    icon='fa fa-trash'
+                    label='Delete Multiple Journals'
+                    severity='danger'
+                    onClick={() => deleteMultipleJournalsClick()}
+                    disabled
+                  />
+                )
+            }
+
           </div>
           {loading ? (
             <div className='card'>
@@ -302,11 +339,9 @@ const App = () => {
             </div>
           )}
         </Card>
-        <Dialog visible={showAddModal} onHide={handleModalClose}>
-          {/* Modal content */}
-        </Dialog>
+
         <Toast ref={toast} />
-        {/* <AddJournalModal
+        <AddJournalModal
           toast={toast}
           showAddModal={showAddModal}
           handleAddModalVisible={handleAddModalVisible}
@@ -317,7 +352,8 @@ const App = () => {
           showWarn={showWarn}
           showError={showError}
           showInfo={showInfo}
-        /> */}
+          subthemeOptions={subthemeOptions}
+        />
       </div>
     </PrimeReactProvider>
   );

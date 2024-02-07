@@ -28,6 +28,9 @@ interface Subtheme {
 import '../../css/loading.css';
 import JournalDetailCheckboxesComponent from '../Form/JournalDetailCheckboxesComponent';
 
+import { abstractService } from '../../../services/abstractService';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+
 interface AddJournalModalProps {
   toast: React.RefObject<Toast>;
   showAddModal: boolean;
@@ -63,6 +66,13 @@ interface Subtheme {
   key: string;
 }
 
+interface subtheme {
+  name: string;
+  key: string;
+  construct: string;
+}
+
+
 const AddJournalModal: React.FC<AddJournalModalProps> = ({
   toast,
   showAddModal,
@@ -74,7 +84,9 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   showWarn,
   showError,
   showInfo,
+  subthemeOptions
 }) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<any>(null);
 
   const [articleTitleInitial, setArticleTitleInitial] = useState('');
@@ -156,23 +168,41 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
 
+  const selected = [0];
+
+
+
+  const onCategoryChange = (e: CheckboxChangeEvent) => {
+    console.log('--- checkboxchangeevent');
+
+    console.log(e);
+
+    let _selectedSubthemes = [...selectedSubthemes];
+
+    if (e.checked) _selectedSubthemes.push(e.value);
+    else
+      _selectedSubthemes = _selectedSubthemes.filter(
+        (subtheme) => subtheme.key !== e.value.key,
+      );
+    console.log('--- _selectedSubthemes');
+
+    console.log(_selectedSubthemes);
+    console.log('--- _selectedSubthemes');
+
+    setSelectedSubthemes(_selectedSubthemes);
+  };
 
   {/**
   video handling
 */}
 
-const getVideoData = async (videoId: string) => {
+  const getVideoData = async (videoId: string) => {
 
-};
+  };
 
-const callVideo() => {
+  const callVideo = () => {
 
-  getVideo();
-};
-
-
-
-
+  };
 
 
 
@@ -196,130 +226,132 @@ const callVideo() => {
 
 
   //##################################################################################
-  const formik = useFormik({
-    initialValues: {
-      article_title: article_title,
-      authors: authors,
-      journal_name: journal_name,
-      location: location,
-      doi: doi,
-      year: year,
-      volume: volume,
-      issue: issue,
-      page: page,
-      step06: step06,
-      article_about_content: article_about_content,
-      article_about_page: article_about_page,
-      article_support_study_content: article_support_study_content,
-      article_support_study_page: article_support_study_page,
-      article_does_not_support_study_content:
-        article_does_not_support_study_content,
-      needed_support_study_content: needed_support_study_content,
-    },
+  const formik = useFormik(
+    {
+      enableReinitialize: true,
+      initialValues: {
+        article_title: article_title,
+        authors: authors,
+        journal_name: journal_name,
+        location: location,
+        doi: doi,
+        year: year,
+        volume: volume,
+        issue: issue,
+        page: page,
+        step06: step06,
+        article_about_content: article_about_content,
+        article_about_page: article_about_page,
+        article_support_study_content: article_support_study_content,
+        article_support_study_page: article_support_study_page,
+        article_does_not_support_study_content:
+          article_does_not_support_study_content,
+        needed_support_study_content: needed_support_study_content,
+      },
 
-    validate: (values) => {
-      const errors: any = {};
-      // Add validation logic here
+      validate: (values) => {
+        const errors: any = {};
+        // Add validation logic here
 
-      //doi is optional but if has value need to check if doi exists
-      if (values.doi && values.doi !== '') {
-        let existsDoi: any;
-        //1 check if doi exists
-        // existsDoi = checkDOI(values.doi);
-        // console.log('exists ==============', existsDoi);
-        // if (!existsDoi) {
-        //   errors.value = 'DOI does not exist';
-        // }
+        //doi is optional but if has value need to check if doi exists
+        if (values.doi && values.doi !== '') {
+          let existsDoi: any;
+          //1 check if doi exists
+          // existsDoi = checkDOI(values.doi);
+          // console.log('exists ==============', existsDoi);
+          // if (!existsDoi) {
+          //   errors.value = 'DOI does not exist';
+          // }
 
-        return true;
-      }
-
-      //authors is required
-      if (!values.authors) {
-        errors.authors = 'Authors Name Required';
-      }
-
-      // Authors name can only be separated by commas
-      if (values.authors) {
-        const authorsArray = values.authors
-          .split(',')
-          .map((author: string) => author.trim());
-        const invalidAuthors = authorsArray.filter(
-          (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors),
-        );
-
-        if (invalidAuthors.length > 0) {
-          errors.authors =
-            'Authors Name Cannot be separated by characters other than comma';
+          return true;
         }
-      }
-      //article_title is required
-      if (!values.article_title) {
-        errors.article_title = 'Article Title Required';
-      }
 
-      //year is required
-      if (!values.year) {
-        errors.year = 'Year Required';
-      }
-
-      //validate year is number format YYYY
-      if (values.year) {
-        const year = values.year;
-        if (!/^\d{4}$/.test(year)) {
-          errors.year = 'Year must be in YYYY format';
+        //authors is required
+        if (!values.authors) {
+          errors.authors = 'Authors Name Required';
         }
-      }
 
-      // YEAR must be between - the year internet existed and current year
-      if (values.year) {
-        const year = Number(values.year);
-        const currentYear = new Date().getFullYear();
-        if (year < 1990 || year > currentYear) {
-          errors.year = 'Year must be between 1990 and current year';
+        // Authors name can only be separated by commas
+        if (values.authors) {
+          const authorsArray = values.authors
+            .split(',')
+            .map((author: string) => author.trim());
+          const invalidAuthors = authorsArray.filter(
+            (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors),
+          );
+
+          if (invalidAuthors.length > 0) {
+            errors.authors =
+              'Authors Name Cannot be separated by characters other than comma';
+          }
         }
-      }
+        //article_title is required
+        if (!values.article_title) {
+          errors.article_title = 'Article Title Required';
+        }
 
-      if (!values.step06) {
-        errors.step06 = 'This is required.';
-      }
+        //year is required
+        if (!values.year) {
+          errors.year = 'Year Required';
+        }
 
-      if (!values.article_about_content) {
-        errors.article_about_content = 'This is required.';
-      }
+        //validate year is number format YYYY
+        if (values.year) {
+          const year = values.year;
+          if (!/^\d{4}$/.test(year)) {
+            errors.year = 'Year must be in YYYY format';
+          }
+        }
 
-      if (!values.article_about_page) {
-        errors.article_about_page = 'This is required.';
-      }
+        // YEAR must be between - the year internet existed and current year
+        if (values.year) {
+          const year = Number(values.year);
+          const currentYear = new Date().getFullYear();
+          if (year < 1990 || year > currentYear) {
+            errors.year = 'Year must be between 1990 and current year';
+          }
+        }
 
-      if (!values.article_support_study_content) {
-        errors.article_support_study_content = 'This is required.';
-      }
+        if (!values.step06) {
+          errors.step06 = 'This is required.';
+        }
 
-      if (!values.article_support_study_page) {
-        errors.article_support_study_page = 'This is required.';
-      }
+        if (!values.article_about_content) {
+          errors.article_about_content = 'This is required.';
+        }
 
-      if (!values.article_does_not_support_study_content) {
-        errors.article_does_not_support_study_content = 'This is required.';
-      }
+        if (!values.article_about_page) {
+          errors.article_about_page = 'This is required.';
+        }
 
-      if (!values.needed_support_study_content) {
-        errors.needed_support_study_content = 'This is required.';
-      }
+        if (!values.article_support_study_content) {
+          errors.article_support_study_content = 'This is required.';
+        }
 
-      // Add other validation rules as needed
-      return errors;
-    },
-    onSubmit: (values) => {
-      console.log('---- values submit ---');
+        if (!values.article_support_study_page) {
+          errors.article_support_study_page = 'This is required.';
+        }
 
-      console.log(values);
-      console.log('---- values submit ---');
+        if (!values.article_does_not_support_study_content) {
+          errors.article_does_not_support_study_content = 'This is required.';
+        }
 
-      formik.resetForm();
-    },
-  });
+        if (!values.needed_support_study_content) {
+          errors.needed_support_study_content = 'This is required.';
+        }
+
+        // Add other validation rules as needed
+        return errors;
+      },
+      onSubmit: (values) => {
+        console.log('---- values submit ---');
+
+        console.log(values);
+        console.log('---- values submit ---');
+
+        formik.resetForm();
+      },
+    });
 
   const isFormFieldInvalid = (name: any) =>
     !!(
@@ -425,6 +457,18 @@ const callVideo() => {
     formik.resetForm();
     showInfo('Form has been cleared');
   };
+
+  const handleDropDown = (e: DropdownChangeEvent) => {
+    console.log('--- value ---');
+    console.log(e.value);
+    console.log('--- value ---');
+    if (e.value.code === 'reset') {
+      setSelectedProvider(null);
+    } else {
+      setSelectedProvider(e.value);
+    }
+  };
+
 
   /**
    * Set formik values on load
@@ -847,7 +891,7 @@ const callVideo() => {
                   label='Retrieve Abstract'
                   icon='pi pi-check'
                   loading={loadingMetadata}
-                  onClick={retrieveAbstractData}
+                  onClick={() => abstractService.retrieveAbstractData(formik.values.doi)}
                   severity='success'
                 />
                 <div className='card flex justify-content-center'>
@@ -1166,7 +1210,7 @@ const callVideo() => {
                       <InputText
                         name='article_about_page'
                         value={formik.values.article_about_page}
-                        onChange={() => {}}
+                        onChange={() => { }}
                       />
 
                       {getFormErrorMessage('article_about_page')}
@@ -1180,7 +1224,7 @@ const callVideo() => {
                         value={formik.values.article_support_study_page}
                         onChange={(
                           e: React.ChangeEvent<HTMLInputElement>,
-                        ) => {}}
+                        ) => { }}
                       />
 
                       {getFormErrorMessage('article_support_study_page')}
@@ -1190,7 +1234,7 @@ const callVideo() => {
 
                 <SplitterPanel className='flex justify-content-left' size={20}>
                   <JournalDetailCheckboxesComponent
-                    subthemeSelections={subthemeSelections}
+                    subthemeSelections={subthemeOptions}
                     selected={selected}
                     onCategoryChange={onCategoryChange}
                   />
