@@ -1,75 +1,74 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import { describe, it, expect, vi } from 'vitest';
 import {
   fetchData,
   postData,
   deleteData,
 } from '../../src/services/dataService';
 
-const server = setupServer(
-  rest.get('https://api.example.com/data', (req, res, ctx) => {
-    return res(
-      ctx.json([{ id: 1, name: 'John' }]),
-    );
+// Mocking global fetch
+global.fetch = vi.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({ success: true }),
   }),
-  rest.post('https://api.example.com/data', (req, res, ctx) => {
-    return res(
-      ctx.json({ id: 1, name: 'John' }),
-    );
-  }),
-  rest.delete('https://api.example.com/data', (req, res, ctx) => {
-    return res(
-      ctx.status(204),
-    );
-  }),
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+) as any;
 
 describe('dataService', () => {
-  it('should fetch data successfully', async () => {
-    render(<YourComponent />);
-
-    const url = 'https://api.example.com/data';
-    const data = await fetchData(url);
-
-    expect(screen.getByText('John')).toBeInTheDocument();
-    expect(data).toEqual([{ id: 1, name: 'John' }]);
-  });
-
-  it('should post data successfully', async () => {
-    render(<YourComponent />);
-
-    const url = 'https://api.example.com/data';
-    const postData = { name: 'John' };
-    const expectedRequestBody = JSON.stringify(postData);
-
-    const data = await postData(url, postData);
-
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: expectedRequestBody,
+  describe('fetchData', () => {
+    it('should fetch data successfully', async () => {
+      const data = await fetchData('http://example.com/data');
+      expect(data).toEqual({ success: true });
+      expect(fetch).toHaveBeenCalledWith('http://example.com/data');
     });
-    expect(data).toEqual({ id: 1, name: 'John' });
+
+    it('should throw an error if fetching fails', async () => {
+      (fetch as vi.Mock).mockImplementationOnce(() =>
+        Promise.reject(new Error('Network error')),
+      );
+      await expect(fetchData('http://example.com/data')).rejects.toThrow(
+        'Error fetching data',
+      );
+    });
   });
 
-  it('should delete data successfully', async () => {
-    render(<YourComponent />);
+  describe('postData', () => {
+    it('should post data successfully', async () => {
+      const body = { key: 'value' };
+      const data = await postData('http://example.com/post', body);
+      expect(data).toEqual({ success: true });
+      expect(fetch).toHaveBeenCalledWith('http://example.com/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+    });
 
-    const url = 'https://api.example.com/data';
-    await deleteData(url);
+    it('should throw an error if posting fails', async () => {
+      (fetch as vi.Mock).mockImplementationOnce(() =>
+        Promise.reject(new Error('Network error')),
+      );
+      await expect(postData('http://example.com/post', {})).rejects.toThrow(
+        'Error posting data',
+      );
+    });
+  });
 
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(url, {
-      method: 'DELETE',
+  describe('deleteData', () => {
+    it('should call fetch with DELETE method', async () => {
+      await deleteData('http://example.com/delete');
+      expect(fetch).toHaveBeenCalledWith('http://example.com/delete', {
+        method: 'DELETE',
+      });
+    });
+
+    it('should throw an error if delete fails', async () => {
+      (fetch as vi.Mock).mockImplementationOnce(() =>
+        Promise.reject(new Error('Network error')),
+      );
+      await expect(deleteData('http://example.com/delete')).rejects.toThrow(
+        'Error deleting data',
+      );
     });
   });
 });
