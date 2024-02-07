@@ -81,7 +81,7 @@ interface JournalDetailsComponentProps {
 }
 
 const JournalDetailComponent: React.FC<JournalDetailsComponentProps> = ({
-  journalId,
+  journalId = null,
   projectId,
   userId,
   article_title,

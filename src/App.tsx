@@ -11,8 +11,12 @@ import { Toast } from 'primereact/toast';
 
 import URL_LINKS from './constants/urls';
 import { fetchData, postData, deleteData } from './services/dataService'; // Assume this is a new service file for API calls
+import AddJournalModal from './ui/components/Modal/AddJournalModal';
 
 const App = () => {
+  const projectId = localStorage.getItem('course_id');
+  const userId = localStorage.getItem('user_id');
+
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [enableCheckBox, setEnableCheckBox] = useState(false);
@@ -20,6 +24,7 @@ const App = () => {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const [selectedRows, setSelectedRows] = useState([]);
+
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
@@ -29,8 +34,9 @@ const App = () => {
   const fetchDataSource = async () => {
     setLoading(true);
     try {
-      const projectId = localStorage.getItem('course_id');
-      const userId = localStorage.getItem('user_id');
+      if (!projectId || !userId) {
+        showError('Project ID or User ID is missing');
+      }
 
       const linkFetch1 =
         URL_LINKS.STEP_SIX_DATA.value + projectId + '/' + userId;
@@ -112,6 +118,33 @@ const App = () => {
     });
   };
 
+  {
+    /* modal */
+  }
+
+  const handleAddModalVisible = (visible: boolean): void => {
+    setShowAddModal(visible);
+  };
+
+  {
+    /* modal */
+  }
+
+  {
+    /*
+  -- Journal handling methods --
+  */
+  }
+  const onSaveAddJournal = async (journalData: any) => {
+    console.log('--- on save add journal --');
+  };
+
+  {
+    /*
+  -- Journal handling methods --
+  */
+  }
+
   return (
     <PrimeReactProvider>
       <div>
@@ -139,7 +172,7 @@ const App = () => {
             )}
           </div>
           {loading ? (
-            <div className='p-d-flex p-jc-center'>
+            <div className='card'>
               <ProgressSpinner />
             </div>
           ) : (
@@ -273,6 +306,18 @@ const App = () => {
           {/* Modal content */}
         </Dialog>
         <Toast ref={toast} />
+        {/* <AddJournalModal
+          toast={toast}
+          showAddModal={showAddModal}
+          handleAddModalVisible={handleAddModalVisible}
+          projectId={projectId}
+          userId={userId}
+          onSave={onSaveAddJournal}
+          showSuccess={showSuccess}
+          showWarn={showWarn}
+          showError={showError}
+          showInfo={showInfo}
+        /> */}
       </div>
     </PrimeReactProvider>
   );
