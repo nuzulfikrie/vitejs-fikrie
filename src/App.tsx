@@ -52,8 +52,7 @@ const App = () => {
       console.log('--- data  ---');
       console.log(dataResponse);
 
-
-      setSubthemeOptions(dataResponse.subthemes);
+      setSubthemeOptions(dataResponse.data.subthemes);
 
       const dataTableResponse = await fetchData(linkFetch2);
       console.log('--- data response 2 ---');
@@ -152,7 +151,6 @@ const App = () => {
       showWarn('Please select at least one journal to delete');
       return;
     }
-
   };
 
   {
@@ -171,9 +169,14 @@ const App = () => {
               label='Refresh'
               onClick={handleRefresh}
               disabled={loading}
-              style={{ 'color': 'white' }}
+              style={{ color: 'white' }}
             />
-            <Button icon='fa fa-plus' label='Add New Journal' severity='success' onClick={handleAddNewJournal} />
+            <Button
+              icon='fa fa-plus'
+              label='Add New Journal'
+              severity='success'
+              onClick={handleAddNewJournal}
+            />
             {/* Enable checkbox for multiple selection */}
             {enableCheckBox ? (
               <Button
@@ -188,25 +191,22 @@ const App = () => {
                 onClick={() => handleEnableCheckBox(true)}
               />
             )}
-            {
-              (enableCheckBox && selectedRows.length > 0) ? (
-                <Button
-                  icon='fa fa-trash'
-                  label='Delete Multiple Journals'
-                  severity='danger'
-                  onClick={() => deleteMultipleJournalsClick()}
-                />) :
-                (
-                  <Button
-                    icon='fa fa-trash'
-                    label='Delete Multiple Journals'
-                    severity='danger'
-                    onClick={() => deleteMultipleJournalsClick()}
-                    disabled
-                  />
-                )
-            }
-
+            {enableCheckBox && selectedRows.length > 0 ? (
+              <Button
+                icon='fa fa-trash'
+                label='Delete Multiple Journals'
+                severity='danger'
+                onClick={() => deleteMultipleJournalsClick()}
+              />
+            ) : (
+              <Button
+                icon='fa fa-trash'
+                label='Delete Multiple Journals'
+                severity='danger'
+                onClick={() => deleteMultipleJournalsClick()}
+                disabled
+              />
+            )}
           </div>
           {loading ? (
             <div className='card'>
@@ -311,25 +311,21 @@ const App = () => {
                   body={(rowData: any) => {
                     return (
                       <div>
-                        <>
+                        <Button
+                          label='Edit'
+                          className='p-button-sm p-button-info'
+                          onClick={() => {
+                            showInfo('Edit journal');
+                          }}
+                        />
+                        {enableCheckBox && (
                           <Button
-                            label='Edit'
-                            className='p-button-sm p-button-info'
+                            label='Delete'
+                            className='p-button-sm p-button-danger'
                             onClick={() => {
-                              showInfo('Edit journal');
+                              showWarn('Delete journal');
                             }}
                           />
-                        </>
-                        {enableCheckBox && (
-                          <>
-                            <Button
-                              label='Delete'
-                              className='p-button-sm p-button-danger'
-                              onClick={() => {
-                                showWarn('Delete journal');
-                              }}
-                            />
-                          </>
                         )}
                       </div>
                     );

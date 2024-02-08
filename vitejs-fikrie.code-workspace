@@ -5,10 +5,10 @@
     }
   ],
   "settings": {
-    "terminal.integrated.fontFamily": "RobotoMono Nerd Font Mono",
+    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
     "terminal.integrated.defaultProfile.linux": "zsh",
     "terminal.integrated.fontSize": 14,
-    "editor.fontFamily": "RobotoMono Nerd Font Mono",
+    "editor.fontFamily": "Fira Mono",
     "typescript.tsdk": "node_modules/typescript/lib",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -22,12 +22,7 @@
       "typescriptreact"
     ],
     "eslint.options": {
-      "extensions": [
-        ".js",
-        ".jsx",
-        ".ts",
-        ".tsx"
-      ]
+      "extensions": [".js", ".jsx", ".ts", ".tsx"]
     },
     "prettier.jsxSingleQuote": true,
     "prettier.jsxBracketSameLine": false,
@@ -43,9 +38,7 @@
         "command": "vite dev",
         "type": "shell",
         "args": [],
-        "problemMatcher": [
-          "$tsc"
-        ],
+        "problemMatcher": ["$tsc"],
         "presentation": {
           "reveal": "always"
         },
@@ -56,9 +49,7 @@
         "command": "npm run build",
         "type": "shell",
         "args": [],
-        "problemMatcher": [
-          "$tsc"
-        ],
+        "problemMatcher": ["$tsc"],
         "presentation": {
           "reveal": "always"
         },
@@ -69,9 +60,7 @@
         "command": "npm run test",
         "type": "shell",
         "args": [],
-        "problemMatcher": [
-          "$tsc"
-        ],
+        "problemMatcher": ["$tsc"],
         "presentation": {
           "reveal": "always"
         },

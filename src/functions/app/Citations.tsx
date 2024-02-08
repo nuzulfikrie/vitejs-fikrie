@@ -1,5 +1,3 @@
-// Define the interface for author details
-
 interface Author {
   firstName: string;
   lastName: string;
@@ -7,65 +5,68 @@ interface Author {
   suffix?: string;
 }
 
-function generateInTextCitation(authors: Author[], year: number): string {
-  if (authors.length === 0) {
-    console.error('No authors provided');
-    return '';
+class CitationService {
+  static generateInTextCitation(authors: Author[], year: number): string {
+    if (authors.length === 0) {
+      throw new Error('No authors provided');
+    }
+
+    let citation = authors.map(this.formatAuthorName).join(', ');
+
+    // Adjusting the format based on the number of authors
+    if (authors.length > 2) {
+      citation = `${this.formatAuthorName(authors[0])} et al.`;
+    } else if (authors.length === 2) {
+      citation = citation.replace(', ', ' & ');
+    }
+
+    return `(${citation}, ${year})`;
   }
 
-  let citation = '';
+  static formatAuthorName({
+    prefix,
+    firstName,
+    lastName,
+    suffix,
+  }: Author): string {
+    const parts = [prefix, firstName, lastName, suffix]
+      .filter(Boolean) // Remove undefined or empty parts
+      .map(this.capitalize); // Capitalize each part
 
-  switch (authors.length) {
-    case 1:
-      // Single author
-      citation = formatAuthorName(authors[0]);
-      break;
-    case 2:
-      // Two authors
-      citation = `${formatAuthorName(authors[0])} & ${formatAuthorName(
-        authors[1],
-      )}`;
-      break;
-    default:
-      // More than two authors
-      citation = `${formatAuthorName(authors[0])} et al.`;
-      break;
+    return parts.join(' ');
   }
 
-  return `(${citation}, ${year})`;
+  static capitalize(str: string = ''): string {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
+  static parseAuthors(authorsString: string): Author[] {
+    if (!authorsString.trim()) {
+      throw new Error('Authors string is empty or only contains whitespace');
+    }
+
+    return authorsString.split(', ').map((name) => {
+      const parts = name.split(' ');
+      let [firstName, lastName] = ['', ''];
+      let prefix, suffix;
+
+      // Assuming the last part is always the last name
+      lastName = parts.pop() || '';
+
+      // Checking for common prefixes and suffixes
+      if (parts.length > 0) {
+        prefix = parts[0].match(/^(Dr|Mr|Ms|Mrs)$/i)
+          ? parts.shift()
+          : undefined;
+        suffix = parts[parts.length - 1].match(/^(Jr|Sr|II|III|IV)$/i)
+          ? parts.pop()
+          : undefined;
+      }
+
+      firstName = parts.join(' ');
+      return { firstName, lastName, prefix, suffix };
+    });
+  }
 }
 
-function formatAuthorName(author: Author): string {
-  // Format name with prefix and suffix if present
-  const fullName = [
-    author.prefix,
-    author.firstName,
-    author.lastName,
-    author.suffix,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  return fullName;
-}
-
-// Function that parses author names from the string and returns an array of Author objects
-function parseAuthors(authorsString: string): Author[] {
-  const authors: Author[] = [];
-  const authorNames = authorsString.split(', ');
-
-  authorNames.forEach((name) => {
-    const parts = name.split(' ');
-    const lastName = parts.pop() || ''; // Assumes the last part is the last name
-    const firstName = parts.join(' '); // Rest is considered as the first name
-    const prefix = parts.length > 1 ? parts.shift() : undefined;
-    const suffix = parts.length > 1 ? parts.pop() : undefined;
-
-    authors.push({ firstName, lastName, prefix, suffix });
-  });
-
-  return authors;
-}
-
-//EXPORT
-export { generateInTextCitation, parseAuthors };
+export { CitationService };
