@@ -1,35 +1,35 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Dialog } from 'primereact/dialog';
-import URL_LINKS from '../../../constants/urls';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Dialog } from "primereact/dialog";
+import URL_LINKS from "../../../constants/urls";
 import {
   generateInTextCitation,
   parseAuthors,
-} from '../../../functions/app/Citations';
-import { useFormik } from 'formik';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
-import { Divider } from 'primereact/divider';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Splitter, SplitterPanel } from 'primereact/splitter';
-import { Card } from 'primereact/card';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
-import { classNames } from 'primereact/utils';
-import VideoModal from '../Modal/VideoModal';
-import PanelAbstractData from '../Panel/PanelAbstractData';
-import ContentDataTable from '../Modal/ContentDataTable';
+} from "../../../functions/app/Citations";
+import { useFormik } from "formik";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
+import { Divider } from "primereact/divider";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Splitter, SplitterPanel } from "primereact/splitter";
+import { Card } from "primereact/card";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
+import { classNames } from "primereact/utils";
+import VideoModal from "../Modal/VideoModal";
+import PanelAbstractData from "../Panel/PanelAbstractData";
+import ContentDataTable from "../Modal/ContentDataTable";
 interface Subtheme {
   name: string;
   key: string;
 }
 
-import '../../css/loading.css';
-import JournalDetailCheckboxesComponent from '../Form/JournalDetailCheckboxesComponent';
+import "../../css/loading.css";
+import JournalDetailCheckboxesComponent from "../Form/JournalDetailCheckboxesComponent";
 
-import { abstractService } from '../../../services/abstractService';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { abstractService } from "../../../services/abstractService";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 
 interface AddJournalModalProps {
   toast: React.RefObject<Toast>;
@@ -54,11 +54,11 @@ interface Provider {
 }
 
 const providerSelection: Provider[] = [
-  { name: 'IEEE', code: 'ieee' },
-  { name: 'Springer', code: 'springer' },
-  { name: 'Elsevier', code: 'elsevier' },
-  { name: 'Pubmed', code: 'pubmed' },
-  { name: 'Reset', code: 'reset' },
+  { name: "IEEE", code: "ieee" },
+  { name: "Springer", code: "springer" },
+  { name: "Elsevier", code: "elsevier" },
+  { name: "Pubmed", code: "pubmed" },
+  { name: "Reset", code: "reset" },
 ];
 
 interface Subtheme {
@@ -72,7 +72,6 @@ interface subtheme {
   construct: string;
 }
 
-
 const AddJournalModal: React.FC<AddJournalModalProps> = ({
   toast,
   showAddModal,
@@ -84,20 +83,20 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   showWarn,
   showError,
   showInfo,
-  subthemeOptions
+  subthemeOptions,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<any>(null);
 
-  const [articleTitleInitial, setArticleTitleInitial] = useState('');
-  const [authorsInitial, setAuthorsInitial] = useState('');
-  const [journalNameInitial, setJournalNameInitial] = useState('');
-  const [locationInitial, setLocationInitial] = useState('');
-  const [doiInitial, setDoiInitial] = useState('');
-  const [yearInitial, setYearInitial] = useState('');
-  const [volumeInitial, setVolumeInitial] = useState('');
-  const [issueInitial, setIssueInitial] = useState('');
-  const [pageInitial, setPageInitial] = useState('');
+  const [articleTitleInitial, setArticleTitleInitial] = useState("");
+  const [authorsInitial, setAuthorsInitial] = useState("");
+  const [journalNameInitial, setJournalNameInitial] = useState("");
+  const [locationInitial, setLocationInitial] = useState("");
+  const [doiInitial, setDoiInitial] = useState("");
+  const [yearInitial, setYearInitial] = useState("");
+  const [volumeInitial, setVolumeInitial] = useState("");
+  const [issueInitial, setIssueInitial] = useState("");
+  const [pageInitial, setPageInitial] = useState("");
   const [step06Initial, setStep06Initial] = useState([]);
 
   const [selectedSubthemesInitial, setSelectedSubthemesInitial] = useState<
@@ -109,49 +108,49 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const [panelBLoading, setPanelBLoading] = useState<boolean>(false);
   const [panelBVisible, setPanelBVisible] = useState<boolean>(false);
   const [articleAboutContentInitial, setArticleAboutContentInitial] =
-    useState('');
-  const [articleAboutPageInitial, setArticleAboutPageInitial] = useState('');
+    useState("");
+  const [articleAboutPageInitial, setArticleAboutPageInitial] = useState("");
   const [
     articleSupportStudyContentInitial,
     setArticleSupportStudyContentInitial,
-  ] = useState('');
+  ] = useState("");
   const [articleSupportStudyPageInitial, setArticleSupportStudyPageInitial] =
-    useState('');
+    useState("");
   const [
     articleDoesNotSupportStudyContentInitial,
     setArticleDoesNotSupportStudyContentInitial,
-  ] = useState('');
+  ] = useState("");
   const [
     neededSupportStudyContentInitial,
     setNeededSupportStudyContentInitial,
-  ] = useState('');
-  const [article_title, setArticleTitle] = useState('');
-  const [authors, setAuthors] = useState('');
-  const [journal_name, setJournalName] = useState('');
-  const [location, setLocation] = useState('');
-  const [doi, setDoi] = useState('');
-  const [year, setYear] = useState('');
-  const [volume, setVolume] = useState('');
-  const [issue, setIssue] = useState('');
-  const [page, setPage] = useState('');
+  ] = useState("");
+  const [article_title, setArticleTitle] = useState("");
+  const [authors, setAuthors] = useState("");
+  const [journal_name, setJournalName] = useState("");
+  const [location, setLocation] = useState("");
+  const [doi, setDoi] = useState("");
+  const [year, setYear] = useState("");
+  const [volume, setVolume] = useState("");
+  const [issue, setIssue] = useState("");
+  const [page, setPage] = useState("");
   const [step06, setStep06] = useState([]);
-  const [article_about_content, setArticleAboutContent] = useState('');
-  const [article_about_page, setArticleAboutPage] = useState('');
+  const [article_about_content, setArticleAboutContent] = useState("");
+  const [article_about_page, setArticleAboutPage] = useState("");
   const [article_support_study_content, setArticleSupportStudyContent] =
-    useState('');
-  const [article_support_study_page, setArticleSupportStudyPage] = useState('');
+    useState("");
+  const [article_support_study_page, setArticleSupportStudyPage] = useState("");
   const [
     article_does_not_support_study_content,
     setArticleDoesNotSupportStudyContent,
-  ] = useState('');
+  ] = useState("");
   const [needed_support_study_content, setNeededSupportStudyContent] =
-    useState('');
+    useState("");
 
-  const [authorPodColor, setAuthorPodColor] = useState('');
-  const [articleSupportStudyColor, setArticleSupportStudyColor] = useState('');
+  const [authorPodColor, setAuthorPodColor] = useState("");
+  const [articleSupportStudyColor, setArticleSupportStudyColor] = useState("");
   const [articleDoesNotSupportStudyColor, setArticleDoesNotSupportStudyColor] =
-    useState('');
-  const [neededSupportStudyColor, setNeededSupportStudyColor] = useState('');
+    useState("");
+  const [neededSupportStudyColor, setNeededSupportStudyColor] = useState("");
   const [panelALoading, setPanelALoading] = useState<boolean>(false);
   const [panelAVisible, setPanelAVisible] = useState<boolean>(false);
 
@@ -163,17 +162,15 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const [selectedSubthemes, setSelectedSubthemes] = useState([0]);
   const [loadingMetadata, setLoadingMetadata] = useState<boolean>(false);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
-    null,
+    null
   );
 
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
 
   const selected = [0];
 
-
-
   const onCategoryChange = (e: CheckboxChangeEvent) => {
-    console.log('--- checkboxchangeevent');
+    console.log("--- checkboxchangeevent");
 
     console.log(e);
 
@@ -182,176 +179,152 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     if (e.checked) _selectedSubthemes.push(e.value);
     else
       _selectedSubthemes = _selectedSubthemes.filter(
-        (subtheme) => subtheme.key !== e.value.key,
+        (subtheme) => subtheme.key !== e.value.key
       );
-    console.log('--- _selectedSubthemes');
+    console.log("--- _selectedSubthemes");
 
     console.log(_selectedSubthemes);
-    console.log('--- _selectedSubthemes');
+    console.log("--- _selectedSubthemes");
 
     setSelectedSubthemes(_selectedSubthemes);
   };
 
-  {/**
+  {
+    /**
   video handling
-*/}
+*/
+  }
 
-  const getVideoData = async (videoId: string) => {
+  const getVideoData = async (videoId: string) => {};
 
-  };
-
-  const callVideo = () => {
-
-  };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const callVideo = () => {};
 
   //##################################################################################
-  const formik = useFormik(
-    {
-      enableReinitialize: true,
-      initialValues: {
-        article_title: article_title,
-        authors: authors,
-        journal_name: journal_name,
-        location: location,
-        doi: doi,
-        year: year,
-        volume: volume,
-        issue: issue,
-        page: page,
-        step06: step06,
-        article_about_content: article_about_content,
-        article_about_page: article_about_page,
-        article_support_study_content: article_support_study_content,
-        article_support_study_page: article_support_study_page,
-        article_does_not_support_study_content:
-          article_does_not_support_study_content,
-        needed_support_study_content: needed_support_study_content,
-      },
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      article_title: article_title,
+      authors: authors,
+      journal_name: journal_name,
+      location: location,
+      doi: doi,
+      year: year,
+      volume: volume,
+      issue: issue,
+      page: page,
+      step06: step06,
+      article_about_content: article_about_content,
+      article_about_page: article_about_page,
+      article_support_study_content: article_support_study_content,
+      article_support_study_page: article_support_study_page,
+      article_does_not_support_study_content:
+        article_does_not_support_study_content,
+      needed_support_study_content: needed_support_study_content,
+    },
 
-      validate: (values) => {
-        const errors: any = {};
-        // Add validation logic here
+    validate: (values) => {
+      const errors: any = {};
+      // Add validation logic here
 
-        //doi is optional but if has value need to check if doi exists
-        if (values.doi && values.doi !== '') {
-          let existsDoi: any;
-          //1 check if doi exists
-          // existsDoi = checkDOI(values.doi);
-          // console.log('exists ==============', existsDoi);
-          // if (!existsDoi) {
-          //   errors.value = 'DOI does not exist';
-          // }
+      //doi is optional but if has value need to check if doi exists
+      if (values.doi && values.doi !== "") {
+        let existsDoi: any;
+        //1 check if doi exists
+        // existsDoi = checkDOI(values.doi);
+        // console.log('exists ==============', existsDoi);
+        // if (!existsDoi) {
+        //   errors.value = 'DOI does not exist';
+        // }
 
-          return true;
+        return true;
+      }
+
+      //authors is required
+      if (!values.authors) {
+        errors.authors = "Authors Name Required";
+      }
+
+      // Authors name can only be separated by commas
+      if (values.authors) {
+        const authorsArray = values.authors
+          .split(",")
+          .map((author: string) => author.trim());
+        const invalidAuthors = authorsArray.filter(
+          (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors)
+        );
+
+        if (invalidAuthors.length > 0) {
+          errors.authors =
+            "Authors Name Cannot be separated by characters other than comma";
         }
+      }
+      //article_title is required
+      if (!values.article_title) {
+        errors.article_title = "Article Title Required";
+      }
 
-        //authors is required
-        if (!values.authors) {
-          errors.authors = 'Authors Name Required';
+      //year is required
+      if (!values.year) {
+        errors.year = "Year Required";
+      }
+
+      //validate year is number format YYYY
+      if (values.year) {
+        const year = values.year;
+        if (!/^\d{4}$/.test(year)) {
+          errors.year = "Year must be in YYYY format";
         }
+      }
 
-        // Authors name can only be separated by commas
-        if (values.authors) {
-          const authorsArray = values.authors
-            .split(',')
-            .map((author: string) => author.trim());
-          const invalidAuthors = authorsArray.filter(
-            (authors: string) => !/^[a-zA-Z\s]+$/.exec(authors),
-          );
-
-          if (invalidAuthors.length > 0) {
-            errors.authors =
-              'Authors Name Cannot be separated by characters other than comma';
-          }
+      // YEAR must be between - the year internet existed and current year
+      if (values.year) {
+        const year = Number(values.year);
+        const currentYear = new Date().getFullYear();
+        if (year < 1990 || year > currentYear) {
+          errors.year = "Year must be between 1990 and current year";
         }
-        //article_title is required
-        if (!values.article_title) {
-          errors.article_title = 'Article Title Required';
-        }
+      }
 
-        //year is required
-        if (!values.year) {
-          errors.year = 'Year Required';
-        }
+      if (!values.step06) {
+        errors.step06 = "This is required.";
+      }
 
-        //validate year is number format YYYY
-        if (values.year) {
-          const year = values.year;
-          if (!/^\d{4}$/.test(year)) {
-            errors.year = 'Year must be in YYYY format';
-          }
-        }
+      if (!values.article_about_content) {
+        errors.article_about_content = "This is required.";
+      }
 
-        // YEAR must be between - the year internet existed and current year
-        if (values.year) {
-          const year = Number(values.year);
-          const currentYear = new Date().getFullYear();
-          if (year < 1990 || year > currentYear) {
-            errors.year = 'Year must be between 1990 and current year';
-          }
-        }
+      if (!values.article_about_page) {
+        errors.article_about_page = "This is required.";
+      }
 
-        if (!values.step06) {
-          errors.step06 = 'This is required.';
-        }
+      if (!values.article_support_study_content) {
+        errors.article_support_study_content = "This is required.";
+      }
 
-        if (!values.article_about_content) {
-          errors.article_about_content = 'This is required.';
-        }
+      if (!values.article_support_study_page) {
+        errors.article_support_study_page = "This is required.";
+      }
 
-        if (!values.article_about_page) {
-          errors.article_about_page = 'This is required.';
-        }
+      if (!values.article_does_not_support_study_content) {
+        errors.article_does_not_support_study_content = "This is required.";
+      }
 
-        if (!values.article_support_study_content) {
-          errors.article_support_study_content = 'This is required.';
-        }
+      if (!values.needed_support_study_content) {
+        errors.needed_support_study_content = "This is required.";
+      }
 
-        if (!values.article_support_study_page) {
-          errors.article_support_study_page = 'This is required.';
-        }
+      // Add other validation rules as needed
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log("---- values submit ---");
 
-        if (!values.article_does_not_support_study_content) {
-          errors.article_does_not_support_study_content = 'This is required.';
-        }
+      console.log(values);
+      console.log("---- values submit ---");
 
-        if (!values.needed_support_study_content) {
-          errors.needed_support_study_content = 'This is required.';
-        }
-
-        // Add other validation rules as needed
-        return errors;
-      },
-      onSubmit: (values) => {
-        console.log('---- values submit ---');
-
-        console.log(values);
-        console.log('---- values submit ---');
-
-        formik.resetForm();
-      },
-    });
+      formik.resetForm();
+    },
+  });
 
   const isFormFieldInvalid = (name: any) =>
     !!(
@@ -361,7 +334,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
   const getFormErrorMessage = (name: any) => {
     return isFormFieldInvalid(name) ? (
-      <small className='p-error'>{formik.errors[name]}</small>
+      <small className="p-error">{formik.errors[name]}</small>
     ) : null;
   };
 
@@ -369,7 +342,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     let doi = formik.values.doi;
 
     if (!doi) {
-      showWarn('DOI is required');
+      showWarn("DOI is required");
       return;
     }
 
@@ -378,7 +351,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     axios
       .post(url, { doi: doi })
       .then((response) => {
-        if (response.data.status === 'success') {
+        if (response.data.status === "success") {
           // Ensure the data structure of response is as expected
           let data = response.data.data;
 
@@ -388,8 +361,8 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
         }
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
-        showWarn('Error fetching metadata');
+        console.error("Error fetching data:", error);
+        showWarn("Error fetching metadata");
       });
   };
 
@@ -398,25 +371,25 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const formikManipulation = (
     conditions: string,
     citationStrings: string[],
-    fetchedMetadata: any,
+    fetchedMetadata: any
   ) => {
     switch (conditions) {
-      case 'onLoad':
+      case "onLoad":
         setFormikValueOnLoad();
 
         break;
-      case 'onReset':
+      case "onReset":
         setFormikValueOnReset();
         break;
-      case 'onClear':
+      case "onClear":
         setFormikValueOnClear();
         break;
 
-      case 'onMetadata':
+      case "onMetadata":
         setFormikValueOnMetadata(fetchedMetadata);
         break;
 
-      case 'onTemplate':
+      case "onTemplate":
         setFormikValueOnTemplate(citationStrings);
         break;
 
@@ -434,11 +407,11 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     let year = formik.values.year;
 
     if (!authorString) {
-      showError('Author is required');
+      showError("Author is required");
     }
 
     if (!year) {
-      showError('Year is required');
+      showError("Year is required");
     }
 
     //retrigger the useEfect
@@ -448,27 +421,26 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
   const onCancel = () => {
     formik.resetForm();
-    showWarn('Form has been reset');
+    showWarn("Form has been reset");
     //CLOSE MODAL
     handleAddModalVisible(false);
   };
 
   const confirmClearForm = () => {
     formik.resetForm();
-    showInfo('Form has been cleared');
+    showInfo("Form has been cleared");
   };
 
   const handleDropDown = (e: DropdownChangeEvent) => {
-    console.log('--- value ---');
+    console.log("--- value ---");
     console.log(e.value);
-    console.log('--- value ---');
-    if (e.value.code === 'reset') {
+    console.log("--- value ---");
+    if (e.value.code === "reset") {
       setSelectedProvider(null);
     } else {
       setSelectedProvider(e.value);
     }
   };
-
 
   /**
    * Set formik values on load
@@ -476,75 +448,75 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
    * @returns void
    */
   const setFormikValueOnLoad = () => {
-    formik.setFieldValue('article_title', '');
-    formik.setFieldValue('authors', '');
-    formik.setFieldValue('journal_name', '');
-    formik.setFieldValue('location', '');
-    formik.setFieldValue('doi', '');
-    formik.setFieldValue('year', '');
-    formik.setFieldValue('volume', '');
-    formik.setFieldValue('issue', '');
-    formik.setFieldValue('page', '');
-    formik.setFieldValue('step06', '');
-    formik.setFieldValue('article_about_content', '');
-    formik.setFieldValue('article_about_page', '');
-    formik.setFieldValue('article_support_study_content', '');
-    formik.setFieldValue('article_support_study_page', '');
-    formik.setFieldValue('article_does_not_support_study_content', '');
-    formik.setFieldValue('needed_support_study_content', '');
+    formik.setFieldValue("article_title", "");
+    formik.setFieldValue("authors", "");
+    formik.setFieldValue("journal_name", "");
+    formik.setFieldValue("location", "");
+    formik.setFieldValue("doi", "");
+    formik.setFieldValue("year", "");
+    formik.setFieldValue("volume", "");
+    formik.setFieldValue("issue", "");
+    formik.setFieldValue("page", "");
+    formik.setFieldValue("step06", "");
+    formik.setFieldValue("article_about_content", "");
+    formik.setFieldValue("article_about_page", "");
+    formik.setFieldValue("article_support_study_content", "");
+    formik.setFieldValue("article_support_study_page", "");
+    formik.setFieldValue("article_does_not_support_study_content", "");
+    formik.setFieldValue("needed_support_study_content", "");
   };
 
   //this function set formik value back to initial value retrieved
   const setFormikValueOnReset = () => {
-    formik.setFieldValue('article_title', articleTitleInitial);
-    formik.setFieldValue('authors', authorsInitial);
-    formik.setFieldValue('journal_name', journalNameInitial);
-    formik.setFieldValue('location', locationInitial);
-    formik.setFieldValue('doi', doiInitial);
-    formik.setFieldValue('year', yearInitial);
-    formik.setFieldValue('volume', volumeInitial);
-    formik.setFieldValue('issue', issueInitial);
-    formik.setFieldValue('page', pageInitial);
-    formik.setFieldValue('step06', step06Initial);
-    formik.setFieldValue('article_about_content', articleAboutContentInitial);
-    formik.setFieldValue('article_about_page', articleAboutPageInitial);
+    formik.setFieldValue("article_title", articleTitleInitial);
+    formik.setFieldValue("authors", authorsInitial);
+    formik.setFieldValue("journal_name", journalNameInitial);
+    formik.setFieldValue("location", locationInitial);
+    formik.setFieldValue("doi", doiInitial);
+    formik.setFieldValue("year", yearInitial);
+    formik.setFieldValue("volume", volumeInitial);
+    formik.setFieldValue("issue", issueInitial);
+    formik.setFieldValue("page", pageInitial);
+    formik.setFieldValue("step06", step06Initial);
+    formik.setFieldValue("article_about_content", articleAboutContentInitial);
+    formik.setFieldValue("article_about_page", articleAboutPageInitial);
     formik.setFieldValue(
-      'article_support_study_content',
-      articleSupportStudyContentInitial,
+      "article_support_study_content",
+      articleSupportStudyContentInitial
     );
     formik.setFieldValue(
-      'article_support_study_page',
-      articleSupportStudyPageInitial,
+      "article_support_study_page",
+      articleSupportStudyPageInitial
     );
     formik.setFieldValue(
-      'article_does_not_support_study_content',
-      articleDoesNotSupportStudyContentInitial,
+      "article_does_not_support_study_content",
+      articleDoesNotSupportStudyContentInitial
     );
 
     formik.setFieldValue(
-      'needed_support_study_content',
-      neededSupportStudyContentInitial,
+      "needed_support_study_content",
+      neededSupportStudyContentInitial
     );
   };
 
   //this will clear fields
   const setFormikValueOnClear = () => {
-    formik.setFieldValue('article_title', '');
-    formik.setFieldValue('authors', '');
-    formik.setFieldValue('journal_name', '');
-    formik.setFieldValue('location', '');
-    formik.setFieldValue('doi', '');
-    formik.setFieldValue('year', '');
-    formik.setFieldValue('volume', '');
-    formik.setFieldValue('issue', '');
-    formik.setFieldValue('page', '');
-    formik.setFieldValue('step06', '');
-    formik.setFieldValue('article_about_content', '');
-    formik.setFieldValue('article_about_page', '');
-    formik.setFieldValue('article_support_study_content', '');
-    formik.setFieldValue('article_support_study_page', '');
-    formik.setFieldValue('article_does_not_support_study_content', '');
-    formik.setFieldValue('needed_support_study_content', '');
+    formik.setFieldValue("article_title", "");
+    formik.setFieldValue("authors", "");
+    formik.setFieldValue("journal_name", "");
+    formik.setFieldValue("location", "");
+    formik.setFieldValue("doi", "");
+    formik.setFieldValue("year", "");
+    formik.setFieldValue("volume", "");
+    formik.setFieldValue("issue", "");
+    formik.setFieldValue("page", "");
+    formik.setFieldValue("step06", "");
+    formik.setFieldValue("article_about_content", "");
+    formik.setFieldValue("article_about_page", "");
+    formik.setFieldValue("article_support_study_content", "");
+    formik.setFieldValue("article_support_study_page", "");
+    formik.setFieldValue("article_does_not_support_study_content", "");
+    formik.setFieldValue("needed_support_study_content", "");
   };
 
   //this will populate metadata and clear form part b
@@ -556,45 +528,45 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
         obj[item.category.toLowerCase()] = item.data; // Use lowercase for keys
         return obj;
       },
-      {},
+      {}
     );
 
     // Update Panel A Data
-    setArticleTitle(metadataObj['title']);
-    setAuthors(metadataObj['authors']);
-    setJournalName(metadataObj['journal']);
-    setLocation(metadataObj['location']);
-    setDoi(metadataObj.url ? metadataObj['url'].split('doi.org/')[1] : '');
-    setYear(metadataObj.year ? metadataObj['year'].toString() : '');
-    setVolume(metadataObj['volume']);
-    setIssue(metadataObj['issue']);
-    setPage(metadataObj['page']);
+    setArticleTitle(metadataObj["title"]);
+    setAuthors(metadataObj["authors"]);
+    setJournalName(metadataObj["journal"]);
+    setLocation(metadataObj["location"]);
+    setDoi(metadataObj.url ? metadataObj["url"].split("doi.org/")[1] : "");
+    setYear(metadataObj.year ? metadataObj["year"].toString() : "");
+    setVolume(metadataObj["volume"]);
+    setIssue(metadataObj["issue"]);
+    setPage(metadataObj["page"]);
 
     // Update Panel B Data
     setStep06([]);
-    setArticleAboutContent('');
-    setArticleAboutPage('');
-    setArticleSupportStudyContent('');
-    setArticleSupportStudyPage('');
-    setArticleDoesNotSupportStudyContent('');
-    setNeededSupportStudyContent('');
+    setArticleAboutContent("");
+    setArticleAboutPage("");
+    setArticleSupportStudyContent("");
+    setArticleSupportStudyPage("");
+    setArticleDoesNotSupportStudyContent("");
+    setNeededSupportStudyContent("");
 
     setSelectedSubthemes([0]);
 
-    formik.setFieldValue('article_title', metadataObj.title);
-    formik.setFieldValue('authors', metadataObj.authors);
-    formik.setFieldValue('journal_name', metadataObj.journal);
-    formik.setFieldValue('location', metadataObj.location);
-    formik.setFieldValue('doi', metadataObj.doi);
-    formik.setFieldValue('year', metadataObj.year);
-    formik.setFieldValue('volume', metadataObj.volume);
-    formik.setFieldValue('issue', metadataObj.issue);
-    formik.setFieldValue('page', metadataObj.page);
-    formik.setFieldValue('step06', metadataObj.step06);
-    formik.setFieldValue('article_about_content', '');
-    formik.setFieldValue('article_about_page', '');
-    formik.setFieldValue('article_support_study_content', '');
-    formik.setFieldValue('article_support_study_page', '');
+    formik.setFieldValue("article_title", metadataObj.title);
+    formik.setFieldValue("authors", metadataObj.authors);
+    formik.setFieldValue("journal_name", metadataObj.journal);
+    formik.setFieldValue("location", metadataObj.location);
+    formik.setFieldValue("doi", metadataObj.doi);
+    formik.setFieldValue("year", metadataObj.year);
+    formik.setFieldValue("volume", metadataObj.volume);
+    formik.setFieldValue("issue", metadataObj.issue);
+    formik.setFieldValue("page", metadataObj.page);
+    formik.setFieldValue("step06", metadataObj.step06);
+    formik.setFieldValue("article_about_content", "");
+    formik.setFieldValue("article_about_page", "");
+    formik.setFieldValue("article_support_study_content", "");
+    formik.setFieldValue("article_support_study_page", "");
   };
 
   {
@@ -617,12 +589,12 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     const url = `${URL_LINKS.FETCH_METADATA.value}`;
     try {
       const response = await axios.post(url, { doi });
-      if (response.data.status === 'success') {
+      if (response.data.status === "success") {
         return response.data.data;
       }
     } catch (error) {
-      console.error('Error fetching metadata:', error);
-      showWarn('Error fetching metadata');
+      console.error("Error fetching metadata:", error);
+      showWarn("Error fetching metadata");
     }
     return null;
   };
@@ -630,17 +602,17 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const continueWithTemplateInsertion = (
     metadata: any[],
     authorString: string,
-    year: string,
+    year: string
   ) => {
     // Process metadata and generate citation strings
     const { citationStrings, metadataAuthor, metadataYear } = processMetadata(
       metadata,
       authorString,
-      year,
+      year
     );
 
     if (!metadataAuthor || !metadataYear) {
-      showWarn('Author and year are required from metadata.');
+      showWarn("Author and year are required from metadata.");
       setPanelBLoading(false); // Stop loading animation
       return;
     }
@@ -652,17 +624,17 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
       setNeededSupportStudyContent(citationStrings[3]);
 
-      formikManipulation('onTemplate', [], citationStrings);
+      formikManipulation("onTemplate", [], citationStrings);
 
       setPanelBLoading(false); // Stop loading animation
-      showInfo('Template inserted successfully');
+      showInfo("Template inserted successfully");
     }, 3000);
   };
 
   const processMetadata = (metadata: any[], authorString: any, year: any) => {
     const metadataObj = metadata.reduce(
       (obj, item) => ({ ...obj, [item.category.toLowerCase()]: item.data }),
-      {},
+      {}
     );
     const metadataAuthor = authorString || metadataObj.authors;
     const metadataYear = year || metadataObj.year;
@@ -670,7 +642,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     const authorsObj = parseAuthors(metadataAuthor);
     const inTextCitation = generateInTextCitation(
       authorsObj,
-      parseInt(metadataYear),
+      parseInt(metadataYear)
     );
 
     const citationStrings = [
@@ -684,13 +656,13 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   };
 
   const setFormikValueOnTemplate = (citationStrings: string[]) => {
-    formik.setFieldValue('article_about_content', citationStrings[0]);
-    formik.setFieldValue('article_support_study_content', citationStrings[1]);
+    formik.setFieldValue("article_about_content", citationStrings[0]);
+    formik.setFieldValue("article_support_study_content", citationStrings[1]);
     formik.setFieldValue(
-      'article_does_not_support_study_content',
-      citationStrings[2],
+      "article_does_not_support_study_content",
+      citationStrings[2]
     );
-    formik.setFieldValue('needed_support_study_content', citationStrings[3]);
+    formik.setFieldValue("needed_support_study_content", citationStrings[3]);
   };
 
   {
@@ -708,7 +680,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
       //get metadata
       const url = `${URL_LINKS.FETCH_METADATA.value}`;
       axios.post(url, { doi: doi }).then((response) => {
-        if (response.data.status === 'success') {
+        if (response.data.status === "success") {
           // Ensure the data structure of response is as expected
           let data = response.data.data;
 
@@ -719,7 +691,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     }
 
     setTimeout(() => {
-      formikManipulation('onMetadata', [], journalMetadata);
+      formikManipulation("onMetadata", [], journalMetadata);
       setPanelALoading(false);
       setPanelBLoading(false);
     }, 3000); // 3000 milliseconds = 3 seconds
@@ -739,13 +711,13 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
           //data.abstract
           setPanelAbstractData(response.data.data.abstract);
         } else {
-          showWarn('Error fetching abstract');
+          showWarn("Error fetching abstract");
         }
       })
       .catch((error: any) => {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
 
-        showWarn('Error fetching abstract');
+        showWarn("Error fetching abstract");
       });
 
     setPanelAbstractLoading(false);
@@ -759,9 +731,9 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
         setVideoData(response.data.data);
       })
       .catch((error: any) => {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
 
-        showWarn('Error fetching video');
+        showWarn("Error fetching video");
       });
   };
 
@@ -781,71 +753,99 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     setArticleSupportStudyContent(articleSupportStudyContentInitial);
     setArticleSupportStudyPage(articleSupportStudyPageInitial);
     setArticleDoesNotSupportStudyContent(
-      articleDoesNotSupportStudyContentInitial,
+      articleDoesNotSupportStudyContentInitial
     );
     setNeededSupportStudyContent(neededSupportStudyContentInitial);
     setSelectedSubthemes(selectedSubthemesInitial);
 
-    formikManipulation('onReset', [], null);
+    formikManipulation("onReset", [], null);
   };
 
   const resetAllDataInFields = () => {
-    console.log('resetAllDataInFields');
+    console.log("resetAllDataInFields");
     setLoading(true);
-    setArticleTitle('');
-    setAuthors('');
-    setJournalName('');
-    setLocation('');
-    setDoi('');
-    setYear('');
-    setVolume('');
-    setIssue('');
-    setPage('');
+    setArticleTitle("");
+    setAuthors("");
+    setJournalName("");
+    setLocation("");
+    setDoi("");
+    setYear("");
+    setVolume("");
+    setIssue("");
+    setPage("");
     setStep06([]);
-    setArticleAboutContent('');
-    setArticleAboutPage('');
-    setArticleSupportStudyContent('');
-    setArticleSupportStudyPage('');
-    setArticleDoesNotSupportStudyContent('');
-    setNeededSupportStudyContent('');
+    setArticleAboutContent("");
+    setArticleAboutPage("");
+    setArticleSupportStudyContent("");
+    setArticleSupportStudyPage("");
+    setArticleDoesNotSupportStudyContent("");
+    setNeededSupportStudyContent("");
 
     setSelectedSubthemes([0]);
 
-    formikManipulation('onClear', [], null);
+    formikManipulation("onClear", [], null);
     setLoading(false);
   };
 
   useEffect(() => {
+
+    console.log('00 useEffect');
+
+    console.log('-- use metadata --');
+    console.log(chooseMetadata);
+    console.log(' -- use metadata --');
     if (!showAddModal) {
       //Wipe all state values
       resetAllDataInFields();
       return;
     }
-    if (chooseMetadata && doi) {
+    if (chooseMetadata === true) {
       ProcessUseMetadata(doi);
     }
-  }, [showAddModal, projectId, userId]); // Add dependencies here
+  }, [
+    showAddModal,
+    projectId,
+    userId,
+    chooseMetadata,
+    journalMetadata,
+    article_title,
+    authors,
+    journal_name,
+    location,
+    doi,
+    year,
+    volume,
+    issue,
+    page,
+    step06,
+    article_about_content,
+    article_about_page,
+    article_support_study_content,
+    article_support_study_page,
+    article_does_not_support_study_content,
+    needed_support_study_content,
+  ]); // Add dependencies here
   return (
-    <div className='card flex'>
+    <div className="card flex">
       {loading ? (
         <Dialog
-          header='Journal Details'
+          header="Journal Details"
           visible={showAddModal}
-          style={{ width: '50vw' }}
+          style={{ width: "50vw" }}
           onHide={() => handleAddModalVisible(false)}
           maximizable={true}
         >
-          <div className='panel-body'>
-            <div className='container'>
-              <div className='loading-spinner'></div>
+          <div className="panel-body">
+            <div className="container">
+              <div className="loading-spinner"></div>
             </div>
           </div>
         </Dialog>
       ) : (
         <Dialog
-          header='Journal Details'
+          header="Journal Details"
           visible={showAddModal}
-          style={{ width: '50vw' }}
+          style={{ width: "50vw" }}
           onHide={() => handleAddModalVisible(false)}
           maximizable={true}
         >
@@ -860,8 +860,9 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                     <ContentDataTable
                       journalMetadata={journalMetadata}
                       setChooseMetadata={setChooseMetadata}
-                      setLoading={setLoading}
                       setIsConfirmDialogVisible={setIsConfirmDialogVisible}
+                      setPanelALoading={setPanelALoading}
+
                     />
                   )
                 }
@@ -869,7 +870,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
             )}
             <form
               onSubmit={formik.handleSubmit}
-              className='flex flex-column gap-2'
+              className="flex flex-column gap-2"
             >
               <Toast ref={toast} />
               <VideoModal
@@ -880,205 +881,208 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
               {/* Repeat the following pattern for each field */}
 
               {/** button set start */}
-              <div className='card flex flex-wrap gap-3'>
+              <div className="card flex flex-wrap gap-3">
                 <Button
-                  label='Video'
-                  severity='info'
-                  icon='pi pi-video'
+                  label="Video"
+                  severity="info"
+                  icon="pi pi-video"
                   onClick={() => callVideo()}
                 />
                 <Button
-                  label='Retrieve Abstract'
-                  icon='pi pi-check'
+                  label="Retrieve Abstract"
+                  icon="pi pi-check"
                   loading={loadingMetadata}
-                  onClick={() => abstractService.retrieveAbstractData(formik.values.doi)}
-                  severity='success'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    abstractService.retrieveAbstractData(formik.values.doi);
+                  }}
+                  severity="success"
                 />
-                <div className='card flex justify-content-center'>
+                <div className="card flex justify-content-center">
                   <Dropdown
                     value={selectedProvider}
                     onChange={handleDropDown}
                     options={providerSelection}
-                    optionLabel='name'
-                    placeholder='Select a Provider'
-                    className='w-full md:w-14rem'
+                    optionLabel="name"
+                    placeholder="Select a Provider"
+                    className="w-full md:w-14rem"
                   />
                 </div>
               </div>
               {/** button set end */}
-              <span className='p-float-label'>
+              <span className="p-float-label">
                 <InputText
-                  id='doi'
-                  name='doi'
+                  id="doi"
+                  name="doi"
                   value={formik.values.doi}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('doi'),
+                    "p-invalid": isFormFieldInvalid("doi"),
                   })}
                 />
-                <label htmlFor='doi'>DOI</label>{' '}
+                <label htmlFor="doi">DOI</label>{" "}
                 <Button
-                  type='button'
-                  label='Retrieve Metadata'
+                  type="button"
+                  label="Retrieve Metadata"
                   onClick={() => confirmDialogMetadata()}
-                  severity='danger'
+                  severity="danger"
                 />
               </span>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='authors'>Authors</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="authors">Authors</label>
                 <InputText
-                  id='authors'
-                  aria-describedby='authors-help'
+                  id="authors"
+                  aria-describedby="authors-help"
                   value={formik.values.authors}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('authors', e.target.value);
+                    formik.setFieldValue("authors", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('article_title'),
+                    "p-invalid": isFormFieldInvalid("article_title"),
                   })}
                 />
-                {getFormErrorMessage('authors')}
+                {getFormErrorMessage("authors")}
 
-                <small id='username-help'>Enter article authors.</small>
+                <small id="username-help">Enter article authors.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='article_title'>Article Title</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="article_title">Article Title</label>
                 <InputText
-                  id='article_title'
-                  aria-describedby='article_title-help'
+                  id="article_title"
+                  aria-describedby="article_title-help"
                   value={formik.values.article_title}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('article_title', e.target.value);
+                    formik.setFieldValue("article_title", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('article_title'),
+                    "p-invalid": isFormFieldInvalid("article_title"),
                   })}
                 />
-                {getFormErrorMessage('article_title')}
+                {getFormErrorMessage("article_title")}
 
-                <small id='username-help'>Enter article title.</small>
+                <small id="username-help">Enter article title.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='year'>Article Published Year</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="year">Article Published Year</label>
                 <InputText
-                  id='year'
-                  aria-describedby='year-help'
+                  id="year"
+                  aria-describedby="year-help"
                   value={formik.values.year}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('year', e.target.value);
+                    formik.setFieldValue("year", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('year'),
+                    "p-invalid": isFormFieldInvalid("year"),
                   })}
                 />
-                {getFormErrorMessage('year')}
+                {getFormErrorMessage("year")}
 
-                <small id='year-help'>Enter article published year.</small>
+                <small id="year-help">Enter article published year.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='journal_name'>Journal Name</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="journal_name">Journal Name</label>
                 <InputText
-                  id='journal_name'
-                  aria-describedby='journal_name-help'
+                  id="journal_name"
+                  aria-describedby="journal_name-help"
                   value={formik.values.journal_name}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('journal_name', e.target.value);
+                    formik.setFieldValue("journal_name", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('journal_name'),
+                    "p-invalid": isFormFieldInvalid("journal_name"),
                   })}
                 />
-                {getFormErrorMessage('journal_name')}
+                {getFormErrorMessage("journal_name")}
 
-                <small id='year-help'>Enter Journal Name.</small>
+                <small id="year-help">Enter Journal Name.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='location'>Journal location</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="location">Journal location</label>
                 <InputText
-                  id='location'
-                  aria-describedby='location-help'
+                  id="location"
+                  aria-describedby="location-help"
                   value={formik.values.location}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('location', e.target.value);
+                    formik.setFieldValue("location", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('location'),
+                    "p-invalid": isFormFieldInvalid("location"),
                   })}
                 />
-                {getFormErrorMessage('location')}
+                {getFormErrorMessage("location")}
 
-                <small id='year-help'>Enter Journal Location.</small>
+                <small id="year-help">Enter Journal Location.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='volume'>Volume</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="volume">Volume</label>
                 <InputText
-                  id='volume'
-                  aria-describedby='volume-help'
+                  id="volume"
+                  aria-describedby="volume-help"
                   value={formik.values.volume}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('volume', e.target.value);
+                    formik.setFieldValue("volume", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('volume'),
+                    "p-invalid": isFormFieldInvalid("volume"),
                   })}
                 />
-                {getFormErrorMessage('volume')}
+                {getFormErrorMessage("volume")}
 
-                <small id='volume-help'>Enter Journal Volume.</small>
+                <small id="volume-help">Enter Journal Volume.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='issue'>Issue</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="issue">Issue</label>
                 <InputText
-                  id='issue'
-                  aria-describedby='issue-help'
+                  id="issue"
+                  aria-describedby="issue-help"
                   value={formik.values.issue}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('issue', e.target.value);
+                    formik.setFieldValue("issue", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('issue'),
+                    "p-invalid": isFormFieldInvalid("issue"),
                   })}
                 />
-                {getFormErrorMessage('issue')}
+                {getFormErrorMessage("issue")}
 
-                <small id='issue-help'>Enter Journal Issue.</small>
+                <small id="issue-help">Enter Journal Issue.</small>
               </div>
 
-              <div className='flex flex-column gap-2'>
-                <label htmlFor='pages'>Pages</label>
+              <div className="flex flex-column gap-2">
+                <label htmlFor="pages">Pages</label>
                 <InputText
-                  id='pages'
-                  aria-describedby='issue-pages'
+                  id="pages"
+                  aria-describedby="issue-pages"
                   value={formik.values.page}
                   onBlur={formik.handleBlur}
                   onChange={(e) => {
-                    formik.setFieldValue('pages', e.target.value);
+                    formik.setFieldValue("pages", e.target.value);
                   }}
                   className={classNames({
-                    'p-invalid': isFormFieldInvalid('pages'),
+                    "p-invalid": isFormFieldInvalid("pages"),
                   })}
                 />
-                {getFormErrorMessage('pages')}
+                {getFormErrorMessage("pages")}
 
-                <small id='issue-help'>Enter Journal Pages.</small>
+                <small id="issue-help">Enter Journal Pages.</small>
               </div>
-              <div className='card flex flex-wrap justify-content-left gap-4'>
-                <Button label='Insert Template' severity='info' />
+              <div className="card flex flex-wrap justify-content-left gap-4">
+                <Button label="Insert Template" severity="info" />
               </div>
               <Divider />
               <PanelAbstractData
@@ -1088,19 +1092,19 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                 dataDoi={formik.values.doi}
               />
 
-              <Splitter style={{ height: '600px' }}>
+              <Splitter style={{ height: "600px" }}>
                 <SplitterPanel
-                  className='flex flex-column'
+                  className="flex flex-column"
                   size={60}
                   minSize={60}
                 >
-                  <label htmlFor='description'>
+                  <label htmlFor="description">
                     What is the article about and authors's point of departure ?
                   </label>
 
                   <InputTextarea
-                    id='article_about_content'
-                    name='article_about_content'
+                    id="article_about_content"
+                    name="article_about_content"
                     rows={4}
                     cols={30}
                     style={{
@@ -1108,28 +1112,28 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                       borderColor: authorPodColor,
                     }}
                     className={classNames({
-                      'p-invalid': isFormFieldInvalid('article_about_content'),
+                      "p-invalid": isFormFieldInvalid("article_about_content"),
                     })}
                     value={formik.values.article_about_content}
                     onChange={(e) => {
                       formik.setFieldValue(
-                        'article_about_content',
-                        e.target.value,
+                        "article_about_content",
+                        e.target.value
                       );
                     }}
                   />
-                  {getFormErrorMessage('article_about_content')}
-                  <label htmlFor='description'>
+                  {getFormErrorMessage("article_about_content")}
+                  <label htmlFor="description">
                     How the article support your study ?
                   </label>
 
                   <InputTextarea
-                    id='article_support_study_content'
-                    name='article_support_study_content'
+                    id="article_support_study_content"
+                    name="article_support_study_content"
                     rows={4}
                     cols={30}
                     className={classNames({
-                      'p-invalid': isFormFieldInvalid('article_about_content'),
+                      "p-invalid": isFormFieldInvalid("article_about_content"),
                     })}
                     value={formik.values.article_about_content}
                     style={{
@@ -1138,18 +1142,18 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                     }}
                     onChange={(e) => {
                       formik.setFieldValue(
-                        'article_support_study_content',
-                        e.target.value,
+                        "article_support_study_content",
+                        e.target.value
                       );
                     }}
                   />
-                  {getFormErrorMessage('article_support_study_content')}
-                  <label htmlFor='description'>
+                  {getFormErrorMessage("article_support_study_content")}
+                  <label htmlFor="description">
                     How the article does not support your study ?
                   </label>
                   <InputTextarea
-                    id='article_does_not_support_study_content'
-                    name='article_does_not_support_study_content'
+                    id="article_does_not_support_study_content"
+                    name="article_does_not_support_study_content"
                     rows={4}
                     cols={30}
                     style={{
@@ -1157,27 +1161,27 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                       borderColor: articleDoesNotSupportStudyColor,
                     }}
                     className={classNames({
-                      'p-invalid': isFormFieldInvalid(
-                        'article_does_not_support_study_content',
+                      "p-invalid": isFormFieldInvalid(
+                        "article_does_not_support_study_content"
                       ),
                     })}
                     value={formik.values.article_does_not_support_study_content}
                     onChange={(e) => {
                       formik.setFieldValue(
-                        'article_does_not_support_study_content',
-                        e.target.value,
+                        "article_does_not_support_study_content",
+                        e.target.value
                       );
                     }}
                   />
                   {getFormErrorMessage(
-                    'article_does_not_support_study_content',
+                    "article_does_not_support_study_content"
                   )}
-                  <label htmlFor='description'>
+                  <label htmlFor="description">
                     What else is needed to support your study ? (Your POD)
                   </label>
                   <InputTextarea
-                    id='needed_support_study_content'
-                    name='needed_support_study_content'
+                    id="needed_support_study_content"
+                    name="needed_support_study_content"
                     rows={4}
                     cols={30}
                     style={{
@@ -1185,54 +1189,54 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                       borderColor: neededSupportStudyColor,
                     }}
                     className={classNames({
-                      'p-invalid': isFormFieldInvalid(
-                        'needed_support_study_content',
+                      "p-invalid": isFormFieldInvalid(
+                        "needed_support_study_content"
                       ),
                     })}
                     value={formik.values.needed_support_study_content}
                     onChange={(e) => {
                       formik.setFieldValue(
-                        'needed_support_study_content',
-                        e.target.value,
+                        "needed_support_study_content",
+                        e.target.value
                       );
                     }}
                   />
-                  {getFormErrorMessage('needed_support_study_content')}
+                  {getFormErrorMessage("needed_support_study_content")}
                 </SplitterPanel>
                 <SplitterPanel
-                  className='flex justify-content-left'
+                  className="flex justify-content-left"
                   size={20}
                   minSize={10}
                 >
                   <Card>
-                    <label htmlFor='article_about_page'>Page</label>
-                    <div className='card flex justify-content-center'>
+                    <label htmlFor="article_about_page">Page</label>
+                    <div className="card flex justify-content-center">
                       <InputText
-                        name='article_about_page'
+                        name="article_about_page"
                         value={formik.values.article_about_page}
-                        onChange={() => { }}
+                        onChange={() => {}}
                       />
 
-                      {getFormErrorMessage('article_about_page')}
+                      {getFormErrorMessage("article_about_page")}
                     </div>
 
-                    <label htmlFor='article_support_study_page'>Page</label>
+                    <label htmlFor="article_support_study_page">Page</label>
 
-                    <div className='card flex justify-content-center'>
+                    <div className="card flex justify-content-center">
                       <InputText
-                        name='article_support_study_page'
+                        name="article_support_study_page"
                         value={formik.values.article_support_study_page}
                         onChange={(
-                          e: React.ChangeEvent<HTMLInputElement>,
-                        ) => { }}
+                          e: React.ChangeEvent<HTMLInputElement>
+                        ) => {}}
                       />
 
-                      {getFormErrorMessage('article_support_study_page')}
+                      {getFormErrorMessage("article_support_study_page")}
                     </div>
                   </Card>
                 </SplitterPanel>
 
-                <SplitterPanel className='flex justify-content-left' size={20}>
+                <SplitterPanel className="flex justify-content-left" size={20}>
                   <JournalDetailCheckboxesComponent
                     subthemeSelections={subthemeOptions}
                     selected={selected}
@@ -1241,27 +1245,27 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                 </SplitterPanel>
               </Splitter>
 
-              {getFormErrorMessage('doi')}
+              {getFormErrorMessage("doi")}
               {/* Continue for other fields */}
-              <div className='card flex flex-wrap gap-3'>
-                <Button type='submit' label='Submit' severity='success' />
+              <div className="card flex flex-wrap gap-3">
+                <Button type="submit" label="Submit" severity="success" />
                 <Button
-                  type='reset'
-                  label='Reset'
+                  type="reset"
+                  label="Reset"
                   onClick={resetAllDataInFieldsToInitial}
-                  severity='warning'
+                  severity="warning"
                 />
                 <Button
-                  type='button'
-                  label='Cancel'
+                  type="button"
+                  label="Cancel"
                   onClick={onCancel}
-                  severity='secondary'
+                  severity="secondary"
                 />
                 <Button
-                  type='button'
-                  label='Clear Form'
+                  type="button"
+                  label="Clear Form"
                   onClick={confirmClearForm}
-                  severity='danger'
+                  severity="danger"
                 />
               </div>
             </form>

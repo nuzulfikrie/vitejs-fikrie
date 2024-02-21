@@ -53,7 +53,7 @@ const App = () => {
       console.log(dataResponse);
 
 
-      setSubthemeOptions(dataResponse.subthemes);
+      setSubthemeOptions(dataResponse.data.subthemes);
 
       const dataTableResponse = await fetchData(linkFetch2);
       console.log('--- data response 2 ---');

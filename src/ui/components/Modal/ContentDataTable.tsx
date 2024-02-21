@@ -5,14 +5,11 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 
 type ContentDataTableProps = {
-  doi: string;
 
   journalMetadata: journalMetadata[];
   setChooseMetadata: (chooseMetadata: boolean) => void;
   setIsConfirmDialogVisible: (isConfirmDialogVisible: boolean) => void;
-  panelALoading: boolean;
   setPanelALoading: (panelALoading: boolean) => void;
-  ProcessUseMetadata: (doi: string) => void;
 };
 type journalMetadata = {
   category: string;
@@ -20,13 +17,10 @@ type journalMetadata = {
 };
 
 const ContentDataTable = ({
-  doi,
   journalMetadata,
   setChooseMetadata,
   setIsConfirmDialogVisible,
-  panelALoading,
   setPanelALoading,
-  ProcessUseMetadata,
 }: ContentDataTableProps) => {
   const reloadContentForm = () => {
     setIsConfirmDialogVisible(false);
