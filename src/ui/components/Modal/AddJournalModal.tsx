@@ -2,12 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import URL_LINKS from '../../../constants/urls';
-import {
-  generateInTextCitation,
-  parseAuthors,
-} from '../../../functions/app/Citations';
+import { CitationService } from './../../../services/citationService';
 import { useFormik } from 'formik';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Checkbox, CheckboxChangeEvent } from 'primereact/checkbox';
 import { Divider } from 'primereact/divider';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -20,6 +16,7 @@ import { classNames } from 'primereact/utils';
 import VideoModal from '../Modal/VideoModal';
 import PanelAbstractData from '../Panel/PanelAbstractData';
 import ContentDataTable from '../Modal/ContentDataTable';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 import { Skeleton } from 'primereact/skeleton';
 
@@ -46,6 +43,7 @@ interface AddJournalModalProps {
   showError: (message: string) => void;
   showInfo: (message: string) => void;
   subthemeOptions: Subtheme[];
+  journalColors: {};
 }
 interface Subtheme {
   name: string;
@@ -56,6 +54,17 @@ interface Provider {
   name: string;
   code: string;
 }
+
+// --data
+/**
+ *
+         "journal_color": {
+            "author_pod_color": "#669999",
+            "article_support_study_color": "#3399ff",
+            "article_dontsupport_study_color": "#666699",
+            "your_pod_color": "#003399"
+        },
+ */
 
 const providerSelection: Provider[] = [
   { name: 'IEEE', code: 'ieee' },
@@ -88,6 +97,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   showError,
   showInfo,
   subthemeOptions,
+  journalColors,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [panelALoading, setPanelALoading] = useState<boolean>(false);
@@ -155,11 +165,17 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const [needed_support_study_content, setNeededSupportStudyContent] =
     useState('');
 
-  const [authorPodColor, setAuthorPodColor] = useState('');
-  const [articleSupportStudyColor, setArticleSupportStudyColor] = useState('');
+  const [authorPodColor, setAuthorPodColor] = useState(
+    journalColors.author_pod_color,
+  );
+  const [articleSupportStudyColor, setArticleSupportStudyColor] = useState(
+    journalColors.article_support_study_color,
+  );
   const [articleDoesNotSupportStudyColor, setArticleDoesNotSupportStudyColor] =
-    useState('');
-  const [neededSupportStudyColor, setNeededSupportStudyColor] = useState('');
+    useState(journalColors.article_dontsupport_study_color);
+  const [neededSupportStudyColor, setNeededSupportStudyColor] = useState(
+    journalColors.your_pod_color,
+  );
   const [panelVisible, setPanelVisible] = useState<boolean>(false);
   const [panelAbstractLoading, setPanelAbstractLoading] =
     useState<boolean>(false);
@@ -347,6 +363,10 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const confirmDialogMetadata = () => {
     let doi = formik.values.doi;
 
+    console.log(' -- confirm dialog metadata --');
+    console.log(doi);
+    console.log(' -- confirm dialog metadata --');
+
     if (!doi) {
       showWarn('DOI is required');
       return;
@@ -354,8 +374,12 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
     // Retrieve metadata
     const url = `${URL_LINKS.FETCH_METADATA.value}`;
+    const csrfToken = localStorage.getItem('csrfToken');
     axios
-      .post(url, { doi: doi })
+      .post(url, {
+        doi: doi,
+        csrfToken: csrfToken,
+      })
       .then((response) => {
         if (response.data.status === 'success') {
           // Ensure the data structure of response is as expected
@@ -404,6 +428,26 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     }
   };
 
+  const acceptTemplate = () => {
+    setPanelBLoading(true);
+    insertTemplate();
+    showInfo('Success insert template');
+  };
+
+  const reject = () => {
+    showWarn('Canceled action');
+  };
+
+  const confirmTemplate = () => {
+    confirmDialog({
+      message: 'Are you sure you want to insert template?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: () => acceptTemplate(),
+      reject: () => reject(),
+    });
+  };
   /**
    *
    * handling
@@ -411,6 +455,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const insertTemplate = () => {
     let authorString = formik.values.authors;
     let year = formik.values.year;
+    let doi = formik.values.doi;
 
     if (!authorString) {
       showError('Author is required');
@@ -422,7 +467,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
     //retrigger the useEfect
 
-    handleInsertTemplate(authorString, year);
+    handleInsertTemplate(authorString, year, doi);
   };
 
   const onCancel = () => {
@@ -578,16 +623,20 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   {
     /* for interaction, button insert template  */
   }
-  const handleInsertTemplate = (authorString: string, year: string) => {
+  const handleInsertTemplate = (
+    authorString: string,
+    year: string,
+    doi: string,
+  ) => {
     setPanelBLoading(true); // Start loading animation
 
     // Fetch metadata if not available and then proceed
     if (!journalMetadata) {
       fetchMetadata(doi).then((fetchedMetadata) => {
-        continueWithTemplateInsertion(fetchedMetadata, authorString, year);
+        continueWithTemplateInsertion(fetchedMetadata, authorString, year, doi);
       });
     } else {
-      continueWithTemplateInsertion(journalMetadata, authorString, year);
+      continueWithTemplateInsertion(journalMetadata, authorString, year, doi);
     }
   };
 
@@ -609,6 +658,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     metadata: any[],
     authorString: string,
     year: string,
+    doi: string,
   ) => {
     // Process metadata and generate citation strings
     const { citationStrings, metadataAuthor, metadataYear } = processMetadata(
@@ -645,10 +695,14 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     const metadataAuthor = authorString || metadataObj.authors;
     const metadataYear = year || metadataObj.year;
 
-    const authorsObj = parseAuthors(metadataAuthor);
-    const inTextCitation = generateInTextCitation(
+    const authorsObj = CitationService.parseAuthors(metadataAuthor);
+
+    console.log('--- authors object ---');
+    console.log(authorsObj);
+    const inTextCitation = CitationService.generateInTextCitation(
       authorsObj,
       parseInt(metadataYear),
+      doi,
     );
 
     const citationStrings = [
@@ -1088,7 +1142,11 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                 </div>
               )}
               <div className='card flex flex-wrap justify-content-left gap-4'>
-                <Button label='Insert Template' severity='info' />
+                <Button
+                  label='Insert Template'
+                  severity='info'
+                  onClick={() => confirmTemplate()}
+                />
               </div>
               <Divider />
               <PanelAbstractData

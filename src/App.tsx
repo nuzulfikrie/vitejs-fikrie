@@ -26,7 +26,15 @@ const App = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [subthemeOptions, setSubthemeOptions] = useState([]); // [Subtheme selection options]
 
+  const [journalColorData, setJournalColorData] = useState<journalColor[]>([]);
+
+  const [journalBalanceCount, setJournalBalanceCount] = useState(0);
+
   const toast = useRef<Toast>(null);
+  interface journalColor {
+    description: string;
+    colorCode: string;
+  }
 
   useEffect(() => {
     fetchDataSource();
@@ -53,6 +61,10 @@ const App = () => {
       console.log(dataResponse);
 
       setSubthemeOptions(dataResponse.data.subthemes);
+
+      setJournalBalanceCount(dataResponse.data.balance);
+
+      setJournalColorData(dataResponse.data.journal_color);
 
       const dataTableResponse = await fetchData(linkFetch2);
       console.log('--- data response 2 ---');
@@ -171,12 +183,24 @@ const App = () => {
               disabled={loading}
               style={{ color: 'white' }}
             />
-            <Button
-              icon='fa fa-plus'
-              label='Add New Journal'
-              severity='success'
-              onClick={handleAddNewJournal}
-            />
+            {journalBalanceCount > 0 ? (
+              <Button
+                icon='fa fa-plus'
+                label='Add New Journal'
+                severity='success'
+                onClick={handleAddNewJournal}
+              />
+            ) : (
+              <Button
+                style={{ color: 'white' }}
+                icon='fa fa-plus'
+                label='Add New Journal'
+                severity='default'
+                tooltip='You have reached the maximum number of journals'
+                disabled={true}
+              />
+            )}
+
             {/* Enable checkbox for multiple selection */}
             {enableCheckBox ? (
               <Button
@@ -207,6 +231,8 @@ const App = () => {
                 disabled
               />
             )}
+
+            <h3>You can add up to:{journalBalanceCount} Journals</h3>
           </div>
           {loading ? (
             <div className='card'>
@@ -312,14 +338,18 @@ const App = () => {
                     return (
                       <div>
                         <Button
-                          label='Edit'
+                          style={{ color: 'white' }}
+                          icon='fa-solid fa-pen'
                           className='p-button-sm p-button-info'
+                          tooltip='Edit journal'
                           onClick={() => {
                             showInfo('Edit journal');
                           }}
                         />
                         {enableCheckBox && (
                           <Button
+                            style={{ color: 'white' }}
+                            icon='fa fa-trash'
                             label='Delete'
                             className='p-button-sm p-button-danger'
                             onClick={() => {
@@ -349,6 +379,7 @@ const App = () => {
           showError={showError}
           showInfo={showInfo}
           subthemeOptions={subthemeOptions}
+          journalColors={journalColorData}
         />
       </div>
     </PrimeReactProvider>
