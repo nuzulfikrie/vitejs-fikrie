@@ -2,10 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import URL_LINKS from "../../../constants/urls";
-import {
-  generateInTextCitation,
-  parseAuthors,
-} from "../../../functions/app/Citations";
+
 import { useFormik } from "formik";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
@@ -30,6 +27,8 @@ import JournalDetailCheckboxesComponent from "../Form/JournalDetailCheckboxesCom
 
 import { abstractService } from "../../../services/abstractService";
 import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
+import { parseAuthors,generateCitationUsingDoi } from "../../../services/citationService";
+
 
 interface AddJournalModalProps {
   toast: React.RefObject<Toast>;
@@ -405,6 +404,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const insertTemplate = () => {
     let authorString = formik.values.authors;
     let year = formik.values.year;
+    let doi = formik.values.doi;
 
     if (!authorString) {
       showError("Author is required");
@@ -416,7 +416,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
     //retrigger the useEfect
 
-    handleInsertTemplate(authorString, year);
+    handleInsertTemplate(authorString, year,doi);
   };
 
   const onCancel = () => {
@@ -572,8 +572,20 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   {
     /* for interaction, button insert template  */
   }
-  const handleInsertTemplate = (authorString: string, year: string) => {
+  const handleInsertTemplate = (authorString: string, year: string, doi:string) => {
     setPanelBLoading(true); // Start loading animation
+
+    generateCitationUsingDoi(doi).then((response) => {
+
+
+      console.log('############################ inTextCitation  response ############################');
+      console.log(response);
+      console.log('############################ inTextCitation response ############################');
+    });
+
+    //this is a promise,. to handle it we use
+
+
 
     // Fetch metadata if not available and then proceed
     if (!journalMetadata) {
@@ -581,6 +593,15 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
         continueWithTemplateInsertion(fetchedMetadata, authorString, year);
       });
     } else {
+
+      console.log('############################ journalMetadata  response ############################');
+      console.log(journalMetadata);
+      console.log('############################ journalMetadata response ############################');
+
+      console.log('############################ authorString  response ############################');
+      console.log(authorString);
+      console.log('############################ authorString response ############################');
+
       continueWithTemplateInsertion(journalMetadata, authorString, year);
     }
   };
@@ -640,10 +661,9 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     const metadataYear = year || metadataObj.year;
 
     const authorsObj = parseAuthors(metadataAuthor);
-    const inTextCitation = generateInTextCitation(
-      authorsObj,
-      parseInt(metadataYear)
-    );
+
+
+    const inTextCitation = generateCitationUsingDoi(formik.values.doi);
 
     const citationStrings = [
       `${inTextCitation} states that`,
@@ -1082,7 +1102,10 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                 <small id="issue-help">Enter Journal Pages.</small>
               </div>
               <div className="card flex flex-wrap justify-content-left gap-4">
-                <Button label="Insert Template" severity="info" />
+                <Button label="Insert Template" severity="info" onClick={(e) =>{
+                  e.preventDefault()
+                  insertTemplate()
+                  }}/>
               </div>
               <Divider />
               <PanelAbstractData
