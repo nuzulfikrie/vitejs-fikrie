@@ -41,6 +41,8 @@ interface AddJournalModalProps {
   showWarn: (message: string) => void;
   showError: (message: string) => void;
   showInfo: (message: string) => void;
+  subthemeOptions: Subtheme[];
+  journalColors: {};
 }
 interface Subtheme {
   name: string;
@@ -51,6 +53,17 @@ interface Provider {
   name: string;
   code: string;
 }
+
+// --data
+/**
+ *
+         "journal_color": {
+            "author_pod_color": "#669999",
+            "article_support_study_color": "#3399ff",
+            "article_dontsupport_study_color": "#666699",
+            "your_pod_color": "#003399"
+        },
+ */
 
 const providerSelection: Provider[] = [
   { name: "IEEE", code: "ieee" },
@@ -85,6 +98,12 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   subthemeOptions,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [panelALoading, setPanelALoading] = useState<boolean>(false);
+  const [panelAVisible, setPanelAVisible] = useState<boolean>(false);
+
+  const [panelBLoading, setPanelBLoading] = useState<boolean>(false);
+  const [panelBVisible, setPanelBVisible] = useState<boolean>(false);
+
   const [videoData, setVideoData] = useState<any>(null);
 
   const [articleTitleInitial, setArticleTitleInitial] = useState("");
@@ -104,8 +123,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const [journalMetadata, setJournalMetadata] = useState(null);
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
   const [chooseMetadata, setChooseMetadata] = useState(false);
-  const [panelBLoading, setPanelBLoading] = useState<boolean>(false);
-  const [panelBVisible, setPanelBVisible] = useState<boolean>(false);
+
   const [articleAboutContentInitial, setArticleAboutContentInitial] =
     useState("");
   const [articleAboutPageInitial, setArticleAboutPageInitial] = useState("");
@@ -340,6 +358,10 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
   const confirmDialogMetadata = () => {
     let doi = formik.values.doi;
 
+    console.log(' -- confirm dialog metadata --');
+    console.log(doi);
+    console.log(' -- confirm dialog metadata --');
+
     if (!doi) {
       showWarn("DOI is required");
       return;
@@ -347,8 +369,12 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
 
     // Retrieve metadata
     const url = `${URL_LINKS.FETCH_METADATA.value}`;
+    const csrfToken = localStorage.getItem('csrfToken');
     axios
-      .post(url, { doi: doi })
+      .post(url, {
+        doi: doi,
+        csrfToken: csrfToken,
+      })
       .then((response) => {
         if (response.data.status === "success") {
           // Ensure the data structure of response is as expected
@@ -397,6 +423,26 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     }
   };
 
+  const acceptTemplate = () => {
+    setPanelBLoading(true);
+    insertTemplate();
+    showInfo('Success insert template');
+  };
+
+  const reject = () => {
+    showWarn('Canceled action');
+  };
+
+  const confirmTemplate = () => {
+    confirmDialog({
+      message: 'Are you sure you want to insert template?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: () => acceptTemplate(),
+      reject: () => reject(),
+    });
+  };
   /**
    *
    * handling
@@ -590,7 +636,7 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
     // Fetch metadata if not available and then proceed
     if (!journalMetadata) {
       fetchMetadata(doi).then((fetchedMetadata) => {
-        continueWithTemplateInsertion(fetchedMetadata, authorString, year);
+        continueWithTemplateInsertion(fetchedMetadata, authorString, year, doi);
       });
     } else {
 
@@ -882,7 +928,6 @@ const AddJournalModal: React.FC<AddJournalModalProps> = ({
                       setChooseMetadata={setChooseMetadata}
                       setIsConfirmDialogVisible={setIsConfirmDialogVisible}
                       setPanelALoading={setPanelALoading}
-
                     />
                   )
                 }
