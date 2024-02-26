@@ -15,9 +15,6 @@ const VideoModal: React.FC<VideoModalProps> = ({
   setModalVideoVisible,
 }: VideoModalProps) => {
   const [dataAlreadyLoaded, setDataAlreadyLoaded] = useState(false);
-  console.log('--- videodata---');
-  console.log(videoData);
-  console.log('--- videodata---');
 
   if (videoData && !dataAlreadyLoaded) {
     setDataAlreadyLoaded(true);

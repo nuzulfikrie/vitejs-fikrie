@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {  Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { PrimeReactProvider } from 'primereact/api';
 import { Card } from 'primereact/card';
@@ -51,7 +51,6 @@ const JournalList = () => {
       setData(dataResponse);
       console.log('--- data  ---');
       console.log(dataResponse);
-
 
       setSubthemeOptions(dataResponse.data.subthemes);
 
@@ -152,7 +151,6 @@ const JournalList = () => {
       showWarn('Please select at least one journal to delete');
       return;
     }
-
   };
 
   {
@@ -163,187 +161,195 @@ const JournalList = () => {
 
   return (
     <>
-    <PrimeReactProvider>
-      <div>
-        <Card>
-          <div className='p-d-flex p-jc-between p-ai-center'>
-            <Button
-              icon='fa fa-refresh'
-              label='Refresh'
-              onClick={handleRefresh}
-              disabled={loading}
-              style={{ 'color': 'white' }}
-            />
-            <Button icon='fa fa-plus' label='Add New Journal' severity='success' onClick={handleAddNewJournal} />
-            {/* Enable checkbox for multiple selection */}
-            {enableCheckBox ? (
+      <PrimeReactProvider>
+        <div>
+          <Card>
+            <div className='p-d-flex p-jc-between p-ai-center'>
               <Button
-                label='Disable Checkbox'
-                severity='warning'
-                onClick={() => handleEnableCheckBox(false)}
+                icon='fa fa-refresh'
+                label='Refresh'
+                onClick={handleRefresh}
+                disabled={loading}
+                style={{ color: 'white' }}
               />
-            ) : (
               <Button
-                label='Enable Checkbox'
-                severity='info'
-                onClick={() => handleEnableCheckBox(true)}
+                icon='fa fa-plus'
+                label='Add New Journal'
+                severity='success'
+                onClick={handleAddNewJournal}
               />
-            )}
-            {
-              (enableCheckBox && selectedRows.length > 0) ? (
+              {/* Enable checkbox for multiple selection */}
+              {enableCheckBox ? (
+                <Button
+                  label='Disable Checkbox'
+                  severity='warning'
+                  onClick={() => handleEnableCheckBox(false)}
+                />
+              ) : (
+                <Button
+                  label='Enable Checkbox'
+                  severity='info'
+                  onClick={() => handleEnableCheckBox(true)}
+                />
+              )}
+              {enableCheckBox && selectedRows.length > 0 ? (
                 <Button
                   icon='fa fa-trash'
                   label='Delete Multiple Journals'
                   severity='danger'
                   onClick={() => deleteMultipleJournalsClick()}
-                />) :
-                (
-                  <Button
-                    icon='fa fa-trash'
-                    label='Delete Multiple Journals'
-                    severity='danger'
-                    onClick={() => deleteMultipleJournalsClick()}
-                    disabled
+                />
+              ) : (
+                <Button
+                  icon='fa fa-trash'
+                  label='Delete Multiple Journals'
+                  severity='danger'
+                  onClick={() => deleteMultipleJournalsClick()}
+                  disabled
+                />
+              )}
+            </div>
+            {loading ? (
+              <div className='card'>
+                <ProgressSpinner />
+              </div>
+            ) : (
+              <div className='card'>
+                <DataTable
+                  value={dataTable}
+                  loading={loading}
+                  paginator
+                  rows={5}
+                  rowsPerPageOptions={[5, 10, 25, 50]}
+                  selection={selectedRows}
+                  onSelectionChange={(e) => setSelectedRows(e.value)}
+                  tableStyle={{ minWidth: '50rem' }}
+                >
+                  {/* Define columns and data */}
+                  {/* column, select,id, author,titile, journal name, year, volumn, issue, page, doi, created on ,action  */}
+                  {
+                    // Enable checkbox for multiple selection
+                    enableCheckBox && (
+                      <Column
+                        selectionMode='multiple'
+                        headerStyle={{ width: '3rem' }}
+                      />
+                    )
+                  }
+                  <Column field='id' header='ID' />
+                  <Column field='author' header='Author' />
+                  <Column
+                    field='article_title'
+                    header='Title'
+                    body={(rowData: any) => {
+                      //dangerously set inner html
+                      return (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: rowData.article_title,
+                          }}
+                        />
+                      );
+                    }}
                   />
-                )
-            }
-
-          </div>
-          {loading ? (
-            <div className='card'>
-              <ProgressSpinner />
-            </div>
-          ) : (
-            <div className='card'>
-              <DataTable
-                value={dataTable}
-                loading={loading}
-                paginator
-                rows={5}
-                rowsPerPageOptions={[5, 10, 25, 50]}
-                selection={selectedRows}
-                onSelectionChange={(e) => setSelectedRows(e.value)}
-                tableStyle={{ minWidth: '50rem' }}
-              >
-                {/* Define columns and data */}
-                {/* column, select,id, author,titile, journal name, year, volumn, issue, page, doi, created on ,action  */}
-                {
-                  // Enable checkbox for multiple selection
-                  enableCheckBox && (
-                    <Column
-                      selectionMode='multiple'
-                      headerStyle={{ width: '3rem' }}
-                    />
-                  )
-                }
-                <Column field='id' header='ID' />
-                <Column field='author' header='Author' />
-                <Column
-                  field='article_title'
-                  header='Title'
-                  body={(rowData: any) => {
-                    //dangerously set inner html
-                    return (
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: rowData.article_title,
-                        }}
-                      />
-                    );
-                  }}
-                />
-                <Column field='journal_name' header='Journal Name' />
-                <Column
-                  field='year'
-                  header='Year'
-                  body={(rowData: any) => {
-                    //dangerously set inner html
-                    return (
-                      <div dangerouslySetInnerHTML={{ __html: rowData.year }} />
-                    );
-                  }}
-                />
-                <Column
-                  field='volume'
-                  header='Volume'
-                  body={(rowData: any) => {
-                    //dangerously set inner html
-                    return (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: rowData.volume }}
-                      />
-                    );
-                  }}
-                />
-                <Column
-                  field='issue'
-                  header='Issue'
-                  body={(rowData: any) => {
-                    //dangerously set inner html
-                    return (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: rowData.issue }}
-                      />
-                    );
-                  }}
-                />
-                <Column
-                  field='page'
-                  header='Page'
-                  body={(rowData: any) => {
-                    //dangerously set inner html
-                    return (
-                      <div dangerouslySetInnerHTML={{ __html: rowData.page }} />
-                    );
-                  }}
-                />
-                <Column
-                  field='doi'
-                  header='DOI'
-                  body={(rowData: any) => {
-                    //dangerously set inner html
-                    return (
-                      <div dangerouslySetInnerHTML={{ __html: rowData.doi }} />
-                    );
-                  }}
-                />
-                <Column field='created' header='Created On' />
-                <Column
-                  body={(rowData: any) => {
-                    return (
-                      <div>
-                        <>
-                          <Link to={`/pages/editJournal/${rowData.id}`}>
-                            <Button
-                              label='Edit'
-                              className='p-button-sm p-button-info'
-                            />
-
-                          </Link>
-                        </>
-                        {enableCheckBox && (
+                  <Column field='journal_name' header='Journal Name' />
+                  <Column
+                    field='year'
+                    header='Year'
+                    body={(rowData: any) => {
+                      //dangerously set inner html
+                      return (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: rowData.year }}
+                        />
+                      );
+                    }}
+                  />
+                  <Column
+                    field='volume'
+                    header='Volume'
+                    body={(rowData: any) => {
+                      //dangerously set inner html
+                      return (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: rowData.volume }}
+                        />
+                      );
+                    }}
+                  />
+                  <Column
+                    field='issue'
+                    header='Issue'
+                    body={(rowData: any) => {
+                      //dangerously set inner html
+                      return (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: rowData.issue }}
+                        />
+                      );
+                    }}
+                  />
+                  <Column
+                    field='page'
+                    header='Page'
+                    body={(rowData: any) => {
+                      //dangerously set inner html
+                      return (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: rowData.page }}
+                        />
+                      );
+                    }}
+                  />
+                  <Column
+                    field='doi'
+                    header='DOI'
+                    body={(rowData: any) => {
+                      //dangerously set inner html
+                      return (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: rowData.doi }}
+                        />
+                      );
+                    }}
+                  />
+                  <Column field='created' header='Created On' />
+                  <Column
+                    body={(rowData: any) => {
+                      return (
+                        <div>
                           <>
-                            <Button
-                              label='Delete'
-                              className='p-button-sm p-button-danger'
-                              onClick={() => {
-                                showWarn('Delete journal');
-                              }}
-                            />
+                            <Link to={`/pages/editJournal/${rowData.id}`}>
+                              <Button
+                                label='Edit'
+                                className='p-button-sm p-button-info'
+                                style={{ color: 'white' }}
+                              />
+                            </Link>
                           </>
-                        )}
-                      </div>
-                    );
-                  }}
-                />
-              </DataTable>
-            </div>
-          )}
-        </Card>
+                          {enableCheckBox && (
+                            <>
+                              <Button
+                                label='Delete'
+                                className='p-button-sm p-button-danger'
+                                onClick={() => {
+                                  showWarn('Delete journal');
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      );
+                    }}
+                  />
+                </DataTable>
+              </div>
+            )}
+          </Card>
 
-        <Toast ref={toast} />
-      </div>
-    </PrimeReactProvider>
+          <Toast ref={toast} />
+        </div>
+      </PrimeReactProvider>
     </>
   );
 };
