@@ -211,8 +211,8 @@ const JournalList = () => {
             </div>
             {loading ? (
               <div className='card'>
-                <ProgressSpinner />
-              </div>
+<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
+</div>
             ) : (
               <div className='card'>
                 <DataTable

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import AddJournal from '../src/pages/AddJournal';
-import JournalList from '../src/pages/JournalList';
-import EditJournal from '../src/pages/EditJournal';
+import AddJournal from '../src/Pages/AddJournal';
+import JournalList from '../src/Pages/JournalList';
+import EditJournal from '../src/Pages/EditJournal';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { useNavigate } from 'react-router-dom';
@@ -52,7 +52,7 @@ const App = () => {
 
     return (
       <div>
-        <Link ref={linkRef} to='/pages/JournalList' style={{ display: 'none' }}>
+        <Link ref={linkRef} to='/stepsix/JournalList' style={{ display: 'none' }}>
           Navigate
         </Link>
 
@@ -67,7 +67,7 @@ const App = () => {
           label='List Journal'
           icon='pi pi-list'
           style={{ marginRight: '.25em', color: 'white' }}
-          onClick={() => navigate('/pages/JournalList')}
+          onClick={() => navigate('/stepsix/JournalList')}
           className='p-mr-2'
         />
         {canAdd === true ? (
@@ -75,7 +75,7 @@ const App = () => {
             label={labelAddButton}
             icon='pi pi-plus'
             style={{ marginRight: '.25em', color: 'white' }}
-            onClick={() => navigate('/pages/addJournal')}
+            onClick={() => navigate('/stepsix/addJournal')}
           />
         ) : (
           <Button
@@ -211,9 +211,9 @@ const App = () => {
         {hasInternet && <PanelHasConnection />}{' '}
         {/* Show has connection panel */}
         <Routes>
-          <Route path='/pages/JournalList' element={<JournalList />} />
+          <Route path='/stepsix/JournalList' element={<JournalList />} />
           <Route
-            path='/pages/addJournal'
+            path='/stepsix/addJournal'
             element={
               <AddJournal
                 toast={toast}
@@ -229,7 +229,7 @@ const App = () => {
             }
           />
           <Route
-            path='/pages/editJournal/:journalId'
+            path='/stepsix/editJournal/:journalId'
             element={<EditJournal journalId={0} />}
           />
         </Routes>

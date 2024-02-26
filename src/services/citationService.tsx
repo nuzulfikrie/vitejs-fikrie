@@ -208,23 +208,19 @@ function generateAPACitation(authors: Author[], year: number, title: string, sou
  */
 
   export async function generateCitationUsingDoi(doi: string): Promise<string> {
-    const data = await Cite.async(doi);
 
-    console.log('############################################################ data ##########################################################');
+    //we form citation by sending data to http://localhost:3000/citation?doi
+    let url = `http://localhost:3000/citation?doi=${doi}`;
 
-    console.log(data);
-    console.log('############################################################ data ##########################################################');
+    const response = await fetch(url);
 
+    const output = await response.text();
 
-    let output = data.format('bibliography', {
-      format: 'text',
-      lang: 'en-US'
-    });
-
-    console.log('############################################################ generateCitationUsingDoi ##########################################################');
-
+    console.log('$$$$$$$$$$$$$$$$$$ server output $$$$$$$$$$$$$$$$$$');
     console.log(output);
-    console.log('############################################################ generateCitationUsingDoi ##########################################################');
+    console.log('$$$$$$$$$$$$$$$$$$ server output $$$$$$$$$$$$$$$$$$');
+
+    
 
     return output;
   }

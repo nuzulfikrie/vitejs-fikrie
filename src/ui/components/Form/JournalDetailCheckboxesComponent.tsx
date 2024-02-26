@@ -16,7 +16,6 @@ const JournalDetailCheckboxesComponent: React.FC<
   JournalDetailCheckboxesProps
 > = ({ subthemeSelections, selected, onCategoryChange }) => {
   // Add your component logic here
-  console.log('subthemeSelections', subthemeSelections);
   return (
     // Add your JSX code here
     <Card>
