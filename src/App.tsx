@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import AddJournal from '../src/Pages/AddJournal';
+import AddJournalPage from '../src/Pages/AddJournalPage';
 import JournalList from '../src/Pages/JournalList';
 import EditJournal from '../src/Pages/EditJournal';
 import { Button } from 'primereact/button';
@@ -215,7 +215,7 @@ const App = () => {
           <Route
             path='/stepsix/addJournal'
             element={
-              <AddJournal
+              <AddJournalPage
                 toast={toast}
                 showSuccess={showSuccess}
                 showInfo={showInfo}

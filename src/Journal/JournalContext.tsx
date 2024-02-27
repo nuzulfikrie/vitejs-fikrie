@@ -3,13 +3,22 @@ import URL_LINKS from '../constants/urls';
 import axios from 'axios';
 import { abstractService } from '../services/abstractService';
 
-const JournalContext = createContext(null);
+const JournalContext = createContext({
+  videoData: null,
+  setVideoData: () => {},
+  journalMetadata: null,
+  setJournalMetadata: () => {},
+  fetchMetadata: async () => {},
+  fetchAbstract: async () => {},
+  error: null,
+});
 
 export const useJournal = () => useContext(JournalContext);
 export const JournalProvider = ({ children }: { children: React.ReactNode }) => {
   const [videoData, setVideoData] = useState(null);
-
   const [journalMetadata, setJournalMetadata] = useState(null);
+  const [error, setError] = useState(null);
+
 
   const fetchMetadata = async (doi: string) => {
     const url = `${URL_LINKS.FETCH_METADATA.value}`;
@@ -32,7 +41,17 @@ export const JournalProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   return (
-    <JournalContext.Provider value={{ videoData, setVideoData, journalMetadata, setJournalMetadata, fetchMetadata,fetchAbstract }}>
+    <JournalContext.Provider
+    value={{
+      videoData,
+      setVideoData,
+      journalMetadata,
+      setJournalMetadata,
+      fetchMetadata,
+      fetchAbstract,
+      error,
+    }}
+  >
       {children}
     </JournalContext.Provider>
   );
