@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import AddJournalPage from '../src/Pages/AddJournalPage';
-import JournalList from '../src/Pages/JournalList';
-import EditJournal from '../src/Pages/EditJournal';
+import AddJournalPage from '../src/pages/AddJournalPage';
+import JournalList from '../src/pages/JournalList';
+import EditJournal from '../src/pages/EditJournal';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { useNavigate } from 'react-router-dom';
