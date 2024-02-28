@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import URL_LINKS from '../constants/urls';
 import axios from 'axios';
+import { useForm } from 'react-hook-form';
 import { abstractService } from '../services/abstractService';
 
 const JournalContext = createContext({
@@ -16,7 +17,6 @@ const JournalContext = createContext({
   callVideo: () => {},
   error: null,
 });
-
 export const useJournal = () => useContext(JournalContext);
 export const JournalProvider = ({
   children,

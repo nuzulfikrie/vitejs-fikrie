@@ -52,7 +52,11 @@ const App = () => {
 
     return (
       <div>
-        <Link ref={linkRef} to='/stepsix/JournalList' style={{ display: 'none' }}>
+        <Link
+          ref={linkRef}
+          to='/stepsix/JournalList'
+          style={{ display: 'none' }}
+        >
           Navigate
         </Link>
 
@@ -126,7 +130,7 @@ const App = () => {
       setSubthemeOptions(dataResponse.data.subthemes);
 
       setLimit(dataResponse.data.balance);
-
+      setJournalColors(dataResponse.data.journal_color);
       if (dataResponse.data.balance === 0) {
         setCanAdd(false);
       } else {

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 
 interface VideoModalProps {
-  videoData: string;
+  videoData?: string | undefined | null;
   modalVideoVisible: boolean;
   setModalVideoVisible: (modalVideoVisible: boolean) => void;
 }
-const putvideo = (videoData: string) => {
+const putvideo = (videoData?: string) => {
   return <div dangerouslySetInnerHTML={{ __html: videoData }} />;
 };
 const VideoModal: React.FC<VideoModalProps> = ({
@@ -20,16 +20,21 @@ const VideoModal: React.FC<VideoModalProps> = ({
     setDataAlreadyLoaded(true);
   }
   //dangerously set inner html for videodata
-  return (
-    <Dialog
-      header='Video Instructions'
-      visible={modalVideoVisible}
-      style={{ width: '50vw' }}
-      onHide={() => setModalVideoVisible(false)}
-    >
-      {putvideo(videoData)}
-    </Dialog>
-  );
+
+  if (videoData === null || videoData === undefined) {
+    return;
+  } else {
+    return (
+      <Dialog
+        header='Video Instructions'
+        visible={modalVideoVisible}
+        style={{ width: '50vw' }}
+        onHide={() => setModalVideoVisible(false)}
+      >
+        {putvideo(videoData)}
+      </Dialog>
+    );
+  }
 };
 
 export default VideoModal;
