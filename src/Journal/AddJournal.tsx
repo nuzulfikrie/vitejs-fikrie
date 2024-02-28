@@ -128,24 +128,29 @@ const AddJournal: React.FC<AddJournalProps> = ({
     }
     try {
       const dataFetchedMetadata = await fetchMetadata(doi);
+
+      console.log('--- dataFetchedMetadata---');
+      console.log(dataFetchedMetadata);
+      console.log('--- dataFetchedMetadata---');
+
       if (dataFetchedMetadata !== undefined) {
-        setValue('article_title', dataFetchedMetadata.title);
-        setValue('authors', dataFetchedMetadata.authors);
-        setValue('journal_name', dataFetchedMetadata.journal);
-        setValue('location', dataFetchedMetadata.location);
+        setValue('article_title', dataFetchedMetadata[0].data);
+        setValue('authors', dataFetchedMetadata[1].data);
+        setValue('journal_name', dataFetchedMetadata[7].data);
+        setValue('location', dataFetchedMetadata[7].data);
         setValue(
           'doi',
-          dataFetchedMetadata.url
+          dataFetchedMetadata[5].data
             ? dataFetchedMetadata.url.split('doi.org/')[1]
             : '',
         );
         setValue(
           'year',
-          dataFetchedMetadata.year ? dataFetchedMetadata.year.toString() : '',
+          dataFetchedMetadata[2].year ? dataFetchedMetadata[2].year.toString() : '',
         );
-        setValue('volume', dataFetchedMetadata.volume);
-        setValue('issue', dataFetchedMetadata.issue);
-        setValue('page', dataFetchedMetadata.page);
+        setValue('volume', dataFetchedMetadata[4].data);
+        setValue('issue', dataFetchedMetadata[6].issue);
+        setValue('page', dataFetchedMetadata[3].page);
         showSuccess('Metadata fetched successfully');
       }
     } catch (error) {
