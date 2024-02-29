@@ -6,7 +6,7 @@ interface Props {
   // Define your component props here
   panelVisible: boolean;
   dataLoading: boolean;
-  dataAbstract: string;
+  dataAbstract: any;
   dataDoi: string;
 }
 
@@ -21,7 +21,6 @@ const PanelAbstractData: React.FC<Props> = ({
   if (!panelVisible) {
     return;
   }
-
   if (dataLoading) {
     return (
       <Card title={title}>
@@ -29,7 +28,7 @@ const PanelAbstractData: React.FC<Props> = ({
       </Card>
     );
   } else {
-    return <Card title={title}>{dataAbstract}</Card>;
+    return <Card title={title}>{dataAbstract.data.data.abstract}</Card>;
   }
 };
 

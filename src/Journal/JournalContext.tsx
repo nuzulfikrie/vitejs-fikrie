@@ -12,7 +12,7 @@ const JournalContext = createContext({
   journalMetadata: null,
   setJournalMetadata: () => {},
   fetchMetadata: async (doi: string) => {},
-  fetchAbstract: async (doi: string) => {},
+  fetchAbstract: async (doi: string, identifier: string): Promise<any> => {},
   fetchVideo: async (videoId: string) => {},
   callVideo: () => {},
   error: null,
@@ -46,8 +46,16 @@ export const JournalProvider = ({
     return null;
   };
 
-  const fetchAbstract = async (identifier: string) => {
-    return abstractService.retrieveAbstractData(identifier);
+  const fetchAbstract = async (doi: string, identifier: string) => {
+    try {
+      const response = await abstractService.retrieveAbstractData(
+        doi,
+        identifier,
+      );
+      return response;
+    } catch (error) {
+      throw new Error('Error fetching abstract: ' + error);
+    }
   };
 
   //fetch video

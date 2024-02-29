@@ -16,10 +16,18 @@ const JournalDetailCheckboxesComponent: React.FC<
   JournalDetailCheckboxesProps
 > = ({ subthemeSelections, selected, onCategoryChange }) => {
   // Add your component logic here
+
+  console.log('  subtheme selections');
+  console.log(subthemeSelections);
+
+  console.log('  subtheme selections');
+
   return (
     // Add your JSX code here
     <Card>
-      {subthemeSelections.map((subtheme, index) => (
+      {subthemeSelections.map((subtheme, index) =>
+
+      (
         <div key={subtheme.key} className='flex align-items-center'>
           <Checkbox
             id={subtheme.key}

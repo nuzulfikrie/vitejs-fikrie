@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { useJournal } from '../Journal/JournalContext'; // Adjust the import path as needed
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Card } from 'primereact/card';
+import { classNames } from 'primereact/utils';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import VideoModal from '../ui/components/Modal/VideoModal';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
@@ -82,7 +83,6 @@ const AddJournal: React.FC<AddJournalProps> = ({
   journalColors,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [loadingAbstract, setLoadingAbstract] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
     null,
   );
@@ -98,13 +98,36 @@ const AddJournal: React.FC<AddJournalProps> = ({
     journalColors.article_dontsupport_study_color;
   const neededSupportStudyColor = journalColors.your_pod_color;
 
+  const defaultValues = {
+    doi: '',
+    article_title: '',
+    authors: '',
+    journal_name: '',
+    location: '',
+    year: '',
+    volume: '',
+    issue: '',
+    page: '',
+    article_about_content: '',
+    article_support_study_content: '',
+    article_does_not_support_study_content: '',
+    needed_support_study_content: '',
+    article_about_page: '',
+    article_support_study_page: '',
+    article_does_not_support_study_page: '',
+    needed_support_study_page: '',
+    selection: [],
+  };
+
   const {
+    control,
+    reset,
     register,
     handleSubmit,
     setValue,
     getValues,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues });
 
   const PageTitle = 'Add new journal';
   const {
@@ -119,6 +142,14 @@ const AddJournal: React.FC<AddJournalProps> = ({
     console.log('Form data:', data);
     showSuccess('Form submitted!');
     // Here you would typically send the form data to a server or another data handling function
+  };
+
+  const getFormErrorMessage = (name: string | number) => {
+    return errors[name] ? (
+      <small className='p-error'>{errors[name]?.message.toString()}</small>
+    ) : (
+      <small className='p-error'>&nbsp;</small>
+    );
   };
 
   const retrieveMetadata = async (doi: string) => {
@@ -141,16 +172,18 @@ const AddJournal: React.FC<AddJournalProps> = ({
         setValue(
           'doi',
           dataFetchedMetadata[5].data
-            ? dataFetchedMetadata.url.split('doi.org/')[1]
+            ? dataFetchedMetadata[5].data.split('doi.org/')[1]
             : '',
         );
         setValue(
           'year',
-          dataFetchedMetadata[2].year ? dataFetchedMetadata[2].year.toString() : '',
+          dataFetchedMetadata[2].data
+            ? dataFetchedMetadata[2].data.toString()
+            : '',
         );
         setValue('volume', dataFetchedMetadata[4].data);
-        setValue('issue', dataFetchedMetadata[6].issue);
-        setValue('page', dataFetchedMetadata[3].page);
+        setValue('issue', dataFetchedMetadata[6].data);
+        setValue('page', dataFetchedMetadata[3].data);
         showSuccess('Metadata fetched successfully');
       }
     } catch (error) {
@@ -159,13 +192,8 @@ const AddJournal: React.FC<AddJournalProps> = ({
   };
 
   const clearForm = (): void => {
-    setValue('article_title', '');
-    setValue('authors', '');
-    setValue('journal_name', '');
-    setValue('location', '');
-    setValue('doi', '');
-    setValue('year', '');
-    setValue('volume', '');
+    reset();
+    showInfo('Form cleared');
   };
 
   const confirmUseMetadata = () => {};
@@ -175,6 +203,9 @@ const AddJournal: React.FC<AddJournalProps> = ({
   - for abstract
  */
   }
+
+  const [loadingAbstract, setLoadingAbstract] = useState<boolean>(false);
+
   const [panelAbstractLoading, setPanelAbstractLoading] =
     useState<boolean>(false);
   const [panelAbstractVisible, setPanelAbstractVisible] =
@@ -189,21 +220,76 @@ const AddJournal: React.FC<AddJournalProps> = ({
 
 */
   }
-
+  const [selectedSubthemes, setSelectedSubthemes] = useState<Subtheme[]>([]);
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
-  const [panelALoading, setPanelALoading] = useState<boolean>(false);
-  const [panelAVisible, setPanelAVisible] = useState<boolean>(false);
 
-  const [panelBLoading, setPanelBLoading] = useState<boolean>(false);
-  const [panelBVisible, setPanelBVisible] = useState<boolean>(false);
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
 
-  function handleDropDown(event: DropdownChangeEvent): void {
-    throw new Error('Function not implemented.');
+  function handleDropDown(e: DropdownChangeEvent): void {
+    if (e.value.code === 'reset') {
+      setSelectedProvider(null);
+    } else {
+      console.log('--- drop down change ---');
+      console.log(e.value);
+      console.log('--- drop down change ---');
+
+      setSelectedProvider(e.value);
+    }
   }
 
-  function onCategoryChange(event: CheckboxChangeEvent): void {
-    throw new Error('Function not implemented.');
+  function onCategoryChange(e: CheckboxChangeEvent): void {
+    let _selectedSubthemes = [...selectedSubthemes];
+
+    console.log('-- selected onCategoryChange ---');
+    console.log(_selectedSubthemes);
+    console.log('-- selected onCategoryChange ---');
+    console.log('-- selected e ---');
+    console.log(e);
+    console.log('-- selected e ---');
+
+    // Check if the checkbox with index 0 is checked
+    if (e.checked && e.value === 0) {
+      // Flush out the array and add only this item
+      _selectedSubthemes = [e.value];
+    } else if (e.checked && e.value !== 0) {
+      // Add the checked item if it's not already in the array and it's not the special index 0 case
+      _selectedSubthemes.push(e.value);
+    } else {
+      // If the item is unchecked, remove it from the array
+      _selectedSubthemes.splice(_selectedSubthemes.indexOf(e.value), 1);
+    }
+
+    //check if in _selectedSubthemes contains 0
+    if (_selectedSubthemes.includes(0)) {
+      _selectedSubthemes = [0];
+    }
+
+    console.log('-- selected subthemes final ---');
+    console.log(_selectedSubthemes);
+    console.log('-- selected subthemes final ---');
+
+    setSelectedSubthemes(_selectedSubthemes);
+
+    setSelected(_selectedSubthemes);
+  }
+
+  interface CheckboxItem {
+    name: string;
+    key: string;
+    construct: string;
+  }
+
+  function getKeyFromSelectedIndex(
+    items: CheckboxItem[],
+    selectedIndex: number,
+  ): string | null {
+    // Check if the selected index is within the bounds of the array
+    if (selectedIndex >= 0 && selectedIndex < items.length) {
+      return items[selectedIndex].key;
+    } else {
+      // Return null or an appropriate value if the index is out of bounds
+      return null;
+    }
   }
 
   return (
@@ -224,17 +310,38 @@ const AddJournal: React.FC<AddJournalProps> = ({
             label='Video'
             severity='info'
             icon='pi pi-video'
+            style={{ color: 'white' }}
             onClick={() => callVideo()}
           />
           <Button
             label='Retrieve Abstract'
             icon='pi pi-check'
             loading={loadingAbstract}
+            style={{ color: 'white' }}
             onClick={(e) => {
               e.preventDefault();
-              fetchAbstract(getValues('doi'));
+              const doi = getValues('doi');
+              if (!doi) {
+                showWarn('DOI is required');
+                return;
+              }
+              setPanelAbstractLoading(true);
+              // Assuming fetchAbstract is an async function and returns a Promise
+              fetchAbstract(doi, selectedProvider?.code ?? '')
+                .then((data) => {
+                  setPanelAbstractData(data);
+                  setPanelAbstractVisible(true);
+                  showError('Abstract fetched successfully');
+                })
+                .catch((error) => {
+                  console.error('Failed to fetch abstract:', error);
+                  // Optionally handle error state here
+                  showError('Failed to fetch abstract');
+                })
+                .finally(() => {
+                  setPanelAbstractLoading(false);
+                });
             }}
-            severity='success'
           />
           <div className='card flex justify-content-center'>
             <Dropdown
@@ -255,109 +362,260 @@ const AddJournal: React.FC<AddJournalProps> = ({
         >
           <div className='flex flex-column gap-2 py-2'>
             <span className='p-float-label gap-2'>
-              <InputText
-                id='doi'
-                {...register('doi', { required: 'DOI is required' })}
-                placeholder='DOI'
+              <Controller
+                name='doi'
+                control={control}
+                rules={{ required: 'DOI is required.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label
+                      htmlFor={field.name}
+                      className={classNames({ 'p-error': errors.doi })}
+                    ></label>
+                    <span className='p-float-label'>
+                      <InputText
+                        id={field.name}
+                        value={field.value}
+                        className={classNames({
+                          'p-invalid': fieldState.error,
+                        })}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                      <label htmlFor={field.name}> DOI </label>
+                      {loadingMetadata ? (
+                        <>
+                          <Button
+                            icon='pi pi-spin pi-spinner'
+                            type='button'
+                            style={{ color: 'white' }}
+                            label='Retrieving Metadata....'
+                            disabled={true}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <i className='pi pi-search' />
+                          <Button
+                            icon='pi pi-search'
+                            type='button'
+                            style={{ color: 'white' }}
+                            label='Retrieve Metadata'
+                            onClick={() => retrieveMetadata(getValues('doi'))}
+                            severity='danger'
+                          />
+                        </>
+                      )}
+                    </span>
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
               />
-              <label htmlFor='doi'>DOI</label>
-              {errors.doi && (
-                <small className='p-error'>{errors.doi?.message}</small>
-              )}
-              {loadingMetadata ? (
-                <>
-                  <Button
-                    icon='pi pi-spin pi-spinner'
-                    type='button'
-                    label='Retrieving Metadata....'
-                    disabled={true}
-                  />
-                </>
-              ) : (
-                <>
-                  <i className='pi pi-search' />
-                  <Button
-                    icon='pi pi-search'
-                    type='button'
-                    label='Retrieve Metadata'
-                    onClick={() => retrieveMetadata(getValues('doi'))}
-                    severity='danger'
-                  />
-                </>
-              )}
             </span>
           </div>
-          <InputText
-            id='article_title'
-            {...register('article_title', {
-              required: 'Article title is required',
-            })}
-            placeholder='Article Title'
-          />
-          {errors.doi && (
-            <small className='p-error'>{errors.article_title.message}</small>
-          )}
-          <InputText
-            id='authors'
-            {...register('authors', { required: 'Authors is required' })}
-            placeholder='Authors'
-          />
-          {errors.authors && (
-            <small className='p-error'>{errors.authors.message}</small>
-          )}
 
-          <InputText
-            id='journal_name'
-            {...register('journal_name', {
-              required: 'Journal name is required',
-            })}
-            placeholder='Journal Name'
+          <Controller
+            name='article_title'
+            control={control}
+            rules={{ required: 'Article title is required.' }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.article_title })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}> Article Title </label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
           />
-          {errors.journal_name && (
-            <small className='p-error'>{errors.journal_name.message}</small>
-          )}
-
-          <InputText
-            id='location'
-            {...register('location', { required: 'Location is required' })}
-            placeholder='location'
+          <Controller
+            name='authors'
+            control={control}
+            rules={{ required: 'Authors is required.' }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.authors })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}> Authors </label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
           />
 
-          {errors.location && (
-            <small className='p-error'>{errors.location.message}</small>
-          )}
+          <Controller
+            name='journal_name'
+            control={control}
+            rules={{ required: 'Journal Name is required.' }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.journal_name })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}> Journal Name </label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
+          />
 
-          <InputText
-            id='year'
-            {...register('year', {
+          <Controller
+            name='location'
+            control={control}
+            rules={{ required: 'Location is required.' }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.location })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}>Location</label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
+          />
+
+          <Controller
+            name='year'
+            control={control}
+            rules={{
               required: 'Year is required',
               pattern: {
                 value: /^\d{4}$/,
                 message: 'Year must be a 4-digit number',
               },
-            })}
-            placeholder='year'
+            }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.year })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}> Year </label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
           />
-          {errors.year && (
-            <small className='p-error'>{errors.year.message}</small>
-          )}
-
-          <InputText
-            id='volume'
-            {...register('volume', { required: 'volume is required' })}
-            placeholder='volume'
+          <Controller
+            name='volume'
+            control={control}
+            rules={{ required: 'Volume is required' }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.volume })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{ width: '100%' }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}>Volume</label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
           />
-          {errors.volume && (
-            <small className='p-error'>{errors.volume.message}</small>
-          )}
-          <InputText
-            id='issue'
-            {...register('issue', { required: 'issue is required' })}
-            placeholder='Issue'
+          <Controller
+            name='issue'
+            control={control}
+            rules={{ required: 'Issue is required' }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.issue })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}>Issue</label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
           />
-          {errors.issue && (
-            <small className='p-error'>{errors.issue.message}</small>
-          )}
 
           {/* Add more fields as needed */}
           <div className='card flex flex-wrap justify-content-left gap-4'>
@@ -380,92 +638,111 @@ const AddJournal: React.FC<AddJournalProps> = ({
 
           <Splitter style={{ height: '600px' }}>
             <SplitterPanel className='flex flex-column' size={60} minSize={60}>
-              <label htmlFor='description'>
-                What is the article about and authors's point of departure ?
-              </label>
-
-              <InputTextarea
-                id='article_about_content'
+              <Controller
                 name='article_about_content'
-                rows={4}
-                cols={30}
-                style={{
-                  color: authorPodColor,
-                  borderColor: authorPodColor,
-                }}
-                {...register('article_about_content', {
-                  required: 'This is required',
-                })}
+                control={control}
+                rules={{ required: 'Description is required.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label htmlFor={field.name}>
+                      What is the article about and authors's point of departure
+                      ?
+                    </label>
+                    <InputTextarea
+                      id={field.name}
+                      {...field}
+                      rows={4}
+                      cols={30}
+                      style={{
+                        color: authorPodColor,
+                        borderColor: authorPodColor,
+                        width: '100%',
+                      }}
+                      className={classNames({ 'p-invalid': fieldState.error })}
+                    />
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
               />
-              {errors.article_about_content && (
-                <small className='p-error'>
-                  {errors.article_about_content.message}
-                </small>
-              )}
-              <label htmlFor='description'>
-                How the article support your study ?
-              </label>
 
-              <InputTextarea
-                id='article_support_study_content'
+              <Controller
                 name='article_support_study_content'
-                rows={4}
-                cols={30}
-                style={{
-                  color: articleSupportStudyColor,
-                  borderColor: articleSupportStudyColor,
-                }}
-                {...register('article_support_study_content', {
-                  required: 'This is required',
-                })}
+                control={control}
+                rules={{ required: 'This is required.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label htmlFor={field.name}>
+                      What is the article about and authors's point of departure
+                      ?
+                    </label>
+                    <InputTextarea
+                      id={field.name}
+                      {...field}
+                      rows={4}
+                      cols={30}
+                      style={{
+                        color: articleSupportStudyColor,
+                        borderColor: articleSupportStudyColor,
+                        width: '100%',
+                      }}
+                      className={classNames({ 'p-invalid': fieldState.error })}
+                    />
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
               />
-              {errors.article_support_study_content && (
-                <small className='p-error'>
-                  {errors.article_support_study_content.message}
-                </small>
-              )}
-              <label htmlFor='description'>
-                How the article does not support your study ?
-              </label>
-              <InputTextarea
-                id='article_does_not_support_study_content'
+
+              <Controller
                 name='article_does_not_support_study_content'
-                rows={4}
-                cols={30}
-                style={{
-                  color: articleDoesNotSupportStudyColor,
-                  borderColor: articleDoesNotSupportStudyColor,
-                }}
-                {...register('article_does_not_support_study_content', {
-                  required: 'This is required',
-                })}
+                control={control}
+                rules={{ required: 'This is required.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label htmlFor={field.name}>
+                      How the article does not support your study ?
+                    </label>
+                    <InputTextarea
+                      id={field.name}
+                      {...field}
+                      rows={4}
+                      cols={30}
+                      style={{
+                        color: articleDoesNotSupportStudyColor,
+                        borderColor: articleDoesNotSupportStudyColor,
+                        width: '100%',
+                      }}
+                      className={classNames({ 'p-invalid': fieldState.error })}
+                    />
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
               />
-              {errors.article_does_not_support_study_content && (
-                <small className='p-error'>
-                  {errors.article_does_not_support_study_content.message}
-                </small>
-              )}
-              <label htmlFor='description'>
-                What else is needed to support your study ? (Your POD)
-              </label>
-              <InputTextarea
-                id='needed_support_study_content'
+
+              <Controller
                 name='needed_support_study_content'
-                rows={4}
-                cols={30}
-                style={{
-                  color: neededSupportStudyColor,
-                  borderColor: neededSupportStudyColor,
-                }}
-                {...register('needed_support_study_content', {
-                  required: 'This is required',
-                })}
+                control={control}
+                rules={{ required: 'This is required.' }}
+                render={({ field, fieldState }) => (
+                  <>
+                    <label htmlFor={field.name}>
+                      What else is needed to support your study ? (Your POD)
+                    </label>
+                    <InputTextarea
+                      id={field.name}
+                      {...field}
+                      rows={4}
+                      cols={30}
+                      style={{
+                        color: neededSupportStudyColor,
+                        borderColor: neededSupportStudyColor,
+                        width: '100%',
+                      }}
+                      className={classNames({ 'p-invalid': fieldState.error })}
+                    />
+                    {getFormErrorMessage(field.name)}
+                  </>
+                )}
               />
-              {errors.article_support_study_content && (
-                <small className='p-error'>
-                  {errors.article_support_study_content.message}
-                </small>
-              )}
             </SplitterPanel>
             <SplitterPanel
               className='flex justify-content-left'
@@ -497,7 +774,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
               />
             </SplitterPanel>
           </Splitter>
-          <div className='flex-wrap justify-content-left gap-10'>
+          <div className='flex-wrap justify-content-left gap-10 x-2'>
             <Button
               label='Submit'
               type='submit'
