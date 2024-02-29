@@ -41,8 +41,6 @@ function generateInTextCitation(authors: Author[], year: number): string | Error
     throw new Error('No authors provided');
   }
 
-  console.log('-- authors');
-  console.log(authors);
 
   let citation = '';
 
@@ -214,13 +212,7 @@ function generateAPACitation(authors: Author[], year: number, title: string, sou
 
     const response = await fetch(url);
 
-    const output = await response.text();
-
-    console.log('$$$$$$$$$$$$$$$$$$ server output $$$$$$$$$$$$$$$$$$');
-    console.log(output);
-    console.log('$$$$$$$$$$$$$$$$$$ server output $$$$$$$$$$$$$$$$$$');
-
-    
+    const output = await response.text();;
 
     return output;
   }

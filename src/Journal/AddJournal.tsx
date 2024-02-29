@@ -196,8 +196,31 @@ const AddJournal: React.FC<AddJournalProps> = ({
     showInfo('Form cleared');
   };
 
-  const confirmUseMetadata = () => {};
+  const confirmUseMetadata = () => {
+    confirmDialog({
+      message: 'Are you sure you want to to insert template?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept,
+      reject,
+    });
+  };
 
+  const confirmTemplate = () => {
+    let authorString = getValues('authors');
+    let year = getValues('year');
+    let doi = getValues('doi');
+
+    if (!authorString) {
+      showError('Author is required');
+    }
+
+    if (!year) {
+      showError('Year is required');
+    }
+
+  };
   {
     /*
   - for abstract
@@ -229,23 +252,12 @@ const AddJournal: React.FC<AddJournalProps> = ({
     if (e.value.code === 'reset') {
       setSelectedProvider(null);
     } else {
-      console.log('--- drop down change ---');
-      console.log(e.value);
-      console.log('--- drop down change ---');
-
       setSelectedProvider(e.value);
     }
   }
 
   function onCategoryChange(e: CheckboxChangeEvent): void {
     let _selectedSubthemes = [...selectedSubthemes];
-
-    console.log('-- selected onCategoryChange ---');
-    console.log(_selectedSubthemes);
-    console.log('-- selected onCategoryChange ---');
-    console.log('-- selected e ---');
-    console.log(e);
-    console.log('-- selected e ---');
 
     // Check if the checkbox with index 0 is checked
     if (e.checked && e.value === 0) {
@@ -263,10 +275,6 @@ const AddJournal: React.FC<AddJournalProps> = ({
     if (_selectedSubthemes.includes(0)) {
       _selectedSubthemes = [0];
     }
-
-    console.log('-- selected subthemes final ---');
-    console.log(_selectedSubthemes);
-    console.log('-- selected subthemes final ---');
 
     setSelectedSubthemes(_selectedSubthemes);
 
