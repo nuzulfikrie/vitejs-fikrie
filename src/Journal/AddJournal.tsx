@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { useJournal } from '../Journal/JournalContext'; // Adjust the import path as needed
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Card } from 'primereact/card';
 import { classNames } from 'primereact/utils';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
@@ -15,6 +15,14 @@ import { Divider } from 'primereact/divider';
 import JournalDetailCheckboxesComponent from '../ui/components/Form/JournalDetailCheckboxesComponent';
 import { CheckboxChangeEvent } from 'primereact/checkbox';
 import { InputTextarea } from 'primereact/inputtextarea';
+
+import {
+  generateInTextCitation,
+  generateCitationUsingDoi,
+} from '../services/citationService';
+
+
+
 interface AddJournalProps {
   toast: React.RefObject<Toast>;
   showSuccess: (message: string) => void;
@@ -160,10 +168,6 @@ const AddJournal: React.FC<AddJournalProps> = ({
     try {
       const dataFetchedMetadata = await fetchMetadata(doi);
 
-      console.log('--- dataFetchedMetadata---');
-      console.log(dataFetchedMetadata);
-      console.log('--- dataFetchedMetadata---');
-
       if (dataFetchedMetadata !== undefined) {
         setValue('article_title', dataFetchedMetadata[0].data);
         setValue('authors', dataFetchedMetadata[1].data);
@@ -304,7 +308,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
     <div>
       <Toast ref={toast} />
 
-      <Card title={PageTitle}>
+      <Card title={PageTitle} style={{marginTop:'5px'}}>
         <VideoModal
           videoData={videoData}
           modalVideoVisible={modalVideoVisible}
@@ -408,7 +412,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
                             type='button'
                             style={{ color: 'white' }}
                             label='Retrieve Metadata'
-                            onClick={() => retrieveMetadata(getValues('doi'))}
+                            onClick={() => setIsConfirmDialogVisible(true)}
                             severity='danger'
                           />
                         </>
@@ -758,18 +762,68 @@ const AddJournal: React.FC<AddJournalProps> = ({
               minSize={10}
             >
               <Card>
-                <label htmlFor='article_about_page'>Page</label>
                 <div className='card flex justify-content-center'>
-                  <InputText name='article_about_page' />
-                </div>
 
-                <label htmlFor='article_support_study_page'>Page</label>
-
-                <div className='card flex justify-content-center'>
+                  <Controller
+            name='article_about_page'
+            control={control}
+            rules={{   validate: (value) => value ? true : undefined  }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.article_about_page })}
+                ></label>
+                <span className='p-float-label'>
                   <InputText
-                    name='article_support_study_page'
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {}}
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
                   />
+                  <label htmlFor={field.name}> Page </label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
+          />
+                </div>
+                <div className='card flex justify-content-center'>
+
+
+<Controller
+            name='article_support_study_page'
+            control={control}
+            rules={{   validate: (value) => value ? true : undefined  }}
+            render={({ field, fieldState }) => (
+              <>
+                <label
+                  htmlFor={field.name}
+                  className={classNames({ 'p-error': errors.article_support_study_page })}
+                ></label>
+                <span className='p-float-label'>
+                  <InputText
+                    id={field.name}
+                    value={field.value}
+                    className={classNames({
+                      'p-invalid': fieldState.error,
+                    })}
+                    style={{
+                      width: '100%',
+                    }}
+                    onChange={(e) => field.onChange(e.target.value)}
+                  />
+                  <label htmlFor={field.name}> Page </label>
+                </span>
+                {getFormErrorMessage(field.name)}
+              </>
+            )}
+          />
                 </div>
               </Card>
             </SplitterPanel>
@@ -782,13 +836,13 @@ const AddJournal: React.FC<AddJournalProps> = ({
               />
             </SplitterPanel>
           </Splitter>
-          <div className='flex-wrap justify-content-left gap-10 x-2'>
+          <div className='flex-wrap justify-content-left gap-2'>
             <Button
               label='Submit'
               type='submit'
               disabled={loading}
               className='p-mr-2'
-              style={{ backgroundColor: '#007bff', color: 'white' }}
+              style={{ backgroundColor: '#007bff', color: 'white', marginRight: '2px' }}
             />
             <Button
               label='Clear'
@@ -808,7 +862,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
         onHide={() => setIsConfirmDialogVisible(false)}
         message='Are you sure you want to fetch metadata?'
         header='Confirm Metadata Fetch'
-        accept={() => fetchMetadata(getValues('doi'))}
+        accept={() => retrieveMetadata(getValues('doi'))}
       />
     </div>
   );
