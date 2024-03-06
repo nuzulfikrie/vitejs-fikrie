@@ -23,6 +23,7 @@ export const JournalProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const [loadingVideo, setLoadingVideo] = useState(false);
   const [loadingMetadata, setLoadingMetadata] = useState(false);
   const [videoData, setVideoData] = useState(null);
   const [journalMetadata, setJournalMetadata] = useState(null);
@@ -70,6 +71,8 @@ export const JournalProvider = ({
         setLoadingMetadata,
         videoData,
         setVideoData,
+        loadingVideo,
+        setLoadingVideo,
         journalMetadata,
         setJournalMetadata,
         fetchMetadata,

@@ -211,8 +211,13 @@ const JournalList = () => {
             </div>
             {loading ? (
               <div className='card'>
-<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
-</div>
+                <ProgressSpinner
+                  style={{ width: '50px', height: '50px' }}
+                  strokeWidth='8'
+                  fill='var(--surface-ground)'
+                  animationDuration='.5s'
+                />
+              </div>
             ) : (
               <div className='card'>
                 <DataTable
@@ -319,7 +324,7 @@ const JournalList = () => {
                       return (
                         <div>
                           <>
-                            <Link to={`/pages/editJournal/${rowData.id}`}>
+                            <Link to={`/stepsix/editJournal/${rowData.id}`}>
                               <Button
                                 label='Edit'
                                 className='p-button-sm p-button-info'

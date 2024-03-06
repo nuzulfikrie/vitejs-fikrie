@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import AddJournalPage from '../src/pages/AddJournalPage';
 import JournalList from '../src/pages/JournalList';
-import EditJournal from '../src/pages/EditJournal';
+import EditJournalPage from './pages/EditJournalPage';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { useNavigate } from 'react-router-dom';
@@ -114,17 +114,11 @@ const App = () => {
       const linkFetch1 =
         URL_LINKS.STEP_SIX_DATA.value + projectId + '/' + userId;
 
-      const dataResponse = await fetchData(linkFetch1);
+      const dataResponse = await fetchData(linkFetch1,{
+        method: 'GET', // or 'POST'
+        credentials: 'include', // This is important for cookies to be sent and received
+      });
 
-      console.log('---- data response ----');
-
-      console.log(dataResponse);
-      console.log('---- data response ----');
-
-      console.log('---- data balance ----');
-
-      console.log(dataResponse.data.balance);
-      console.log('---- data balance ----');
 
       setData(dataResponse);
       setSubthemeOptions(dataResponse.data.subthemes);
@@ -234,7 +228,20 @@ const App = () => {
           />
           <Route
             path='/stepsix/editJournal/:journalId'
-            element={<EditJournal journalId={0} />}
+            element={
+              <EditJournalPage
+                journalId={0}
+                toast={toast}
+                showSuccess={showSuccess}
+                showInfo={showInfo}
+                showWarn={showWarn}
+                showError={showError}
+                projectId={projectId}
+                userId={userId}
+                subthemeOptions={subthemeOptions}
+                journalColors={journalColors}
+              />
+            }
           />
         </Routes>
       </div>

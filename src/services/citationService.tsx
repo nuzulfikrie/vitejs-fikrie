@@ -2,6 +2,7 @@
 //import { parse } from '@fast-csv/parse'; // Import the 'parse' function from the '@fast-csv/parse' package
 //import { Cite } from
 import { Cite } from '@citation-js/core';
+import URL_LINKS from '../constants/urls';
 
 interface Author {
   firstName: string;
@@ -11,7 +12,7 @@ interface Author {
 }
 
 // Formats the author's name by concatenating the prefix, first name, last name, and suffix
-function formatAuthorName(author: Author): string {
+export function formatAuthorName(author: Author): string {
   const fullName = [
     author.prefix,
     author.firstName,
@@ -36,11 +37,13 @@ function formatAuthorNameCite(author: Author): string {
 }
 
 // Generates an in-text citation based on the provided authors and year
-function generateInTextCitation(authors: Author[], year: number): string | Error {
+export function generateInTextCitation(
+  authors: Author[],
+  year: number,
+): string | Error {
   if (!authors.length) {
     throw new Error('No authors provided');
   }
-
 
   let citation = '';
 
@@ -49,7 +52,9 @@ function generateInTextCitation(authors: Author[], year: number): string | Error
       citation = formatAuthorName(authors[0]);
       break;
     case 2:
-      citation = `${formatAuthorName(authors[0])} & ${formatAuthorName(authors[1])}`;
+      citation = `${formatAuthorName(authors[0])} & ${formatAuthorName(
+        authors[1],
+      )}`;
       break;
     default:
       citation = `${formatAuthorName(authors[0])} et al.`;
@@ -97,14 +102,19 @@ export async function parseAuthors(authorsString: string): Promise<Author[]> {
 // }
 
 // Generates a citation using the '@citation-js/core' package
-function generateCitation(authors: Author[], year: number, title: string, source: string): string {
+function generateCitation(
+  authors: Author[],
+  year: number,
+  title: string,
+  source: string,
+): string {
   const formattedAuthors = authors.reduce((prev, curr) => {
     const formattedAuthor = formatAuthorNameCite(curr);
     return prev ? `${prev}, ${formattedAuthor}` : formattedAuthor;
   }, '');
 
-console.log('---formattedAuthors---');
-console.log(formattedAuthors);
+  console.log('---formattedAuthors---');
+  console.log(formattedAuthors);
   console.log('---formattedAuthors---');
 
   const data = {
@@ -115,24 +125,30 @@ console.log(formattedAuthors);
     'container-title': source,
   };
 
-
   const cite = new Cite(data, {
     // Default options: BibTeX JSON
     output: {
-      style: 'bibtex'
-    }
+      style: 'bibtex',
+    },
   });
 
   return cite;
 }
 
 // Generates an APA citation using the '@citation-js/core' package
-function generateAPACitation(authors: Author[], year: number, title: string, source: string, volume: number, issue: number, pages: string): string {
+function generateAPACitation(
+  authors: Author[],
+  year: number,
+  title: string,
+  source: string,
+  volume: number,
+  issue: number,
+  pages: string,
+): string {
   const formattedAuthors = authors.reduce((prev, curr) => {
     const formattedAuthor = formatAuthorNameCite(curr);
     return prev ? `${prev}, ${formattedAuthor}` : formattedAuthor;
   }, '');
-
 
   const data = {
     type: 'book-chapter',
@@ -151,9 +167,9 @@ function generateAPACitation(authors: Author[], year: number, title: string, sou
   const cite = new Cite(data, {
     // Default options: BibTeX JSON
     output: {
-      style: 'bibtex'
-    }
-  })
+      style: 'bibtex',
+    },
+  });
 
   console.log('---------------- generateAPACitation -------------------');
   console.log(cite);
@@ -161,7 +177,6 @@ function generateAPACitation(authors: Author[], year: number, title: string, sou
 
   return cite;
 }
-
 
 /**
  * Generates an APA citation in HTML format using a DOI.
@@ -176,13 +191,13 @@ function generateAPACitation(authors: Author[], year: number, title: string, sou
  * console.log(citation);
  * ```
  */
- function generateApaCitationHtmlFormatUsingDoi(doi: string): Promise<string> {
-  let citation =  Cite(doi);
+function generateApaCitationHtmlFormatUsingDoi(doi: string): Promise<string> {
+  let citation = Cite(doi);
 
   let output = citation.format('citation', {
     format: 'html',
     template: 'apa',
-    lang: 'en-US'
+    lang: 'en-US',
   });
   console.log('###################### outout ######################');
   console.log(output);
@@ -205,21 +220,31 @@ function generateAPACitation(authors: Author[], year: number, title: string, sou
  * ```
  */
 
-  export async function generateCitationUsingDoi(doi: string): Promise<string> {
+export async function generateCitationUsingDoi(doi: string): Promise<string> {
+  let url = `${URL_LINKS.FETCH_CITATION.value}?doi=${doi}`;
+  console.log('000 url');
+  console.log(url);
 
-    //we form citation by sending data to http://localhost:3000/citation?doi
-    let url = `http://localhost:3000/citation?doi=${doi}`;
+  try {
+    const response = await fetch(url); // Wait for the fetch call to resolve.
+    console.log(response);
 
-    const response = await fetch(url);
+    if (!response.ok) {
+      // Check if the response status is OK (status in the range 200-299).
+      throw new Error('Error fetching citation');
+    }
 
-    const output = await response.text();;
+    const citationText = await response.text(); // Wait for the response body to be read and returned.
+    console.log('----- response here ----');
+    console.log(citationText);
+    console.log('----- response here ----');
 
-    return output;
+    return citationText; // Return the citation text.
+  } catch (error) {
+    console.error(`Error fetching citation: ${error}`);
+    throw new Error(`Error fetching citation: ${error}`);
   }
-
-
-
-
+}
 
 export default {
   generateInTextCitation,
@@ -228,5 +253,5 @@ export default {
   generateCitation,
   generateAPACitation,
   generateApaCitationHtmlFormatUsingDoi,
-  generateCitationUsingDoi
+  generateCitationUsingDoi,
 };

@@ -15,7 +15,6 @@ import { Divider } from 'primereact/divider';
 import JournalDetailCheckboxesComponent from '../ui/components/Form/JournalDetailCheckboxesComponent';
 import { CheckboxChangeEvent } from 'primereact/checkbox';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { postData } from '../services/dataService';
 
 import {
   parseAuthors,
@@ -23,7 +22,8 @@ import {
   generateCitationUsingDoi,
 } from '../services/citationService';
 
-interface AddJournalProps {
+interface EditJournalProps {
+  journalId: string;
   toast: React.RefObject<Toast>;
   showSuccess: (message: string) => void;
   showWarn: (message: string) => void;
@@ -79,7 +79,8 @@ interface journalColors {
   your_pod_color: string;
 }
 
-const AddJournal: React.FC<AddJournalProps> = ({
+const EditJournal: React.FC<EditJournalProps> = ({
+  journalId,
   toast,
   showSuccess,
   showWarn,
@@ -94,8 +95,12 @@ const AddJournal: React.FC<AddJournalProps> = ({
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(
     null,
   );
-  const [formSubmitting, setFormSubmitting] = useState(false);
+
   const [selected, setSelected] = useState([0]);
+  console.log('--- jounral colors----');
+  console.log(journalColors);
+  console.log('--- jounral colors----');
+
   const authorPodColor = journalColors.author_pod_color;
   const articleSupportStudyColor = journalColors.article_support_study_color;
   const articleDoesNotSupportStudyColor =
@@ -133,46 +138,17 @@ const AddJournal: React.FC<AddJournalProps> = ({
     formState: { errors },
   } = useForm({ defaultValues });
 
-  const PageTitle = 'Add new journal';
+  const PageTitle = `Edit journal ${journalId}`;
   const {
     loadingMetadata,
-    setLoadingMetadata,
-    videoData,
-    setVideoData,
-    loadingVideo,
-    setLoadingVideo,
-    journalMetadata,
-    setJournalMetadata,
     fetchMetadata,
     fetchAbstract,
-    fetchVideo,
     callVideo,
-    error,
+    videoData,
   } = useJournal();
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
-
-    // for selection use state selected
-    //get key from subthemeSelections
-
-    let selection: string[] = [];
-
-    selected.map((item) => {
-      const key = getKeyFromSelectedIndex(subthemeOptions, item);
-
-      if (key) {
-        selection.push(key);
-      }
-    });
-
-    //combine selection to data
-    data.selection = selection;
     console.log('Form data:', data);
-
-    
-
-
     showSuccess('Form submitted!');
     // Here you would typically send the form data to a server or another data handling function
   };
@@ -241,6 +217,13 @@ const AddJournal: React.FC<AddJournalProps> = ({
       showError('Year is required');
     }
 
+    console.log('--- confirm template ---');
+    console.log(doi);
+    console.log('--- confirm template ---');
+
+    console.log('--- confirm template authorString ---');
+    console.log(authorString);
+    console.log('--- confirm template  authorString---');
     if (doi.length === 0) {
       let authorsObject = parseAuthors(authorString);
       var inTextCitation = generateInTextCitation(authorsObject, year);
@@ -261,9 +244,13 @@ const AddJournal: React.FC<AddJournalProps> = ({
 
       showSuccess('Template inserted');
     } else {
+      console.log('--- confirm template  with doi ---');
+
       generateCitationUsingDoi(doi)
         .then((data) => {
           var inTextCitation = data;
+          console.log('--- data ---');
+          console.log(data);
           setValue('article_about_content', `${inTextCitation} states that`);
           setValue(
             'article_support_study_content',
@@ -311,6 +298,14 @@ const AddJournal: React.FC<AddJournalProps> = ({
     useState<boolean>(false);
 
   const [panelAbstractData, setPanelAbstractData] = useState<string>(null);
+  {
+    /*
+           panelVisible={panelVisible}
+            dataLoading={panelAbstractLoading}
+            dataAbstract={panelAbstractData}
+
+*/
+  }
   const [selectedSubthemes, setSelectedSubthemes] = useState<Subtheme[]>([]);
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
 
@@ -356,7 +351,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
   }
 
   function getKeyFromSelectedIndex(
-    items: Subtheme[],
+    items: CheckboxItem[],
     selectedIndex: number,
   ): string | null {
     // Check if the selected index is within the bounds of the array
@@ -389,47 +384,36 @@ const AddJournal: React.FC<AddJournalProps> = ({
             style={{ color: 'white' }}
             onClick={() => callVideo()}
           />
-          {panelAbstractLoading ? (
-            <Button
-              label='Retrieving Abstract...'
-              icon='pi pi-search'
-              loading={loadingAbstract}
-              style={{ color: 'white' }}
-              disabled={true}
-            />
-          ) : (
-            <Button
-              label='Retrieve Abstract'
-              icon='pi pi-check'
-              loading={loadingAbstract}
-              style={{ color: 'white' }}
-              onClick={(e) => {
-                e.preventDefault();
-                const doi = getValues('doi');
-                if (!doi) {
-                  showWarn('DOI is required');
-                  return;
-                }
-                setPanelAbstractLoading(true);
-                // Assuming fetchAbstract is an async function and returns a Promise
-                fetchAbstract(doi, selectedProvider?.code ?? '')
-                  .then((data) => {
-                    setPanelAbstractData(data);
-                    setPanelAbstractVisible(true);
-                    showSuccess('Abstract fetched successfully');
-                  })
-                  .catch((error) => {
-                    console.error('Failed to fetch abstract:', error);
-                    // Optionally handle error state here
-                    showError('Failed to fetch abstract');
-                  })
-                  .finally(() => {
-                    setPanelAbstractLoading(false);
-                  });
-              }}
-            />
-          )}
-
+          <Button
+            label='Retrieve Abstract'
+            icon='pi pi-check'
+            loading={loadingAbstract}
+            style={{ color: 'white' }}
+            onClick={(e) => {
+              e.preventDefault();
+              const doi = getValues('doi');
+              if (!doi) {
+                showWarn('DOI is required');
+                return;
+              }
+              setPanelAbstractLoading(true);
+              // Assuming fetchAbstract is an async function and returns a Promise
+              fetchAbstract(doi, selectedProvider?.code ?? '')
+                .then((data) => {
+                  setPanelAbstractData(data);
+                  setPanelAbstractVisible(true);
+                  showSuccess('Abstract fetched successfully');
+                })
+                .catch((error) => {
+                  console.error('Failed to fetch abstract:', error);
+                  // Optionally handle error state here
+                  showError('Failed to fetch abstract');
+                })
+                .finally(() => {
+                  setPanelAbstractLoading(false);
+                });
+            }}
+          />
           <div className='card flex justify-content-center'>
             <Dropdown
               value={selectedProvider}
@@ -589,7 +573,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
           <Controller
             name='location'
             control={control}
-            rules={{}}
+            rules={{ required: 'Location is required.' }}
             render={({ field, fieldState }) => (
               <>
                 <label
@@ -652,7 +636,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
           <Controller
             name='volume'
             control={control}
-            rules={{}}
+            rules={{ required: 'Volume is required' }}
             render={({ field, fieldState }) => (
               <>
                 <label
@@ -678,7 +662,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
           <Controller
             name='issue'
             control={control}
-            rules={{}}
+            rules={{ required: 'Issue is required' }}
             render={({ field, fieldState }) => (
               <>
                 <label
@@ -703,43 +687,13 @@ const AddJournal: React.FC<AddJournalProps> = ({
               </>
             )}
           />
-          <Controller
-            name='page'
-            control={control}
-            rules={{}}
-            render={({ field, fieldState }) => (
-              <>
-                <label
-                  htmlFor={field.name}
-                  className={classNames({ 'p-error': errors.page })}
-                ></label>
-                <span className='p-float-label'>
-                  <InputText
-                    id={field.name}
-                    value={field.value}
-                    className={classNames({
-                      'p-invalid': fieldState.error,
-                    })}
-                    style={{
-                      width: '100%',
-                    }}
-                    onChange={(e) => field.onChange(e.target.value)}
-                  />
-                  <label htmlFor={field.name}>Pages</label>
-                </span>
-                {getFormErrorMessage(field.name)}
-              </>
-            )}
-          />
+
           {/* Add more fields as needed */}
           <div className='card flex flex-wrap justify-content-left gap-4'>
             <Button
               label='Insert Template'
               severity='info'
-              onClick={(e) => {
-                e.preventDefault();
-                confirmUseMetadata();
-              }}
+              onClick={confirmUseMetadata}
               icon='pi pi-verified'
             />
           </div>
@@ -942,50 +896,25 @@ const AddJournal: React.FC<AddJournalProps> = ({
             </SplitterPanel>
           </Splitter>
           <div className='flex-wrap justify-content-left gap-2'>
-            {formSubmitting ? (
-              <>
-                <Button
-                  label='Submit'
-                  type='submit'
-                  disabled={true}
-                  className='p-mr-2'
-                  style={{
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    marginRight: '2px',
-                  }}
-                />
-                <Button
-                  label='Clear'
-                  type='button'
-                  disabled={true}
-                  className='p-button-secondary'
-                  style={{ backgroundColor: '#6c757d', color: 'white' }}
-                />
-              </>
-            ) : (
-              <>
-                <Button
-                  label='Submit'
-                  type='submit'
-                  disabled={loading}
-                  className='p-mr-2'
-                  style={{
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    marginRight: '2px',
-                  }}
-                />
-                <Button
-                  label='Clear'
-                  type='button'
-                  onClick={() => clearForm()}
-                  disabled={loading}
-                  className='p-button-secondary'
-                  style={{ backgroundColor: '#6c757d', color: 'white' }}
-                />
-              </>
-            )}
+            <Button
+              label='Submit'
+              type='submit'
+              disabled={loading}
+              className='p-mr-2'
+              style={{
+                backgroundColor: '#007bff',
+                color: 'white',
+                marginRight: '2px',
+              }}
+            />
+            <Button
+              label='Clear'
+              type='button'
+              onClick={() => clearForm()}
+              disabled={loading}
+              className='p-button-secondary'
+              style={{ backgroundColor: '#6c757d', color: 'white' }}
+            />
           </div>
         </form>
       </Card>
@@ -1002,4 +931,4 @@ const AddJournal: React.FC<AddJournalProps> = ({
   );
 };
 
-export default AddJournal;
+export default EditJournal;
