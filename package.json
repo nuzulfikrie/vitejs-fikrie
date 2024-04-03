@@ -33,7 +33,7 @@
     "datatables.net": "^1.13.8",
     "jquery": "^3.7.1",
     "typescript": "^4.9.3",
-    "vite": "^4.0.5",
+    "vite": "^4.5.3",
     "vitest": "^1.0.4"
   }
 }
