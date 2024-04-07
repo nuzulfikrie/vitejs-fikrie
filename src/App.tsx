@@ -1,22 +1,24 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import AddJournalPage from '../src/pages/AddJournalPage';
-import JournalList from '../src/pages/JournalList';
-import EditJournalPage from './pages/EditJournalPage';
-import { Button } from 'primereact/button';
-import { Card } from 'primereact/card';
-import { useNavigate } from 'react-router-dom';
-import { Toast } from 'primereact/toast';
-import { useEffect, useRef, useState } from 'react';
-import { PanelNoConnection } from './ui/components/Panel/PanelNoConnection';
-import { PanelHasConnection } from './ui/components/Panel/PanelHasConnection';
-import { PanelLoading } from './ui/components/Panel/PanelLoading';
-import URL_LINKS from './constants/urls';
-import { fetchData } from './services/dataService';
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import AddJournalPage from "../src/pages/AddJournalPage";
+import JournalList from "../src/pages/JournalList";
+import EditJournalPage from "./pages/EditJournalPage";
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
+import { useLocation } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+import { Toast } from "primereact/toast";
+import { useEffect, useRef, useState } from "react";
+import { PanelNoConnection } from "./ui/components/Panel/PanelNoConnection";
+import { PanelHasConnection } from "./ui/components/Panel/PanelHasConnection";
+import { PanelLoading } from "./ui/components/Panel/PanelLoading";
+import URL_LINKS from "./constants/urls";
+import { fetchData } from "./services/dataService";
 
 const App = () => {
   const linkRef = useRef();
-  const projectId = localStorage.getItem('course_id');
-  const userId = localStorage.getItem('user_id');
+  const projectId = localStorage.getItem("course_id");
+  const userId = localStorage.getItem("user_id");
   const toast = useRef<Toast>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -41,56 +43,106 @@ const App = () => {
     //if loading true . renavigator to "/"
     if (isLoading) {
       setTimeout(() => {
-        window.location.href = '/';
+        window.location.href = "/";
       }, 5000);
     }
   }, []);
 
   const NavigationButtons = () => {
     const navigate = useNavigate();
-    const labelAddButton = 'Add Journal Upto ' + limit + ' journals';
+    const location = useLocation();
+    const labelAddButton = "Add Journal Upto " + limit + " journals";
+
+    //detect if page at JournalList
+    if (location.pathname === "/stepsix/JournalList") {
+      // Code to be executed when the current page is JournalList
+      var PageIsJournal = true;
+    } else {
+      // Code to be executed when the current page is not JournalList
+      var PageIsJournal = false;
+    }
+
+    //detect if page at addJournal
+    if (location.pathname === "/stepsix/addJournal") {
+      // Code to be executed when the current page is addJournal
+      var PageIsAdd = true;
+    } else {
+      // Code to be executed when the current page is not addJournal
+      var PageIsAdd = false;
+    }
+
+    //detect if page at editJournal
+    if (location.pathname === "/stepsix/editJournal") {
+      // Code to be executed when the current page is editJournal
+      var editJournal = true;
+    } else {
+      // Code to be executed when the current page is not editJournal
+      var editJournal = false;
+    }
 
     return (
       <div>
         <Link
           ref={linkRef}
-          to='/stepsix/JournalList'
-          style={{ display: 'none' }}
+          to="/stepsix/JournalList"
+          style={{ display: "none" }}
         >
           Navigate
         </Link>
-
-        <Button
-          label='Home'
-          icon='pi pi-home'
-          style={{ marginRight: '.25em', color: 'white' }}
-          onClick={() => navigate('/')}
-          className='p-mr-2'
-        />
-        <Button
-          label='List Journal'
-          icon='pi pi-list'
-          style={{ marginRight: '.25em', color: 'white' }}
-          onClick={() => navigate('/stepsix/JournalList')}
-          className='p-mr-2'
-        />
-        {canAdd === true ? (
+        {/** Show the navigation buttons only if the current page is not the JournalList page */}
+        {PageIsJournal === true ? (
           <Button
-            label={labelAddButton}
-            icon='pi pi-plus'
-            style={{ marginRight: '.25em', color: 'white' }}
-            onClick={() => navigate('/stepsix/addJournal')}
+            label="Home"
+            icon="pi pi-home"
+            style={{ marginRight: ".25em", color: "white" }}
+            className="p-mr-2"
+            disabled={true}
           />
         ) : (
           <Button
-            label='You cannot add journal anymore. Limit reached. '
-            icon='pi pi-plus'
-            style={{ marginRight: '.25em', color: 'white' }}
-            onClick={() =>
-              showError('You have reached the limit of journals you can add')
-            }
+            label="Home"
+            icon="pi pi-home"
+            style={{ marginRight: ".25em", color: "white" }}
+            onClick={() => navigate("/stepsix/JournalList")}
+            className="p-mr-2"
           />
         )}
+
+
+        {/** Show the navigation buttons only if the current page is not the JournalList page */}
+
+        { (PageIsAdd === true && canAdd === true)? (
+                <Button
+                label={labelAddButton}
+                icon="pi pi-plus"
+                style={{ marginRight: ".25em", color: "white" }}
+                disabled= {true}
+              />
+            ) :(PageIsAdd === true && canAdd === false) ? (    <Button
+              label="You cannot add journal anymore. Limit reached. "
+              icon="pi pi-plus"
+              style={{ marginRight: ".25em", color: "white" }}
+              onClick={() =>
+                showError("You have reached the limit of journals you can add")
+              }
+            />) : (PageIsAdd === false && canAdd === true)? (      <Button
+              label={labelAddButton}
+              icon="pi pi-plus"
+              style={{ marginRight: ".25em", color: "white" }}
+              onClick={() => navigate("/stepsix/addJournal")}
+            />): (
+            <Button
+              label="Add Journal"
+              icon="pi pi-plus"
+              style={{ marginRight: ".25em", color: "white" }}
+              disabled={true}
+            />)  }
+
+
+
+
+
+
       </div>
     );
   };
@@ -107,18 +159,17 @@ const App = () => {
     setIsLoading(true);
     try {
       if (!projectId || !userId) {
-        showError('Project ID or User ID is missing');
+        showError("Project ID or User ID is missing");
         return;
       }
 
       const linkFetch1 =
-        URL_LINKS.STEP_SIX_DATA.value + projectId + '/' + userId;
+        URL_LINKS.STEP_SIX_DATA.value + projectId + "/" + userId;
 
-      const dataResponse = await fetchData(linkFetch1,{
-        method: 'GET', // or 'POST'
-        credentials: 'include', // This is important for cookies to be sent and received
+      const dataResponse = await fetchData(linkFetch1, {
+        method: "GET", // or 'POST'
+        credentials: "include", // This is important for cookies to be sent and received
       });
-
 
       setData(dataResponse);
       setSubthemeOptions(dataResponse.data.subthemes);
@@ -131,7 +182,7 @@ const App = () => {
         setCanAdd(true);
       }
     } catch (error: any) {
-      console.log('Error:', error.message);
+      console.log("Error:", error.message);
       showError(error.message);
     } finally {
       setTimeout(() => {
@@ -150,8 +201,8 @@ const App = () => {
 
   const showSuccess = (message: string) => {
     toast.current?.show({
-      severity: 'success',
-      summary: 'Success',
+      severity: "success",
+      summary: "Success",
       detail: message,
       life: 3000,
     });
@@ -159,8 +210,8 @@ const App = () => {
 
   const showInfo = (message: string) => {
     toast.current?.show({
-      severity: 'info',
-      summary: 'Info',
+      severity: "info",
+      summary: "Info",
       detail: message,
       life: 3000,
     });
@@ -168,8 +219,8 @@ const App = () => {
 
   const showWarn = (message: string) => {
     (toast.current as Toast)?.show({
-      severity: 'warn',
-      summary: 'Warning',
+      severity: "warn",
+      summary: "Warning",
       detail: message,
       life: 3000,
     });
@@ -177,8 +228,8 @@ const App = () => {
 
   const showError = (message: string) => {
     toast.current?.show({
-      severity: 'error',
-      summary: 'Error',
+      severity: "error",
+      summary: "Error",
       detail: message,
       life: 3000,
     });
@@ -203,15 +254,15 @@ const App = () => {
         <nav>
           <NavigationButtons />
         </nav>
-        {isLoading && <PanelLoading />}{' '}
+        {isLoading && <PanelLoading />}{" "}
         {/* Show loading indicator when loading */}
         {!hasInternet && <PanelNoConnection />} {/* Show no connection panel */}
-        {hasInternet && <PanelHasConnection />}{' '}
+        {hasInternet && <PanelHasConnection />}{" "}
         {/* Show has connection panel */}
         <Routes>
-          <Route path='/stepsix/JournalList' element={<JournalList />} />
+          <Route path="/stepsix/JournalList" element={<JournalList />} />
           <Route
-            path='/stepsix/addJournal'
+            path="/stepsix/addJournal"
             element={
               <AddJournalPage
                 toast={toast}
@@ -227,7 +278,7 @@ const App = () => {
             }
           />
           <Route
-            path='/stepsix/editJournal/:journalId'
+            path="/stepsix/editJournal/:journalId"
             element={
               <EditJournalPage
                 journalId={0}

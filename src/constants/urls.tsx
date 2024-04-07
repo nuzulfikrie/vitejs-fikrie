@@ -2,93 +2,99 @@ const URL_LINKS = {
   STEP07: {
     key: 'STEP07',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/data-step-seven/',
+      'https://amalgam.theeagle.local/projects/api/courses/data-step-seven/',
   },
 
   SUBTHEME: {
     key: 'SUBTHEME',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/get-subtheme-data/',
+      'https://amalgam.theeagle.local/projects/api/courses/get-subtheme-data/',
   },
 
   DATATABLE_DATA: {
     key: 'DATATABLE_DATA',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/get-data-table-data/',
+      'https://amalgam.theeagle.local/projects/api/courses/get-data-table-data/',
   },
 
   DELETE_RESEARCH_FILTER: {
     key: 'DELETE_RESEARCH_FILTER',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/delete-step-seven/',
+      'https://amalgam.theeagle.local/projects/api/courses/delete-step-seven/',
     /* /projects/api/courses/delete-step-seven/*/
   },
 
   SAVE_RESEARCH_FILTER: {
     key: 'SAVE_RESEARCH_FILTER',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/save-data-step-seven/',
+      'https://amalgam.theeagle.local/projects/api/courses/save-data-step-seven/',
   },
 
   FETCH_USER_VIDEO: {
     key: 'FETCH_USER_VIDEO',
-    value: 'https://amalgam.theeagle.center/projects/api/courses/get-video/',
+    value: 'https://amalgam.theeagle.local/projects/api/courses/get-video/',
   },
 
   GET_EDIT_JOURNAL_DATA: {
     key: 'GET_EDIT_JOURNAL_DATA',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/get-edit-journal-data/',
+      'https://amalgam.theeagle.local/projects/api/courses/get-edit-journal-data/',
   },
 
   FETCH_ABSTRACT: {
     key: 'FETCH_ABSTRACT',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/get-abstract-data/',
+      'https://amalgam.theeagle.local/projects/api/courses/get-abstract-data/',
   },
 
   FETCH_METADATA: {
     key: 'FETCH_METADATA',
-    value: 'https://amalgam.theeagle.center/projects/api/courses/get-metadata/',
+    value: 'https://amalgam.theeagle.local/projects/api/courses/get-metadata/',
   },
 
   STEP_SIX_DATA: {
     key: 'STEP_SIX_DATA',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/step-six-library/',
+      'https://amalgam.theeagle.local/projects/api/courses/step-six-library/',
   },
 
   FETCH_ALL_JOURNAL: {
     key: 'FETCH_ALL_JOURNAL',
     value:
-      'https://amalgam.theeagle.center/projects/api/courses/get-journal-list/',
+      'https://amalgam.theeagle.local/projects/api/courses/get-journal-list/',
   },
 
   GET_JOURNAL: {
     key: 'GET_JOURNAL',
-    value: 'https://amalgam.theeagle.center/projects/api/journals/get-journal/',
+    value: 'https://amalgam.theeagle.local/projects/api/journals/get-journal/',
   },
 
   ADD_JOURNAL: {
     key: 'ADD_JOURNAL',
-    value: 'https://amalgam.theeagle.center/projects/api/journals/add-journal/',
+    value: 'https://amalgam.theeagle.local/projects/api/journals/add-journal/',
+  },
+
+  CHECK_ARTICLE: {
+    key: 'CHECK_ARTICLE',
+    value:
+      'https://amalgam.theeagle.local/projects/api/journals/check-article-title/',
   },
 
   EDIT_JOURNAL: {
     key: 'EDIT_JOURNAL',
     value:
-      'https://amalgam.theeagle.center/projects/api/journals/edit-journal/',
+      'https://amalgam.theeagle.local/projects/api/journals/edit-journal/',
   },
 
   DELETE_JOURNAL: {
     key: 'DELETE_JOURNAL',
     value:
-      'https://amalgam.theeagle.center/projects/api/journals/delete-journal/',
+      'https://amalgam.theeagle.local/projects/api/journals/delete-journal/',
   },
 
   FETCH_CITATION: {
     key: 'FETCH_CITATION',
-    value: 'https://amalgam.theeagle.center/projects/api/courses/get-citation/',
+    value: 'https://amalgam.theeagle.local/projects/api/courses/get-citation/',
   },
 };
 

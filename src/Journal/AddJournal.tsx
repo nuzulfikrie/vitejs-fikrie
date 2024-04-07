@@ -22,6 +22,7 @@ import {
   generateInTextCitation,
   generateCitationUsingDoi,
 } from '../services/citationService';
+import URL_LINKS from '../constants/urls';
 
 interface AddJournalProps {
   toast: React.RefObject<Toast>;
@@ -168,13 +169,46 @@ const AddJournal: React.FC<AddJournalProps> = ({
 
     //combine selection to data
     data.selection = selection;
+    data.course_id = projectId;
+    data.user_id = userId;
     console.log('Form data:', data);
 
-    
+    const urlAddJournal = URL_LINKS.ADD_JOURNAL.value;
 
+    try {
+      const response = await postData(urlAddJournal, {
+        method: "POST", // Assuming postData function allows passing options
+        credentials: "include", // Include this to ensure cookies are sent
+        headers: {
+          "Content-Type": "application/json",
+          // any other headers you need
+        },
+        body: JSON.stringify(data),
+      }).then((response) => {
+        if (response.status === 200) {
+          showSuccess('Journal added successfully');
+          reset();
+        } else {
+          showError('Error adding journal');
+        }
 
-    showSuccess('Form submitted!');
-    // Here you would typically send the form data to a server or another data handling function
+      }).catch((error) => {
+        if (error) {
+          showError('Journal failed to add ' + error );
+          // reset();
+        }
+      });
+     
+    } catch (error) {
+      showError('Error adding journal ' + error);
+    } finally {
+      setLoading(false);
+    }
+
+    //clear form and reset selection 
+    reset();
+    showInfo('Form cleared');
+    setSelected([0]);
   };
 
   const getFormErrorMessage = (name: string | number) => {
@@ -193,7 +227,7 @@ const AddJournal: React.FC<AddJournalProps> = ({
     try {
       const dataFetchedMetadata = await fetchMetadata(doi);
 
-      if (dataFetchedMetadata !== undefined) {
+      if (dataFetchedMetadata !== undefined ) {
         setValue('article_title', dataFetchedMetadata[0].data);
         setValue('authors', dataFetchedMetadata[1].data);
         setValue('journal_name', dataFetchedMetadata[7].data);
@@ -315,6 +349,44 @@ const AddJournal: React.FC<AddJournalProps> = ({
   const [modalVideoVisible, setModalVideoVisible] = useState(false);
 
   const [isConfirmDialogVisible, setIsConfirmDialogVisible] = useState(false);
+
+async function  validateArticleTitle(value: string) {
+  if (value.length < 10) {
+    return;
+    // else if value greater than 20 and user already moved to another field, check using POST to 
+    // 'https://amalgam.theeagle.local/projects/api/journals/check-article-title/',
+    // and handle the response accordingly
+   } else if (value.length > 20) {
+      try {
+        const response = await fetch('https://amalgam.theeagle.local/projects/api/journals/check-article-title/', {
+          method: 'POST',
+          body: JSON.stringify(
+            { 
+              articleTitle: value ,
+              courseId: projectId,
+            }
+          ),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        // Handle the response data accordingly
+        if(data.status === 'Error'){
+          showError('Article title already exists');
+          return false;
+        } else {
+          return true;
+        }
+        
+      } catch (error) {
+        // Handle the error just fails silently 
+      }
+    }
+
+  
+  return true;
+}
 
   function handleDropDown(e: DropdownChangeEvent): void {
     if (e.value.code === 'reset') {
@@ -503,7 +575,12 @@ const AddJournal: React.FC<AddJournalProps> = ({
           <Controller
             name='article_title'
             control={control}
-            rules={{ required: 'Article title is required.' }}
+            rules={
+              { 
+                required: 'Article title is required.' ,
+                validate:validateArticleTitle
+              }
+            }
             render={({ field, fieldState }) => (
               <>
                 <label
