@@ -14,7 +14,7 @@
     "@ckeditor/ckeditor5-build-classic": "^40.2.0",
     "@ckeditor/ckeditor5-react": "^6.2.0",
     "@tinymce/tinymce-react": "^5.0.0",
-    "axios": "^1.6.0",
+    "axios": "^1.8.2",
     "dompurify": "^3.0.6",
     "jsdom": "^23.0.1",
     "primeflex": "^3.3.1",
