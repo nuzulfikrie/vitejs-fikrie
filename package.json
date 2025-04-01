@@ -11,7 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^40.2.0",
+    "@ckeditor/ckeditor5-build-classic": "^44.3.0",
     "@ckeditor/ckeditor5-react": "^6.2.0",
     "@tinymce/tinymce-react": "^5.0.0",
     "axios": "^1.6.0",
